@@ -194,14 +194,14 @@ class SimulationResult:
         max_gen = max([entry["generation"] for entry in entries])
         sorted_entries = sorted(entries, key=lambda e: e["generation"] if e["generation"] >= 0 else max_gen+1)
 
-        headers = ['generation', 'file', "entry", "id", "reward", "energy_consumprion_average", "packet_loss_average"]
+        headers = ['generation', 'file', "entry", "id", "reward", "energy_consumption_average", "packet_loss_average"]
         table_entries = []
         for entry in sorted_entries:
             for i, front_member in enumerate(entry["members"]):
                 table_entries.append([
                     entry["generation"], entry["file"],
                     i, front_member["id"],
-                    front_member["reward"], front_member["energy_consumprion_average"],
+                    front_member["reward"], front_member["energy_consumption_average"],
                     front_member["packet_loss_average"],
                 ])
 
@@ -215,7 +215,7 @@ class SimulationResult:
                                      'entry': i,
                                      'id': front_member["id"],
                                      'reward': front_member["reward"],
-                                     'energy_consumprion_average': front_member["energy_consumprion_average"],
+                                     'energy_consumption_average': front_member["energy_consumption_average"],
                                      'packet_loss_average': front_member["packet_loss_average"],
                                      })
 
@@ -243,7 +243,7 @@ class SimulationResult:
                 "id": front_entry["id"],
                 "reward": front_entry["fitness"],
                 "values": values,
-                "energy_consumprion_average": front_entry["averages"]["EnergyConsumption.props"],
+                "energy_consumption_average": front_entry["averages"]["EnergyConsumption.props"],
                 "packet_loss_average": front_entry["averages"]["PacketLoss.props"],
             }
             front_members.append(front_member)
