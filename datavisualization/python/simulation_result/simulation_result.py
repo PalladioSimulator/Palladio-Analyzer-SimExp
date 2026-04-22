@@ -8,7 +8,7 @@ from pathlib import Path
 import tabulate
 
 from prism_property import PrismKind, identify_prism
-from pareto_front_extractor import ParetoFrontExtractor
+from pareto import ParetoFrontExtractor
 
 
 class SimulationResult:
