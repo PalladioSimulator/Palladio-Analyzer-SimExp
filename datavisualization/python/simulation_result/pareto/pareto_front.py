@@ -1,0 +1,15 @@
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class ParetoEntry:
+    id: str
+    optimizables: str
+    average_energy_consumption: float
+    average_packet_loss: float
+
+
+@dataclass(frozen=True)
+class ParetoFront:
+    generation: int
+    entries: list[ParetoEntry]
