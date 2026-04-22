@@ -6,8 +6,8 @@ import json
 import tabulate
 
 
-class ParetoFrontVisualize:
-    def visualize(self, front_files: list, result_file: Path):
+class ParetoFrontExtractor:
+    def extract(self, front_files: list, result_file: Path):
         entries = []
         for pareto_front_file in front_files:
             entry = self._extract_pareto_front(pareto_front_file)

@@ -8,7 +8,7 @@ from pathlib import Path
 import tabulate
 
 from prism_property import PrismKind, identify_prism
-from pareto_front_visualize import ParetoFrontVisualize
+from pareto_front_extractor import ParetoFrontExtractor
 
 
 class SimulationResult:
@@ -184,9 +184,9 @@ class SimulationResult:
                                       )
         print(table_str)
 
-    def _analyze_pareto(self, args):
-        visualize = ParetoFrontVisualize()
-        visualize.visualize(args.pareto_front, args.result)
+    def _extract_pareto(self, args):
+        visualize = ParetoFrontExtractor()
+        visualize.extract(args.pareto_front, args.result)
 
     def main(self):
         parser = argparse.ArgumentParser(prog="simulation_result", description="Analyses simulation results")
@@ -210,10 +210,13 @@ class SimulationResult:
         parser_prism.add_argument('prism_property_file', type=Path, nargs='+')
         parser_prism.set_defaults(func=self._analyze_prism)
 
-        parser_pareto = subparsers.add_parser('pareto', help='pareto front extractor')
-        parser_pareto.add_argument('pareto_front', type=Path, nargs='+', help="pareto front files")
-        parser_pareto.add_argument('-r', '--result', type=Path, required=True, help="result CSV file")
-        parser_pareto.set_defaults(func=self._analyze_pareto)
+        parser_pareto = subparsers.add_parser('pareto', help='pareto commands')
+        pareto_subparsers = parser_pareto.add_subparsers(required=True, help='available pareto subcommands')
+
+        parser_pareto_extractor = pareto_subparsers.add_parser('extract', help='pareto front extractor')
+        parser_pareto_extractor.add_argument('pareto_front', type=Path, nargs='+', help="pareto front files")
+        parser_pareto_extractor.add_argument('-r', '--result', type=Path, required=True, help="result CSV file")
+        parser_pareto_extractor.set_defaults(func=self._extract_pareto)
 
         args = parser.parse_args()
 
