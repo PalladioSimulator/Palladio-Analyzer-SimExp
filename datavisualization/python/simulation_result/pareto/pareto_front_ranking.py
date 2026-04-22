@@ -1,14 +1,59 @@
 from pathlib import Path
 
+import tabulate
+
 from .pareto_front import ParetoFront
 from .pareto_reader import ParetoReader
+from .reference_point_calculator import ReferencePointCalculator
+from .hypervolume_calculator import HypervolumeCalculator
 
 
 class ParetoFrontRanking:
     def rank_pareto_fronts(self, resource_folder: Path):
         self._validate_resource_folder(resource_folder)
         pareto_fronts = self._extract_pareto_fronts(resource_folder)
-        sorted_front = sorted(pareto_fronts, key=lambda front: front.generation)
+        sorted_fronts = sorted(pareto_fronts, key=lambda front: front.generation)
+
+        reference_point_calculator = ReferencePointCalculator(0.1)
+        ref_point = reference_point_calculator.calc_reference_point(sorted_fronts)
+
+        hypervolume_calculator = HypervolumeCalculator()
+        hv_list = []
+        hv_dict = {}
+        for front in sorted_fronts:
+            hv = hypervolume_calculator.calc_hypervolume(ref_point, front)
+            hv_dict[front.generation] = hv
+            hv_list.append((hv, front))
+        sorted_hv_list = sorted(hv_list,
+                                key=lambda entry: entry[0],
+                                reverse=False)
+        sorted_hv_front = [entry[1] for entry in sorted_hv_list]
+
+        table_entries = []
+        for front in sorted_fronts:
+            hv_rank = sorted_hv_front.index(front) + 1
+            hv = hv_dict[front.generation]
+            table_entries.append((front.generation, len(front.entries), front.generation, hv, hv_rank))
+
+        headers = ["generation", "# entries", "front", "hv", "hv rank"]
+        table_str = tabulate.tabulate(table_entries,
+                                      headers=headers,
+                                      tablefmt="simple"
+                                      )
+        print(table_str)
+
+        print("sorted HV list:")
+        headers = ["rank", "# entries", "front", "hv", "generation rank"]
+        table_entries = []
+        for i, entry in enumerate(sorted_hv_list):
+            hv, front = entry
+            generation_rank = sorted_fronts.index(front) + 1
+            table_entries.append((i + 1, len(front.entries), front.generation, hv, generation_rank))
+        table_str = tabulate.tabulate(table_entries,
+                                      headers=headers,
+                                      tablefmt="simple"
+                                      )
+        print(table_str)
 
     def _validate_resource_folder(self, folder: Path):
         if not folder.is_dir():
