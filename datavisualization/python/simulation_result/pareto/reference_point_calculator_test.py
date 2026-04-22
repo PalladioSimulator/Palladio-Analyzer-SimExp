@@ -6,7 +6,7 @@ from .reference_point_calculator import ReferencePointCalculator
 
 @fixture()
 def calculator():
-    return ReferencePointCalculator()
+    return ReferencePointCalculator(0.1)
 
 
 def test_calc_ref_point_one_front_one(calculator):
@@ -19,7 +19,7 @@ def test_calc_ref_point_one_front_one(calculator):
 
     actual_ref_point = calculator.calc_reference_point(fronts)
 
-    assert actual_ref_point == approx((1.0, 1.0))
+    assert actual_ref_point == approx((1.1, 1.1))
 
 
 def test_calc_ref_point_one_front_two(calculator):
@@ -33,7 +33,7 @@ def test_calc_ref_point_one_front_two(calculator):
 
     actual_ref_point = calculator.calc_reference_point(fronts)
 
-    assert actual_ref_point == approx((2.0, 2.0))
+    assert actual_ref_point == approx((2.1, 2.1))
 
 
 def test_calc_ref_point_two_front_one(calculator):
@@ -51,4 +51,4 @@ def test_calc_ref_point_two_front_one(calculator):
 
     actual_ref_point = calculator.calc_reference_point(fronts)
 
-    assert actual_ref_point == approx((2.0, 2.0))
+    assert actual_ref_point == approx((2.1, 2.1))
