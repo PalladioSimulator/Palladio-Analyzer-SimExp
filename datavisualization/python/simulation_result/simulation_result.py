@@ -8,7 +8,7 @@ from pathlib import Path
 import tabulate
 
 from prism_property import PrismKind, identify_prism
-from pareto import ParetoFrontExtractor
+from pareto import ParetoFrontExtractor, ParetoFrontRanking
 
 
 class SimulationResult:
@@ -185,8 +185,12 @@ class SimulationResult:
         print(table_str)
 
     def _extract_pareto(self, args):
-        visualize = ParetoFrontExtractor()
-        visualize.extract(args.pareto_front, args.result)
+        extractor = ParetoFrontExtractor()
+        extractor.extract(args.pareto_front, args.result)
+
+    def _rank_pareto(self, args):
+        ranking = ParetoFrontRanking()
+        ranking.rank_pareto_fronts(args.resource)
 
     def main(self):
         parser = argparse.ArgumentParser(prog="simulation_result", description="Analyses simulation results")
@@ -217,6 +221,10 @@ class SimulationResult:
         parser_pareto_extractor.add_argument('pareto_front', type=Path, nargs='+', help="pareto front files")
         parser_pareto_extractor.add_argument('-r', '--result', type=Path, required=True, help="result CSV file")
         parser_pareto_extractor.set_defaults(func=self._extract_pareto)
+
+        parser_pareto_rank = pareto_subparsers.add_parser('rank', help='pareto front ranking')
+        parser_pareto_rank.add_argument('resource', type=Path, help="simulation resource folder")
+        parser_pareto_rank.set_defaults(func=self._rank_pareto)
 
         args = parser.parse_args()
 
