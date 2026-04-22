@@ -1,4 +1,5 @@
 from pytest import fixture, approx
+from dataclasses import astuple
 
 from .pareto_front import ParetoFront, ParetoEntry
 from .reference_point_calculator import ReferencePointCalculator
@@ -19,7 +20,7 @@ def test_calc_ref_point_one_front_one(calculator):
 
     actual_ref_point = calculator.calc_reference_point(fronts)
 
-    assert actual_ref_point == approx((1.1, 1.1))
+    assert astuple(actual_ref_point) == approx((1.1, 1.1))
 
 
 def test_calc_ref_point_one_front_two(calculator):
@@ -33,7 +34,7 @@ def test_calc_ref_point_one_front_two(calculator):
 
     actual_ref_point = calculator.calc_reference_point(fronts)
 
-    assert actual_ref_point == approx((2.1, 2.1))
+    assert astuple(actual_ref_point) == approx((2.1, 2.1))
 
 
 def test_calc_ref_point_two_front_one(calculator):
@@ -51,4 +52,4 @@ def test_calc_ref_point_two_front_one(calculator):
 
     actual_ref_point = calculator.calc_reference_point(fronts)
 
-    assert actual_ref_point == approx((2.1, 2.1))
+    assert astuple(actual_ref_point) == approx((2.1, 2.1))
