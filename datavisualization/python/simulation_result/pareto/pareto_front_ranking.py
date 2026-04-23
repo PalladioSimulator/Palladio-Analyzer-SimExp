@@ -6,11 +6,12 @@ from .pareto_front import ParetoFront
 from .pareto_reader import ParetoReader
 from .reference_point_calculator import ReferencePointCalculator
 from .hypervolume_calculator import HypervolumeCalculator
+from .util import validate_resource_folder
 
 
 class ParetoFrontRanking:
     def rank_pareto_fronts(self, resource_folder: Path):
-        self._validate_resource_folder(resource_folder)
+        validate_resource_folder(resource_folder)
         pareto_fronts = self._extract_pareto_fronts(resource_folder)
         sorted_fronts = sorted(pareto_fronts, key=lambda front: front.generation)
 
@@ -54,14 +55,6 @@ class ParetoFrontRanking:
                                       tablefmt="simple"
                                       )
         print(table_str)
-
-    def _validate_resource_folder(self, folder: Path):
-        if not folder.is_dir():
-            raise ValueError("not a directory: %s", folder)
-        if not (folder / "pareto_front.json").is_file():
-            raise ValueError("missing final pareto_front.json file in: %s" % folder)
-        if not (folder / "generations").is_dir():
-            raise ValueError("missing generations folder in: %s" % folder)
 
     def _extract_pareto_fronts(self, folder) -> list[ParetoFront]:
         front_files = self._collect_front_files(folder)

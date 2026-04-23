@@ -8,7 +8,7 @@ from pathlib import Path
 import tabulate
 
 from prism_property import PrismKind, identify_prism
-from pareto import ParetoFrontExtractor, ParetoFrontRanking
+from pareto import ParetoFrontExtractor, ParetoFrontRanking, ParetoFittest
 
 
 class SimulationResult:
@@ -184,13 +184,17 @@ class SimulationResult:
                                       )
         print(table_str)
 
-    def _extract_pareto(self, args):
+    def _pareto_extract(self, args):
         extractor = ParetoFrontExtractor()
         extractor.extract(args.pareto_front, args.result)
 
-    def _rank_pareto(self, args):
+    def _pareto_rank(self, args):
         ranking = ParetoFrontRanking()
         ranking.rank_pareto_fronts(args.resource)
+
+    def _pareto_fittest(self, args):
+        fittest = ParetoFittest()
+        fittest.pareto_fittest_check(args.resource)
 
     def main(self):
         parser = argparse.ArgumentParser(prog="simulation_result", description="Analyses simulation results")
@@ -220,11 +224,15 @@ class SimulationResult:
         parser_pareto_extractor = pareto_subparsers.add_parser('extract', help='pareto front extractor')
         parser_pareto_extractor.add_argument('pareto_front', type=Path, nargs='+', help="pareto front files")
         parser_pareto_extractor.add_argument('-r', '--result', type=Path, required=True, help="result CSV file")
-        parser_pareto_extractor.set_defaults(func=self._extract_pareto)
+        parser_pareto_extractor.set_defaults(func=self._pareto_extract)
 
         parser_pareto_rank = pareto_subparsers.add_parser('rank', help='pareto front ranking')
         parser_pareto_rank.add_argument('resource', type=Path, help="simulation resource folder")
-        parser_pareto_rank.set_defaults(func=self._rank_pareto)
+        parser_pareto_rank.set_defaults(func=self._pareto_rank)
+
+        parser_pareto_fittest = pareto_subparsers.add_parser('fittest', help='checks if the fittest is in the pareto front')
+        parser_pareto_fittest.add_argument('resource', type=Path, help="simulation resource folder")
+        parser_pareto_fittest.set_defaults(func=self._pareto_fittest)
 
         args = parser.parse_args()
 
