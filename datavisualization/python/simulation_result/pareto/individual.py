@@ -5,4 +5,4 @@ from dataclasses import dataclass
 class Individual:
     id: str
     reward: float
-    optimizables: str
+    optimizables: dict[str, str]

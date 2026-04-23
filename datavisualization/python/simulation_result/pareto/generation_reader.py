@@ -9,17 +9,13 @@ class GenerationReader:
         front = self._read_json_file(front_file)
         entries = []
         for individual_entry in front:
-            optimizables = ["%s=%s" % (key, value) for key, value in individual_entry["optimizables"].items()]
-            values = ",".join(optimizables)
-
             entry = Individual(
                 id=individual_entry["id"],
                 reward=individual_entry["fitness"],
-                optimizables=values,
+                optimizables=individual_entry["optimizables"],
             )
             entries.append(entry)
         return entries
-
 
     def _read_json_file(self, json_file):
         with json_file.open("r", encoding="utf-8") as f:
