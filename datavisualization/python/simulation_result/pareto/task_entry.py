@@ -25,4 +25,3 @@ class TaskEntry:
     id: str
     optimizables: str
     result: TaskResult
-    averages: TaskAverages
