@@ -35,21 +35,24 @@ class ParetoFrontCreator:
 
             resolver = Resolver()
             front = front_builder.build_pareto_front(generation, resolver)
-
-            entries: list[ParetoEntry] = []
-            for individual in front:
-                averages = resolver.get_averages(individual)
-                pareto_entry = ParetoEntry(
-                    id=individual.id,
-                    optimizables=individual.optimizables,
-                    average_energy_consumption=averages.energy_consumption,
-                    average_packet_loss=averages.packet_loss,
-                )
-                entries.append(pareto_entry)
-
-            pareto_front = ParetoFront(
-                generation=generation.generation,
-                entries=entries,
-            )
-
+            pareto_front = self._create_pareto_front(generation.generation, front, resolver)
             # ToDo: store front
+
+    def _create_pareto_front(self, generation: int, individuals: list[Individual],
+                             resolver: IndividualAverageResolver) -> ParetoFront:
+        entries: list[ParetoEntry] = []
+        for individual in individuals:
+            averages = resolver.get_averages(individual)
+            pareto_entry = ParetoEntry(
+                id=individual.id,
+                optimizables=individual.optimizables,
+                average_energy_consumption=averages.energy_consumption,
+                average_packet_loss=averages.packet_loss,
+            )
+            entries.append(pareto_entry)
+
+        pareto_front = ParetoFront(
+            generation=generation,
+            entries=entries,
+        )
+        return pareto_front
