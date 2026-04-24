@@ -3,9 +3,13 @@ from pygmo import hypervolume
 
 from .pareto_front import ParetoFront
 from .point import Point
+from .normalization_boundaries import NormalizationBoundary
 
 
 class HypervolumeCalculator:
+    def __init__(self, boundaries: NormalizationBoundary):
+        self._boundaries = boundaries
+
     def calc_hypervolume(self, ref_point: Point, front: ParetoFront) -> float:
         preprocessed_front = self._preprocess_front(front)
         hv = hypervolume(preprocessed_front)
@@ -37,6 +41,15 @@ class HypervolumeCalculator:
 
     def _to_np_front(self, front: ParetoFront):
         entries = []
+        energy_min = self._boundaries.energy_min
+        energy_max = self._boundaries.energy_max
+        packet_loss_min = self._boundaries.packet_loss_min
+        packet_loss_max = self._boundaries.packet_loss_max
         for entry in front.entries:
-            entries.append([entry.average_energy_consumption, entry.average_packet_loss])
+            energy = self._normalize(entry.average_energy_consumption, energy_min, energy_max)
+            packet_loss = self._normalize(entry.average_packet_loss, packet_loss_min, packet_loss_max)
+            entries.append([energy, packet_loss])
         return np.array(entries)
+
+    def _normalize(self, x, xmin, xmax):
+        return (x - xmin) / (xmax - xmin)

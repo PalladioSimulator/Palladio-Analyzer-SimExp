@@ -6,17 +6,22 @@ from .reference_point_calculator import ReferencePointCalculator
 from .hypervolume_calculator import HypervolumeCalculator
 from .util import validate_resource_folder
 from .pareto_io import extract_pareto_fronts
+from .normalization_boundary_calculator import NormalizationBoundaryCalculator
 
 
 class ParetoFrontRanking:
     def rank_pareto_fronts(self, resource_folder: Path):
         validate_resource_folder(resource_folder)
         pareto_fronts = extract_pareto_fronts(resource_folder)
+        delta = 0.1
 
-        reference_point_calculator = ReferencePointCalculator(0.1)
+        reference_point_calculator = ReferencePointCalculator(delta)
         ref_point = reference_point_calculator.calc_reference_point(pareto_fronts)
 
-        hypervolume_calculator = HypervolumeCalculator()
+        boundary_calculator = NormalizationBoundaryCalculator(delta)
+        boundary = boundary_calculator.calculate_boundaries(pareto_fronts)
+
+        hypervolume_calculator = HypervolumeCalculator(boundary)
         hv_list = []
         hv_dict = {}
         for front in pareto_fronts:

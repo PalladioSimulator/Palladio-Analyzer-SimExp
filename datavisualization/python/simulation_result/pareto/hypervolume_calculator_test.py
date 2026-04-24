@@ -3,11 +3,18 @@ from pytest import fixture, approx
 from .pareto_front import ParetoEntry, ParetoFront
 from .hypervolume_calculator import HypervolumeCalculator
 from .point import Point
+from .normalization_boundaries import NormalizationBoundary
 
 
 @fixture()
 def calculator():
-    return HypervolumeCalculator()
+    boundary = NormalizationBoundary(
+        energy_min=0,
+        energy_max=7.0,
+        packet_loss_min=0,
+        packet_loss_max=7.0,
+    )
+    return HypervolumeCalculator(boundary)
 
 
 def test_calc_hypervolume(calculator):
@@ -22,7 +29,7 @@ def test_calc_hypervolume(calculator):
 
     actual_volume = calculator.calc_hypervolume(ref_point, front)
 
-    assert actual_volume == approx(25.5)
+    assert actual_volume == approx(46.37755102040816)
 
 
 def test_calc_hypervolume_with_dominated(calculator):
@@ -38,4 +45,4 @@ def test_calc_hypervolume_with_dominated(calculator):
 
     actual_volume = calculator.calc_hypervolume(ref_point, front)
 
-    assert actual_volume == approx(3.25)
+    assert actual_volume == approx(3.9846938775510203)
