@@ -1,6 +1,6 @@
 package org.palladiosimulator.simexp.dsl.smodel.api;
 
 public interface ISmodelConstants {
-    // static double EPSILON = 0.0001;
-    static int PLACES = 3;
+    // static double EPSILON = 0.0000001;
+    static int PLACES = 6;
 }

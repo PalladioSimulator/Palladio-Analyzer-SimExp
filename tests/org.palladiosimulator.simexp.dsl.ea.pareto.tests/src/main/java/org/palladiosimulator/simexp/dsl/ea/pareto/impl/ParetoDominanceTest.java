@@ -21,7 +21,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 public class ParetoDominanceTest {
-    private static final double EPSILON = 0.0001;
+    static final double EPSILON = 0.0000001;
 
     private ParetoDominance paretoDominance;
 
@@ -63,8 +63,8 @@ public class ParetoDominanceTest {
     public void testComparePrecision() {
         IndividualResult a = createIndividualResult(1.0, optimizableValuesA);
         IndividualResult b = createIndividualResult(1.0, optimizableValuesB);
-        when(averageProvider.getAverages(a)).thenReturn(buildAverages(2.0001, 2));
-        when(averageProvider.getAverages(b)).thenReturn(buildAverages(2.0002, 2));
+        when(averageProvider.getAverages(a)).thenReturn(buildAverages(2.00000001, 2));
+        when(averageProvider.getAverages(b)).thenReturn(buildAverages(2.00000002, 2));
 
         int actualCompare = paretoDominance.compare(a, b);
 
@@ -308,6 +308,21 @@ public class ParetoDominanceTest {
         averages.put("qa2", Double.NEGATIVE_INFINITY);
         when(averageProvider.getAverages(a)).thenReturn(Optional.of(averages));
         when(averageProvider.getAverages(b)).thenReturn(Optional.of(averages));
+
+        int actualCompare = paretoDominance.compare(a, b);
+
+        assertThat(actualCompare).isEqualTo(0);
+    }
+
+    @Test
+    public void testCompareRegression_1c_gen21() {
+        IndividualResult a = createIndividualResult(1.0, optimizableValuesA);
+        IndividualResult b = createIndividualResult(1.0, optimizableValuesB);
+        when(averageProvider.getAverages(a)).thenReturn(buildAverages(9.329275267205833, 0.07460441924724677));
+        when(averageProvider.getAverages(b)).thenReturn(buildAverages(9.331774274217292, 0.07460431700913854));
+        // when(precisionProvider.getPrecision()).thenReturn(EPSILON);
+        // paretoDominance = new ParetoDominance(precisionProvider, averageProvider, s ->
+        // Double::compare);
 
         int actualCompare = paretoDominance.compare(a, b);
 

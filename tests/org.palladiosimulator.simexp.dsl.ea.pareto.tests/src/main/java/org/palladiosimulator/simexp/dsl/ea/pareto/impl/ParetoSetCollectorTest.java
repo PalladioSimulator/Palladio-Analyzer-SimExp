@@ -26,12 +26,14 @@ import io.jenetics.Optimize;
 import io.jenetics.util.ISeq;
 
 public class ParetoSetCollectorTest {
-    private static final double EPSILON = 0.0001;
+    private static final double EPSILON = ParetoDominanceTest.EPSILON;
 
     @Mock
     private IAverageProvider averageProvider;
     @Mock
     private IPrecisionProvider precisionProvider;
+
+    private Optimizable optimizable;
 
     private IndividualResult a;
     private IndividualResult b;
@@ -51,7 +53,7 @@ public class ParetoSetCollectorTest {
         when(precisionProvider.getPrecision()).thenReturn(EPSILON);
 
         SmodelCreator smodelCreator = new SmodelCreator();
-        Optimizable optimizable = smodelCreator.createOptimizable("o", DataType.STRING, null);
+        optimizable = smodelCreator.createOptimizable("o", DataType.STRING, null);
         List<OptimizableValue<?>> optimizableValuesA = Collections
             .singletonList(new OptimizableValue<>(optimizable, "a"));
         List<OptimizableValue<?>> optimizableValuesB = Collections
@@ -126,7 +128,7 @@ public class ParetoSetCollectorTest {
         // J(0.0, 8.0)
         // H(2.0, 2.0)
         // G(7.0, 1.0)
-        Stream<IndividualResult> resultStream = buildResultStream(Optimize.MINIMUM);
+        Stream<IndividualResult> resultStream = buildResultStream();
         Collector<IndividualResult, ?, ISeq<IndividualResult>> collector = ParetoSetCollector.create(precisionProvider,
                 averageProvider, s -> Double::compare, Optimize.MINIMUM);
 
@@ -157,7 +159,7 @@ public class ParetoSetCollectorTest {
         // F(6.0, 2.0)
         // G(7.0, 1.0)
         // J(0.0, 8.0)
-        Stream<IndividualResult> resultStream = buildResultStream(Optimize.MAXIMUM);
+        Stream<IndividualResult> resultStream = buildResultStream();
         Collector<IndividualResult, ?, ISeq<IndividualResult>> collector = ParetoSetCollector.create(precisionProvider,
                 averageProvider, s -> Double::compare, Optimize.MAXIMUM);
 
@@ -166,7 +168,30 @@ public class ParetoSetCollectorTest {
         assertThat(actualResult).containsExactlyInAnyOrder(a, b, i, f, g, j);
     }
 
-    private Stream<IndividualResult> buildResultStream(Optimize optimize) {
+    @Test
+    public void paretoFrontRegression_1c_gen21() {
+        IndividualResult task645 = createIndividualResult("Task 645");
+        IndividualResult task785 = createIndividualResult("Task 785");
+        IndividualResult task794 = createIndividualResult("Task 794");
+        IndividualResult task788 = createIndividualResult("Task 788");
+        IndividualResult task798 = createIndividualResult("Task 798");
+
+        when(averageProvider.getAverages(task645)).thenReturn(buildAverages(9.329275267205833, 0.07460441924724677));
+        when(averageProvider.getAverages(task785)).thenReturn(buildAverages(9.158890543298957, 0.07965621109221145));
+        when(averageProvider.getAverages(task794)).thenReturn(buildAverages(9.167328071855417, 0.07830180799961763));
+        when(averageProvider.getAverages(task788)).thenReturn(buildAverages(9.310202792564791, 0.07620039901667755));
+        when(averageProvider.getAverages(task798)).thenReturn(buildAverages(9.331774274217292, 0.07460431700913854));
+
+        Stream<IndividualResult> resultStream = Stream.of(task645, task785, task794, task788, task798);
+        Collector<IndividualResult, ?, ISeq<IndividualResult>> collector = ParetoSetCollector.create(precisionProvider,
+                averageProvider, s -> Double::compare, Optimize.MINIMUM);
+
+        ISeq<IndividualResult> actualResult = resultStream.collect(collector);
+
+        assertThat(actualResult).containsExactlyInAnyOrder(task645, task785, task794, task788, task798);
+    }
+
+    private Stream<IndividualResult> buildResultStream() {
         Stream<IndividualResult> resultStream = Stream.of(a, b, c, d, e, f, g, h, i, j);
         return resultStream;
     }
@@ -176,6 +201,12 @@ public class ParetoSetCollectorTest {
         averages.put("qa1", one);
         averages.put("qa2", two);
         return Optional.of(averages);
+    }
+
+    private IndividualResult createIndividualResult(String name) {
+        List<OptimizableValue<?>> optimizableValues = Collections
+            .singletonList(new OptimizableValue<>(optimizable, name));
+        return createIndividualResult(1.0, optimizableValues);
     }
 
     private IndividualResult createIndividualResult(double fitness, List<OptimizableValue<?>> optimizableValues) {
