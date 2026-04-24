@@ -24,7 +24,7 @@ class ParetoFrontComparator:
             target_front = calculated_fronts[i]
             diff = DeepDiff(base_front, target_front, ignore_order=True)
             if diff:
-                print("front of generation %-2d: mismatch:" % base_front.generation)
+                print("front of generation %-2d: mismatch (#%d base entries):" % (base_front.generation, len(base_front.entries)))
                 pprint(diff, indent=2)
                 print("-" * 20)
             #else:
