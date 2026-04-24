@@ -8,7 +8,7 @@ from pathlib import Path
 import tabulate
 
 from prism_property import PrismKind, identify_prism
-from pareto import ParetoFrontExtractor, ParetoFrontRanking, ParetoFittest, ParetoFrontCreator
+from pareto import ParetoFrontExtractor, ParetoFrontRanking, ParetoFittest, ParetoFrontCreator, ParetoFrontComparator
 
 
 class SimulationResult:
@@ -200,6 +200,10 @@ class SimulationResult:
         creator = ParetoFrontCreator()
         creator.create_fronts(args.resource, args.target)
 
+    def _pareto_compare(self, args):
+        comparator = ParetoFrontComparator()
+        comparator.compare_fronts(args.resource, args.target)
+
     def main(self):
         parser = argparse.ArgumentParser(prog="simulation_result", description="Analyses simulation results")
         subparsers = parser.add_subparsers(required=True, help='available subcommands')
@@ -242,6 +246,11 @@ class SimulationResult:
         parser_pareto_create.add_argument('--target', type=Path, default=Path("resources"), help="target path for pareto fronts")
         parser_pareto_create.add_argument('resource', type=Path, help="simulation resource folder")
         parser_pareto_create.set_defaults(func=self._pareto_create)
+
+        parser_pareto_compare = pareto_subparsers.add_parser('compare', help='compare created pareto fronts with existing resources')
+        parser_pareto_compare.add_argument('--target', type=Path, default=Path("resources"), help="path for created pareto fronts")
+        parser_pareto_compare.add_argument('resource', type=Path, help="simulation resource folder")
+        parser_pareto_compare.set_defaults(func=self._pareto_compare)
 
         args = parser.parse_args()
 
