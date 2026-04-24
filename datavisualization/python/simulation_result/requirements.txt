@@ -4,3 +4,4 @@ numpy==2.4.4
 pygmo==2.19.8
 paretoset==1.2.5
 pytest-unordered==0.7.0
+deepdiff==9.0.0

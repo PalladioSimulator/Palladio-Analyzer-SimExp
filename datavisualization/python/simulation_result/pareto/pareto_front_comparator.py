@@ -1,4 +1,7 @@
 from pathlib import Path
+from pprint import pprint
+
+from deepdiff import DeepDiff
 
 from .util import validate_resource_folder
 from .pareto_io import extract_pareto_fronts
@@ -19,7 +22,10 @@ class ParetoFrontComparator:
 
         for i, base_front in enumerate(base_fronts):
             target_front = calculated_fronts[i]
-            if base_front == target_front:
-                print("front of generation %-2d: match" % base_front.generation)
-            else:
-                print("front of generation %-2d: mismatch" % base_front.generation)
+            diff = DeepDiff(base_front, target_front, ignore_order=True)
+            if diff:
+                print("front of generation %-2d: mismatch:" % base_front.generation)
+                pprint(diff, indent=2)
+                print("-" * 20)
+            #else:
+            #    print("front of generation %-2d: match" % base_front.generation)
