@@ -9,18 +9,16 @@ class ParetoReader:
         front = self._read_json_file(front_file)
         entries = []
         for front_entry in front:
-            optimizables = ["%s=%s" % (key, value) for key, value in front_entry["optimizables"].items()]
-            values = ",".join(optimizables)
-
             entry = ParetoEntry(
                 id=front_entry["id"],
-                optimizables=values,
+                score=front_entry["score"],
+                fitness=front_entry["fitness"],
+                optimizables=front_entry["optimizables"],
                 average_energy_consumption=front_entry["averages"]["EnergyConsumption.props"],
                 average_packet_loss=front_entry["averages"]["PacketLoss.props"],
             )
             entries.append(entry)
         return entries
-
 
     def _read_json_file(self, json_file):
         with json_file.open("r", encoding="utf-8") as f:

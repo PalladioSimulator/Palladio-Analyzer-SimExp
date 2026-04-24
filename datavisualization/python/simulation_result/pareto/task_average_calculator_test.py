@@ -12,6 +12,7 @@ def test_calc_averages_1_run_1_entry():
     )
     task_result = TaskResult(
         id="",
+        complete=True,
         reward=0.0,
         runs=[run1],
     )
@@ -28,6 +29,7 @@ def test_calc_averages_1_run_2_entry():
     )
     task_result = TaskResult(
         id="",
+        complete=True,
         reward=0.0,
         runs=[run1],
     )
@@ -48,6 +50,7 @@ def test_calc_averages_2_run_2_entry():
     )
     task_result = TaskResult(
         id="",
+        complete=True,
         reward=0.0,
         runs=[run1, run2],
     )

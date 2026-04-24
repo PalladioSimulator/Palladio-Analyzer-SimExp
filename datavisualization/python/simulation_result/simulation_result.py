@@ -198,7 +198,7 @@ class SimulationResult:
 
     def _pareto_create(self, args):
         creator = ParetoFrontCreator()
-        creator.create_fronts(args.resources, args.target)
+        creator.create_fronts(args.resource, args.target)
 
     def main(self):
         parser = argparse.ArgumentParser(prog="simulation_result", description="Analyses simulation results")
@@ -239,8 +239,8 @@ class SimulationResult:
         parser_pareto_fittest.set_defaults(func=self._pareto_fittest)
 
         parser_pareto_create = pareto_subparsers.add_parser('create', help='create pareto fronts from existing resources')
+        parser_pareto_create.add_argument('--target', type=Path, default=Path("resources"), help="target path for pareto fronts")
         parser_pareto_create.add_argument('resource', type=Path, help="simulation resource folder")
-        parser_pareto_create.add_argument('target', type=Path, default=Path("resources"), help="target path for pareto fronts")
         parser_pareto_create.set_defaults(func=self._pareto_create)
 
         args = parser.parse_args()

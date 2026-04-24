@@ -14,7 +14,7 @@ def test_calc_ref_point_one_front_one(calculator):
     front1 = ParetoFront(
         generation=1,
         entries=[
-            ParetoEntry(id="1", optimizables="", average_energy_consumption=1.0, average_packet_loss=1.0),
+            ParetoEntry(id="1", score=0.0, fitness=0.0, optimizables={}, average_energy_consumption=1.0, average_packet_loss=1.0),
         ])
     fronts = [front1]
 
@@ -27,8 +27,8 @@ def test_calc_ref_point_one_front_two(calculator):
     front1 = ParetoFront(
         generation=1,
         entries=[
-            ParetoEntry(id="1", optimizables="", average_energy_consumption=2.0, average_packet_loss=1.0),
-            ParetoEntry(id="2", optimizables="", average_energy_consumption=1.0, average_packet_loss=2.0),
+            ParetoEntry(id="1", score=0.0, fitness=0.0, optimizables={}, average_energy_consumption=2.0, average_packet_loss=1.0),
+            ParetoEntry(id="2", score=0.0, fitness=0.0, optimizables={}, average_energy_consumption=1.0, average_packet_loss=2.0),
         ])
     fronts = [front1]
 
@@ -41,12 +41,12 @@ def test_calc_ref_point_two_front_one(calculator):
     front1 = ParetoFront(
         generation=1,
         entries=[
-            ParetoEntry(id="1", optimizables="", average_energy_consumption=2.0, average_packet_loss=1.0),
+            ParetoEntry(id="1", score=0.0, fitness=0.0, optimizables={}, average_energy_consumption=2.0, average_packet_loss=1.0),
         ])
     front2 = ParetoFront(
         generation=2,
         entries=[
-            ParetoEntry(id="2", optimizables="", average_energy_consumption=1.0, average_packet_loss=2.0),
+            ParetoEntry(id="2", score=0.0, fitness=0.0, optimizables={}, average_energy_consumption=1.0, average_packet_loss=2.0),
         ])
     fronts = [front1, front2]
 

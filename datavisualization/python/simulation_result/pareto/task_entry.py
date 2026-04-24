@@ -10,6 +10,7 @@ class TaskRun:
 @dataclass(frozen=True)
 class TaskResult:
     id: str
+    complete: bool
     reward: float
     runs: list[TaskRun]
 

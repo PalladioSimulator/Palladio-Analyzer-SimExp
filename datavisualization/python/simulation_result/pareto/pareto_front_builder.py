@@ -17,7 +17,13 @@ class IndividualAverageResolver(ABC):
 class ParetoFrontBuilder:
     def build_pareto_front(self, generation: Generation, resolver: IndividualAverageResolver) -> list[Individual]:
         df = pd.DataFrame(columns=['energy_consumption', 'packet_loss'])
+        complete_individuals = []
         for individual in generation.individuals:
+            averages = resolver.get_averages(individual)
+            if averages:
+                complete_individuals.append(individual)
+
+        for individual in complete_individuals:
             averages = resolver.get_averages(individual)
             df.loc[len(df)] = [averages.energy_consumption, averages.packet_loss]
 
@@ -25,6 +31,6 @@ class ParetoFrontBuilder:
         pareto_front: list[Individual] = []
         for i, entry in enumerate(mask):
             if entry:
-                individual = generation.individuals[i]
+                individual = complete_individuals[i]
                 pareto_front.append(individual)
         return pareto_front
