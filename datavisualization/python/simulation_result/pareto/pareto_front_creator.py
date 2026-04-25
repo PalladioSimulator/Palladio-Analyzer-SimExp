@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from .util import validate_resource_folder
+from .generation import Generation
 from .generation_io import extract_generations
 from .pareto_front_builder import ParetoFrontBuilder, IndividualAverageResolver
 from .task_entry import TaskAverages
@@ -18,10 +19,13 @@ class ParetoFrontCreator:
         target_folder.mkdir(parents=True, exist_ok=True)
 
         generations = extract_generations(resource_folder)
+        self._process_generations(resource_folder, target_folder, generations)
+
+    def _process_generations(self, resource_folder: Path, target_folder: Path, generations: list[Generation]):
         front_builder = ParetoFrontBuilder()
         task_reader = TaskReader(resource_folder)
 
-        pareto_writer = ParetoWriter(target_folder)
+        pareto_writer = ParetoWriter()
         for i, generation in enumerate(generations):
             print("calculate pareto front for generation: %d" % generation.generation)
             averages_map: dict[str, TaskAverages | None] = {}
@@ -43,7 +47,13 @@ class ParetoFrontCreator:
             front = front_builder.build_pareto_front(generation, resolver)
             pareto_front = self._create_pareto_front(generation.generation, front, resolver)
             final = i == len(generations) - 1
-            pareto_writer.write_pareto_front(pareto_front, final)
+            front_file = self._get_front_file(target_folder, pareto_front, final)
+            pareto_writer.write_pareto_front(front_file, pareto_front)
+
+    def _get_front_file(self, target_folder: Path, front: ParetoFront, final: bool) -> Path:
+        if final:
+            return target_folder / "pareto_front.json"
+        return target_folder / "generations" / ("pareto_front_%03d.json" % front.generation)
 
     def _create_pareto_front(self, generation: int, front_individuals: list[Individual],
                              resolver: IndividualAverageResolver) -> ParetoFront:
