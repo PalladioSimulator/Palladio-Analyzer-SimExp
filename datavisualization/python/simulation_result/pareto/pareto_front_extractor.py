@@ -1,46 +1,57 @@
 import re
 from pathlib import Path
 import csv
-import json
 
 import tabulate
 
+from .pareto_front import ParetoFront
+from .pareto_reader import ParetoReader
+
 
 class ParetoFrontExtractor:
-    def extract(self, front_files: list, result_file: Path):
-        entries = []
+    def extract(self, front_files: list[Path], result_file: Path):
+        entries: list[ParetoFront] = []
+        reader = ParetoReader()
+        r = re.compile(r"pareto_front_(\d+)")
         for pareto_front_file in front_files:
-            entry = self._extract_pareto_front(pareto_front_file)
-            entries.append(entry)
+            pareto_entries = reader.read_pareto_front(pareto_front_file)
+            match = r.match(pareto_front_file.stem)
+            if match:
+                generation = int(match.group(1)) - 1
+            else:
+                generation = -1
+            front = ParetoFront(
+                generation=generation,
+                entries=pareto_entries,
+            )
+            entries.append(front)
 
-        max_gen = max([entry["generation"] for entry in entries])
-        sorted_entries = sorted(entries, key=lambda e: e["generation"] if e["generation"] >= 0 else max_gen + 1)
-        if sorted_entries[-1]["generation"] == -1:
-            sorted_entries[-1]["generation"] = max_gen + 1
+        max_gen = max([entry.generation for entry in entries])
+        sorted_entries = sorted(entries, key=lambda e: e.generation if e.generation >= 0 else max_gen + 1)
 
-        headers = ['generation', 'file', "entry", "id", "reward", "energy_consumption_average", "packet_loss_average"]
+        headers = ['generation', "entry", "id", "reward", "energy_consumption_average", "packet_loss_average"]
         table_entries = []
-        for entry in sorted_entries:
-            for i, front_member in enumerate(entry["members"]):
+        for front in sorted_entries:
+            for i, front_entry in enumerate(front.entries):
                 table_entries.append([
-                    entry["generation"], entry["file"],
-                    i, front_member["id"],
-                    front_member["reward"], front_member["energy_consumption_average"],
-                    front_member["packet_loss_average"],
+                    front.generation,
+                    i, front_entry.id,
+                    front_entry.fitness,
+                    front_entry.average_energy_consumption,
+                    front_entry.average_packet_loss,
                 ])
 
         with result_file.open("w", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=headers)
             writer.writeheader()
-            for entry in sorted_entries:
-                for i, front_member in enumerate(entry["members"]):
-                    writer.writerow({'generation': entry["generation"],
-                                     'file': entry["file"],
+            for front in sorted_entries:
+                for i, front_entry in enumerate(front.entries):
+                    writer.writerow({'generation': front.generation,
                                      'entry': i,
-                                     'id': front_member["id"],
-                                     'reward': front_member["reward"],
-                                     'energy_consumption_average': front_member["energy_consumption_average"],
-                                     'packet_loss_average': front_member["packet_loss_average"],
+                                     'id': front_entry.id,
+                                     'reward': front_entry.fitness,
+                                     'energy_consumption_average': front_entry.average_energy_consumption,
+                                     'packet_loss_average': front_entry.average_packet_loss,
                                      })
 
         table_str = tabulate.tabulate(table_entries,
@@ -48,39 +59,3 @@ class ParetoFrontExtractor:
                                       tablefmt="simple"
                                       )
         print(table_str)
-
-    def _extract_pareto_front(self, pareto_front_file: Path) -> dict:
-        front = self._read_json_file(pareto_front_file)
-        r = re.compile(r"pareto_front_(\d+)")
-        match = r.match(pareto_front_file.stem)
-        if match:
-            generation = int(match.group(1)) - 1
-        else:
-            generation = -1
-
-        front_members = []
-        for front_entry in front:
-            optimizables = ["%s=%s" % (key, value) for key, value in front_entry["optimizables"].items()]
-            values = ",".join(optimizables)
-
-            front_member = {
-                "id": front_entry["id"],
-                "reward": front_entry["fitness"],
-                "values": values,
-                "energy_consumption_average": front_entry["averages"]["EnergyConsumption.props"],
-                "packet_loss_average": front_entry["averages"]["PacketLoss.props"],
-            }
-            front_members.append(front_member)
-
-        entry = {
-            "generation": generation,
-            "file": pareto_front_file.stem,
-            "members": front_members,
-        }
-
-        return entry
-
-    def _read_json_file(self, json_file):
-        with json_file.open("r", encoding="utf-8") as f:
-            result = json.load(f)
-            return result
