@@ -17,6 +17,7 @@ class ParetoFrontCreator:
         validate_resource_folder(resource_folder)
         target_folder = target / resource_folder.name
         target_folder.mkdir(parents=True, exist_ok=True)
+        (target_folder / "kubernetes").mkdir(exist_ok=True)
 
         generations = extract_generations(resource_folder)
         self._process_generations(resource_folder, target_folder, generations)
