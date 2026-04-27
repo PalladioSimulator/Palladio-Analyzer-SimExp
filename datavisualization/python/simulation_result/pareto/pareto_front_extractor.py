@@ -12,7 +12,7 @@ class ParetoFrontExtractor:
 
         headers = ['generation', "entry", "id", "reward", "energy_consumption_average", "packet_loss_average"]
         table_entries = []
-        for front in pareto_fronts:
+        for fi, front in enumerate(pareto_fronts):
             for i, front_entry in enumerate(front.entries):
                 table_entries.append([
                     front.generation,
@@ -21,6 +21,8 @@ class ParetoFrontExtractor:
                     front_entry.average_energy_consumption,
                     front_entry.average_packet_loss,
                 ])
+            if (fi != len(pareto_fronts) - 1):
+                table_entries.append(tabulate.SEPARATING_LINE)
 
         with result_file.open("w", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=headers)
