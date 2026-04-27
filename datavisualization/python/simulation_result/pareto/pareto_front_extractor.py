@@ -21,7 +21,7 @@ class ParetoFrontExtractor:
                     front_entry.average_energy_consumption,
                     front_entry.average_packet_loss,
                 ])
-            if (fi != len(pareto_fronts) - 1):
+            if fi != len(pareto_fronts) - 1:
                 table_entries.append(tabulate.SEPARATING_LINE)
 
         with result_file.open("w", encoding="utf-8") as f:
