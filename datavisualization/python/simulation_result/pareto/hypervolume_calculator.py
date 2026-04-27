@@ -1,5 +1,5 @@
 import numpy as np
-from pygmo import hypervolume
+from pymoo.indicators.hv import HV
 
 from .pareto_front import ParetoFront
 from .point import Point
@@ -12,8 +12,8 @@ class HypervolumeCalculator:
 
     def calc_hypervolume(self, ref_point: Point, front: ParetoFront) -> float:
         preprocessed_front = self._preprocess_front(front)
-        hv = hypervolume(preprocessed_front)
-        hv_value = hv.compute([ref_point.energy, ref_point.packet_loss])
+        hv = HV(ref_point=np.array([ref_point.energy, ref_point.packet_loss]))
+        hv_value = hv(preprocessed_front)
         return hv_value
 
     def _preprocess_front(self, front: ParetoFront):
