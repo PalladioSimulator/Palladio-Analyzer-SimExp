@@ -187,7 +187,7 @@ class SimulationResult:
 
     def _pareto_extract(self, args):
         extractor = ParetoFrontExtractor()
-        extractor.extract(args.pareto_front, args.result)
+        extractor.extract(args.resource, args.result)
 
     def _pareto_rank(self, args):
         ranking = ParetoFrontRanking()
@@ -234,7 +234,7 @@ class SimulationResult:
         pareto_subparsers = parser_pareto.add_subparsers(required=True, help='available pareto subcommands')
 
         parser_pareto_extractor = pareto_subparsers.add_parser('extract', help='pareto front extractor')
-        parser_pareto_extractor.add_argument('pareto_front', type=Path, nargs='+', help="pareto front files")
+        parser_pareto_extractor.add_argument('resource', type=Path, help="simulation resource folder")
         parser_pareto_extractor.add_argument('-r', '--result', type=Path, required=True, help="result CSV file")
         parser_pareto_extractor.set_defaults(func=self._pareto_extract)
 

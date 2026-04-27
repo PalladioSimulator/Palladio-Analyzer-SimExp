@@ -1,37 +1,18 @@
-import re
 from pathlib import Path
 import csv
 
 import tabulate
 
-from .pareto_front import ParetoFront
-from .pareto_reader import ParetoReader
+from .pareto_io import extract_pareto_fronts
 
 
 class ParetoFrontExtractor:
-    def extract(self, front_files: list[Path], result_file: Path):
-        entries: list[ParetoFront] = []
-        reader = ParetoReader()
-        r = re.compile(r"pareto_front_(\d+)")
-        for pareto_front_file in front_files:
-            pareto_entries = reader.read_pareto_front(pareto_front_file)
-            match = r.match(pareto_front_file.stem)
-            if match:
-                generation = int(match.group(1)) - 1
-            else:
-                generation = -1
-            front = ParetoFront(
-                generation=generation,
-                entries=pareto_entries,
-            )
-            entries.append(front)
-
-        max_gen = max([entry.generation for entry in entries])
-        sorted_entries = sorted(entries, key=lambda e: e.generation if e.generation >= 0 else max_gen + 1)
+    def extract(self, resource_folder: Path, result_file: Path):
+        pareto_fronts = extract_pareto_fronts(resource_folder)
 
         headers = ['generation', "entry", "id", "reward", "energy_consumption_average", "packet_loss_average"]
         table_entries = []
-        for front in sorted_entries:
+        for front in pareto_fronts:
             for i, front_entry in enumerate(front.entries):
                 table_entries.append([
                     front.generation,
@@ -44,7 +25,7 @@ class ParetoFrontExtractor:
         with result_file.open("w", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=headers)
             writer.writeheader()
-            for front in sorted_entries:
+            for front in pareto_fronts:
                 for i, front_entry in enumerate(front.entries):
                     writer.writerow({'generation': front.generation,
                                      'entry': i,
