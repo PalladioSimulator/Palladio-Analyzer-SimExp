@@ -7,8 +7,8 @@ from .pareto_io import extract_pareto_fronts
 
 
 class ParetoFrontExtractor:
-    def extract(self, resource_folder: Path, result_file: Path):
-        pareto_fronts = extract_pareto_fronts(resource_folder)
+    def extract(self, resource_folder: Path, result_file: Path, add_approximated: bool):
+        pareto_fronts = extract_pareto_fronts(resource_folder, add_approximated)
 
         headers = ['generation', "entry", "id", "reward", "energy_consumption_average", "packet_loss_average"]
         table_entries = []
