@@ -19,8 +19,11 @@ class ParetoFrontCreator:
         target_folder.mkdir(parents=True, exist_ok=True)
         (target_folder / "kubernetes").mkdir(exist_ok=True)
 
-        generations = extract_generations(resource_folder)
+        generations = self._collect_generations(resource_folder)
         self._process_generations(resource_folder, target_folder, generations)
+
+    def _collect_generations(self, resource_folder: Path) -> list[Generation]:
+        return extract_generations(resource_folder)
 
     def _process_generations(self, resource_folder: Path, target_folder: Path, generations: list[Generation]):
         front_builder = ParetoFrontBuilder()

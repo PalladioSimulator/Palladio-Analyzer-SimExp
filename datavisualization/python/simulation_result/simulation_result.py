@@ -9,7 +9,7 @@ import tabulate
 
 from prism_property import PrismKind, identify_prism
 from pareto import ParetoFrontExtractor, ParetoFrontRanking, ParetoFittest, ParetoFrontComparator
-from pareto import ParetoFrontCreator, ApproxParetoFrontCreator
+from pareto import ParetoFrontCreator, ApproxParetoFrontCreator, CumulativeParetoFrontCreator
 
 
 class SimulationResult:
@@ -200,6 +200,8 @@ class SimulationResult:
     def _pareto_create(self, args):
         if args.approximated:
             creator = ApproxParetoFrontCreator()
+        elif args.cumulative:
+            creator = CumulativeParetoFrontCreator()
         else:
             creator = ParetoFrontCreator()
         creator.create_fronts(args.resource, args.target)
@@ -251,7 +253,9 @@ class SimulationResult:
         parser_pareto_create = pareto_subparsers.add_parser('create', help='create pareto fronts from existing resources')
         parser_pareto_create.add_argument('--target', type=Path, default=Path("resources"), help="target path for pareto fronts")
         parser_pareto_create.add_argument('resource', type=Path, help="simulation resource folder")
-        parser_pareto_create.add_argument("--approximated", action="store_true", help="create approximated pareto front over all generations")
+        parser_pareto_create_group = parser_pareto_create.add_mutually_exclusive_group()
+        parser_pareto_create_group.add_argument("--approximated", action="store_true", help="create approximated pareto front over all generations")
+        parser_pareto_create_group.add_argument("--cumulative", action="store_true", help="create cummulative approximated pareto fronts")
         parser_pareto_create.set_defaults(func=self._pareto_create)
 
         parser_pareto_compare = pareto_subparsers.add_parser('compare', help='compare created pareto fronts with existing resources')
