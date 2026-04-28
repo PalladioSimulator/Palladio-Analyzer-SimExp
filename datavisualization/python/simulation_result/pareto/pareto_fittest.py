@@ -2,7 +2,7 @@ from pathlib import Path
 
 from .util import validate_resource_folder
 from .pareto_front import ParetoFront
-from .pareto_io import extract_pareto_fronts
+from .pareto_io import ParetoIO
 from .generation_io import extract_generations
 from .individual import Individual
 from .generation import Generation
@@ -11,7 +11,8 @@ from .generation import Generation
 class ParetoFittest:
     def pareto_fittest_check(self, resource_folder: Path):
         validate_resource_folder(resource_folder)
-        pareto_fronts = extract_pareto_fronts(resource_folder)
+        pareto_io = ParetoIO()
+        pareto_fronts = pareto_io.extract_pareto_fronts(resource_folder)
         generations = extract_generations(resource_folder)
         for i, generation in enumerate(generations):
             fittest = self._find_fittest(generation)

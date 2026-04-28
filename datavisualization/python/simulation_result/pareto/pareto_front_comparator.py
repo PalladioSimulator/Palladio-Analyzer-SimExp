@@ -4,7 +4,7 @@ from pprint import pprint
 from deepdiff import DeepDiff
 
 from .util import validate_resource_folder
-from .pareto_io import extract_pareto_fronts
+from .pareto_io import ParetoIO
 
 
 class ParetoFrontComparator:
@@ -14,8 +14,9 @@ class ParetoFrontComparator:
         print("baseline: %s" % resource_folder)
         print("target:   %s" % target_folder)
         validate_resource_folder(resource_folder)
-        base_fronts = extract_pareto_fronts(resource_folder)
-        calculated_fronts = extract_pareto_fronts(target_folder)
+        pareto_io = ParetoIO()
+        base_fronts = pareto_io.extract_pareto_fronts(resource_folder)
+        calculated_fronts = pareto_io.extract_pareto_fronts(target_folder)
 
         if len(base_fronts) != len(calculated_fronts):
             print("Count mismatch: base has %d fronts, target has %d fronts" % (len(base_fronts), len(calculated_fronts)))

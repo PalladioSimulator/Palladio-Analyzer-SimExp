@@ -7,14 +7,15 @@ from .reference_point_calculator import ReferencePointCalculator
 from .hypervolume_calculator import HypervolumeCalculator
 from .util import validate_resource_folder
 from .pareto_front import ParetoFront
-from .pareto_io import extract_pareto_fronts
+from .pareto_io import ParetoIO
 from .normalization_boundary_calculator import NormalizationBoundaryCalculator
 
 
 class ParetoFrontRanking:
     def rank_pareto_fronts(self, resource_folder: Path, result_folder: Path, cumulative: bool) -> None:
         validate_resource_folder(resource_folder)
-        pareto_fronts = extract_pareto_fronts(resource_folder)
+        pareto_io = ParetoIO()
+        pareto_fronts = pareto_io.extract_pareto_fronts(resource_folder)
         delta = 0.1
 
         reference_point_calculator = ReferencePointCalculator(delta)
