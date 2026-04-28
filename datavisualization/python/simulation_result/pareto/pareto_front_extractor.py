@@ -3,13 +3,16 @@ import csv
 
 import tabulate
 
-from .pareto_io import ParetoIO
+from .pareto_io import ParetoIO, ApproximatedParetoIO
 
 
 class ParetoFrontExtractor:
     def extract(self, resource_folder: Path, result_file: Path, add_approximated: bool):
-        pareto_io = ParetoIO()
-        pareto_fronts = pareto_io.extract_pareto_fronts(resource_folder, add_approximated)
+        if add_approximated:
+            pareto_io = ApproximatedParetoIO()
+        else:
+            pareto_io = ParetoIO()
+        pareto_fronts = pareto_io.extract_pareto_fronts(resource_folder)
 
         headers = ['generation', "entry", "id", "reward", "energy_consumption_average", "packet_loss_average"]
         table_entries = []

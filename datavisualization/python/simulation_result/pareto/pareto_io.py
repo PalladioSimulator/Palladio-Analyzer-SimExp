@@ -6,8 +6,8 @@ from .pareto_reader import ParetoReader
 
 
 class ParetoIO:
-    def extract_pareto_fronts(self, folder: Path, add_approximated: bool = False) -> list[ParetoFront]:
-        front_files = self._collect_front_files(folder, add_approximated)
+    def extract_pareto_fronts(self, folder: Path) -> list[ParetoFront]:
+        front_files = self._collect_front_files(folder)
         # print("found front files:\n%s" % front_files)
         reader = ParetoReader()
         pareto_fronts = []
@@ -21,7 +21,7 @@ class ParetoIO:
         sorted_fronts = sorted(pareto_fronts, key=lambda front: front.generation if front.generation >= 0 else sys.maxsize)
         return sorted_fronts
 
-    def _collect_front_files(self, folder: Path, add_approximated: bool) -> list[(int, Path)]:
+    def _collect_front_files(self, folder: Path) -> list[(int, Path)]:
         front_files = []
         generations_folder = folder / "generations"
         for entry in generations_folder.glob('pareto_front_*.json'):
@@ -32,6 +32,11 @@ class ParetoIO:
         max_gen = max(entry[0] for entry in front_files)
         # print("max generation: %d" % max_gen)
         front_files.append((max_gen + 1, folder / "pareto_front.json"))
-        if add_approximated:
-            front_files.append((-1, folder / "approximated_pareto_front.json"))
+        return front_files
+
+
+class ApproximatedParetoIO(ParetoIO):
+    def _collect_front_files(self, folder: Path) -> list[(int, Path)]:
+        front_files = super()._collect_front_files(folder)
+        front_files.append((-1, folder / "approximated_pareto_front.json"))
         return front_files
