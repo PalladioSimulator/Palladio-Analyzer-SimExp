@@ -7,14 +7,17 @@ from .reference_point_calculator import ReferencePointCalculator
 from .hypervolume_calculator import HypervolumeCalculator
 from .util import validate_resource_folder
 from .pareto_front import ParetoFront
-from .pareto_io import ParetoIO
+from .pareto_io import ParetoIO, CumulatedParetoIO
 from .normalization_boundary_calculator import NormalizationBoundaryCalculator
 
 
 class ParetoFrontRanking:
     def rank_pareto_fronts(self, resource_folder: Path, result_folder: Path, cumulative: bool) -> None:
         validate_resource_folder(resource_folder)
-        pareto_io = ParetoIO()
+        if cumulative:
+            pareto_io = CumulatedParetoIO()
+        else:
+            pareto_io = ParetoIO()
         pareto_fronts = pareto_io.extract_pareto_fronts(resource_folder)
         delta = 0.1
 
@@ -63,7 +66,10 @@ class ParetoFrontRanking:
         print(table_str)
 
         if result_folder:
-            result_file = result_folder  / f"{resource_folder.name}_pareto_front_rank.csv"
+            if cumulative:
+                result_file = result_folder  / f"{resource_folder.name}_cumulative_pareto_front_rank.csv"
+            else:
+                result_file = result_folder / f"{resource_folder.name}_pareto_front_rank.csv"
             self._write_rank_file(result_file, pareto_fronts, sorted_hv_front, hv_dict)
 
 

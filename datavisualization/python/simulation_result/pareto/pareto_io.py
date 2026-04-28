@@ -40,3 +40,15 @@ class ApproximatedParetoIO(ParetoIO):
         front_files = super()._collect_front_files(folder)
         front_files.append((-1, folder / "approximated_pareto_front.json"))
         return front_files
+
+
+class CumulatedParetoIO(ParetoIO):
+    def _collect_front_files(self, folder: Path) -> list[(int, Path)]:
+        front_files = []
+        generations_folder = folder / "generations"
+        for entry in generations_folder.glob('cumulative_pareto_front_*.json'):
+            generation = int(entry.stem.split("_")[-1])
+            # print("found %d : %s" % (generation, entry))
+            front_files.append((generation, entry))
+        # print("found %d front files" % len(front_files))
+        return front_files
