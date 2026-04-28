@@ -191,7 +191,7 @@ class SimulationResult:
 
     def _pareto_rank(self, args):
         ranking = ParetoFrontRanking()
-        ranking.rank_pareto_fronts(args.resource, args.result)
+        ranking.rank_pareto_fronts(args.resource, args.result, args.cumulative)
 
     def _pareto_fittest(self, args):
         fittest = ParetoFittest()
@@ -244,6 +244,7 @@ class SimulationResult:
         parser_pareto_rank = pareto_subparsers.add_parser('rank', help='pareto front ranking')
         parser_pareto_rank.add_argument('resource', type=Path, help="simulation resource folder")
         parser_pareto_rank.add_argument('-r', '--result', type=Path, help="result folder for rank CSV file")
+        parser_pareto_rank.add_argument("--cumulative", action="store_true", help="use cummulative approximated pareto fronts")
         parser_pareto_rank.set_defaults(func=self._pareto_rank)
 
         parser_pareto_fittest = pareto_subparsers.add_parser('fittest', help='checks if the fittest is in the pareto front')

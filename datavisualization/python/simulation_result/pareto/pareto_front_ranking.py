@@ -12,7 +12,7 @@ from .normalization_boundary_calculator import NormalizationBoundaryCalculator
 
 
 class ParetoFrontRanking:
-    def rank_pareto_fronts(self, resource_folder: Path, result_folder: Path):
+    def rank_pareto_fronts(self, resource_folder: Path, result_folder: Path, cumulative: bool) -> None:
         validate_resource_folder(resource_folder)
         pareto_fronts = extract_pareto_fronts(resource_folder)
         delta = 0.1
