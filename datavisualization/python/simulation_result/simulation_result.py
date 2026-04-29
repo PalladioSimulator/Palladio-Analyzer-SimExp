@@ -198,8 +198,12 @@ class SimulationResult:
         extractor.extract(args.resource, args.result)
 
     def _pareto_rank(self, args):
-        ranking = ParetoFrontRanking()
-        ranking.rank_pareto_fronts(args.resource, args.result, args.cumulative)
+        if args.cumulative:
+            pareto_io = CumulatedParetoIO()
+        else:
+            pareto_io = ParetoIO()
+        ranking = ParetoFrontRanking(pareto_io)
+        ranking.rank_pareto_fronts(args.resource, args.result)
 
     def _pareto_fittest(self, args):
         fittest = ParetoFittest()

@@ -6,6 +6,10 @@ from .pareto_reader import ParetoReader
 
 
 class ParetoIO:
+    @property
+    def name(self) -> str:
+        return ""
+
     def extract_pareto_fronts(self, folder: Path) -> list[ParetoFront]:
         front_files = self._collect_front_files(folder)
         # print("found front files:\n%s" % front_files)
@@ -36,6 +40,10 @@ class ParetoIO:
 
 
 class ApproximatedParetoIO(ParetoIO):
+    @property
+    def name(self) -> str:
+        return "approximated"
+
     def _collect_front_files(self, folder: Path) -> list[(int, Path)]:
         front_files = super()._collect_front_files(folder)
         front_files.append((-1, folder / "approximated_pareto_front.json"))
@@ -43,6 +51,10 @@ class ApproximatedParetoIO(ParetoIO):
 
 
 class CumulatedParetoIO(ParetoIO):
+    @property
+    def name(self) -> str:
+        return "cumulative"
+
     def _collect_front_files(self, folder: Path) -> list[(int, Path)]:
         front_files = []
         generations_folder = folder / "generations"
