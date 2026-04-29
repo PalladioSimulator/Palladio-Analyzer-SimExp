@@ -8,9 +8,10 @@ from pathlib import Path
 import tabulate
 
 from prism_property import PrismKind, identify_prism
-from pareto import ParetoFrontExtractor, ApproxParetoFrontExtractor, CumulativeParetoFrontExtractor
+from pareto import ParetoFrontExtractor
 from pareto import ParetoFrontRanking, ParetoFittest, ParetoFrontComparator
 from pareto import ParetoFrontCreator, ApproxParetoFrontCreator, CumulativeParetoFrontCreator
+from pareto import ParetoIO, ApproximatedParetoIO, CumulatedParetoIO
 
 
 class SimulationResult:
@@ -188,11 +189,12 @@ class SimulationResult:
 
     def _pareto_extract(self, args):
         if args.approximated:
-            extractor = ApproxParetoFrontExtractor()
+            pareto_io = ApproximatedParetoIO()
         elif args.cumulative:
-            extractor = CumulativeParetoFrontExtractor()
+            pareto_io = CumulatedParetoIO()
         else:
-            extractor = ParetoFrontExtractor()
+            pareto_io = ParetoIO()
+        extractor = ParetoFrontExtractor(pareto_io)
         extractor.extract(args.resource, args.result)
 
     def _pareto_rank(self, args):

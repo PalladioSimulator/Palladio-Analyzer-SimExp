@@ -4,10 +4,13 @@ import csv
 import tabulate
 
 from .pareto_front import ParetoFront
-from .pareto_io import ParetoIO, ApproximatedParetoIO, CumulatedParetoIO
+from .pareto_io import ParetoIO
 
 
 class ParetoFrontExtractor:
+    def __init__(self, pareto_io: ParetoIO):
+        self._pareto_io = pareto_io
+
     def extract(self, resource_folder: Path, result_file: Path):
         pareto_fronts = self._extract_fronts(resource_folder)
         headers = ['generation', "entry", "id", "reward", "energy_consumption_average", "packet_loss_average"]
@@ -44,17 +47,4 @@ class ParetoFrontExtractor:
         print(table_str)
 
     def _extract_fronts(self, resource_folder: Path) -> list[ParetoFront]:
-        pareto_io = ParetoIO()
-        return pareto_io.extract_pareto_fronts(resource_folder)
-
-
-class ApproxParetoFrontExtractor(ParetoFrontExtractor):
-    def _extract_fronts(self, resource_folder: Path) -> list[ParetoFront]:
-        pareto_io = ApproximatedParetoIO()
-        return pareto_io.extract_pareto_fronts(resource_folder)
-
-
-class CumulativeParetoFrontExtractor(ParetoFrontExtractor):
-    def _extract_fronts(self, resource_folder: Path) -> list[ParetoFront]:
-        pareto_io = CumulatedParetoIO()
-        return pareto_io.extract_pareto_fronts(resource_folder)
+        return self._pareto_io.extract_pareto_fronts(resource_folder)
