@@ -249,7 +249,8 @@ class SimulationResult:
 
         parser_pareto_extractor = pareto_subparsers.add_parser('extract', help='pareto front extractor')
         parser_pareto_extractor.add_argument('resource', type=Path, help="simulation resource folder")
-        parser_pareto_extractor.add_argument('-r', '--result', type=Path, required=True, help="result CSV file")
+        parser_pareto_extractor.add_argument('-r', '--result', type=Path, default=Path("resources"),
+                                             help="result folder for CSV file")
         parser_pareto_extractor_group = parser_pareto_extractor.add_mutually_exclusive_group()
         parser_pareto_extractor_group.add_argument("--approximated", action="store_true", help="add approximated pareto front")
         parser_pareto_extractor_group.add_argument("--cumulative", action="store_true", help="use cummulative approximated pareto fronts")

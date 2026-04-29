@@ -11,7 +11,7 @@ class ParetoFrontExtractor:
     def __init__(self, pareto_io: ParetoIO):
         self._pareto_io = pareto_io
 
-    def extract(self, resource_folder: Path, result_file: Path):
+    def extract(self, resource_folder: Path, result_folder: Path):
         pareto_fronts = self._extract_fronts(resource_folder)
         headers = ['generation', "entry", "id", "reward", "energy_consumption_average", "packet_loss_average"]
         table_entries = []
@@ -27,6 +27,13 @@ class ParetoFrontExtractor:
             if fi != len(pareto_fronts) - 1:
                 table_entries.append(tabulate.SEPARATING_LINE)
 
+        result_folder.mkdir(exist_ok=True)
+
+        extra = ""
+        if self._pareto_io.name != "":
+            extra = f"{self._pareto_io.name}_"
+        result_file = result_folder / f"{resource_folder.stem}_{extra}pareto_fronts.csv"
+        print("Generate: %s" % result_file)
         with result_file.open("w", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=headers)
             writer.writeheader()
