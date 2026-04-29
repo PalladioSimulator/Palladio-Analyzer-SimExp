@@ -31,7 +31,6 @@ class ParetoFrontCreator:
 
         pareto_writer = ParetoWriter()
         for i, generation in enumerate(generations):
-            print("calculate pareto front for generation: %d" % generation.generation)
             averages_map: dict[str, TaskAverages | None] = {}
             for individual in generation.individuals:
                 if individual.id in averages_map:
@@ -52,6 +51,7 @@ class ParetoFrontCreator:
             pareto_front = self._create_pareto_front(generation.generation, front, resolver)
             final = i == len(generations) - 1
             front_file = self._get_front_file(target_folder, pareto_front, final)
+            print("Generate: %s" % front_file)
             pareto_writer.write_pareto_front(front_file, pareto_front)
 
     def _get_front_file(self, target_folder: Path, front: ParetoFront, final: bool) -> Path:
