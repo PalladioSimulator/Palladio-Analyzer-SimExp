@@ -256,30 +256,36 @@ class SimulationResult:
         parser_pareto_extractor_group.add_argument("--approximated", action="store_true",
                                                    help="add approximated pareto front")
         parser_pareto_extractor_group.add_argument("--cumulative", action="store_true",
-                                                   help="use cummulative approximated pareto fronts")
+                                                   help="use cumulative approximated pareto fronts")
         parser_pareto_extractor.set_defaults(func=self._pareto_extract)
 
         parser_pareto_rank = pareto_subparsers.add_parser('rank', help='pareto front ranking')
         parser_pareto_rank.add_argument('resource', type=Path, help="simulation resource folder")
         parser_pareto_rank.add_argument('-r', '--result', type=Path, default=Path("resources"),
                                         help="result folder for rank CSV file" + default)
-        parser_pareto_rank.add_argument("--cumulative", action="store_true", help="use cummulative approximated pareto fronts")
+        parser_pareto_rank.add_argument("--cumulative", action="store_true",
+                                        help="use cumulative approximated pareto fronts")
         parser_pareto_rank.set_defaults(func=self._pareto_rank)
 
-        parser_pareto_fittest = pareto_subparsers.add_parser('fittest', help='checks if the fittest is in the pareto front')
+        parser_pareto_fittest = pareto_subparsers.add_parser('fittest',
+                                                             help='checks if the fittest is in the pareto front')
         parser_pareto_fittest.add_argument('resource', type=Path, help="simulation resource folder")
         parser_pareto_fittest.set_defaults(func=self._pareto_fittest)
 
-        parser_pareto_create = pareto_subparsers.add_parser('create', help='create pareto fronts from existing resources')
+        parser_pareto_create = pareto_subparsers.add_parser('create',
+                                                            help='create pareto fronts from existing resources')
         parser_pareto_create.add_argument('--target', type=Path, default=Path("resources"),
                                           help="target path for pareto fronts" + default)
         parser_pareto_create.add_argument('resource', type=Path, help="simulation resource folder")
         parser_pareto_create_group = parser_pareto_create.add_mutually_exclusive_group()
-        parser_pareto_create_group.add_argument("--approximated", action="store_true", help="create approximated pareto front over all generations")
-        parser_pareto_create_group.add_argument("--cumulative", action="store_true", help="create cummulative approximated pareto fronts")
+        parser_pareto_create_group.add_argument("--approximated", action="store_true",
+                                                help="create approximated pareto front over all generations")
+        parser_pareto_create_group.add_argument("--cumulative", action="store_true",
+                                                help="create cumulative approximated pareto fronts")
         parser_pareto_create.set_defaults(func=self._pareto_create)
 
-        parser_pareto_compare = pareto_subparsers.add_parser('compare', help='compare created pareto fronts with existing resources')
+        parser_pareto_compare = pareto_subparsers.add_parser('compare',
+                                                             help='compare created pareto fronts with existing ones')
         parser_pareto_compare.add_argument('--target', type=Path, default=Path("resources"),
                                            help="path for created pareto fronts" + default)
         parser_pareto_compare.add_argument('resource', type=Path, help="simulation resource folder")
