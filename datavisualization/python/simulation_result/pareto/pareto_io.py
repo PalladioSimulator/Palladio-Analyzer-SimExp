@@ -12,6 +12,8 @@ class ParetoIO:
 
     def extract_pareto_fronts(self, folder: Path) -> list[ParetoFront]:
         front_files = self._collect_front_files(folder)
+        if not front_files:
+            raise RuntimeError("no front files found in: %s" % folder)
         # print("found front files:\n%s" % front_files)
         reader = ParetoReader()
         pareto_fronts = []
@@ -33,7 +35,10 @@ class ParetoIO:
             # print("found %d : %s" % (generation, entry))
             front_files.append((generation, entry))
         # print("found %d front files" % len(front_files))
-        max_gen = max(entry[0] for entry in front_files)
+        if front_files:
+            max_gen = max(entry[0] for entry in front_files)
+        else:
+            max_gen = 0
         # print("max generation: %d" % max_gen)
         front_files.append((max_gen + 1, folder / "pareto_front.json"))
         return front_files
