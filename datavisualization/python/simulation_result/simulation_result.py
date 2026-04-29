@@ -8,7 +8,8 @@ from pathlib import Path
 import tabulate
 
 from prism_property import PrismKind, identify_prism
-from pareto import ParetoFrontExtractor, ParetoFrontRanking, ParetoFittest, ParetoFrontComparator
+from pareto import ParetoFrontExtractor, ApproxParetoFrontExtractor, CumulativeParetoFrontExtractor
+from pareto import ParetoFrontRanking, ParetoFittest, ParetoFrontComparator
 from pareto import ParetoFrontCreator, ApproxParetoFrontCreator, CumulativeParetoFrontCreator
 
 
@@ -186,8 +187,13 @@ class SimulationResult:
         print(table_str)
 
     def _pareto_extract(self, args):
-        extractor = ParetoFrontExtractor()
-        extractor.extract(args.resource, args.result, args.approximated)
+        if args.approximated:
+            extractor = ApproxParetoFrontExtractor()
+        elif args.cumulative:
+            extractor = CumulativeParetoFrontExtractor()
+        else:
+            extractor = ParetoFrontExtractor()
+        extractor.extract(args.resource, args.result)
 
     def _pareto_rank(self, args):
         ranking = ParetoFrontRanking()
@@ -238,7 +244,9 @@ class SimulationResult:
         parser_pareto_extractor = pareto_subparsers.add_parser('extract', help='pareto front extractor')
         parser_pareto_extractor.add_argument('resource', type=Path, help="simulation resource folder")
         parser_pareto_extractor.add_argument('-r', '--result', type=Path, required=True, help="result CSV file")
-        parser_pareto_extractor.add_argument("--approximated", action="store_true", help="add approximated pareto front")
+        parser_pareto_extractor_group = parser_pareto_extractor.add_mutually_exclusive_group()
+        parser_pareto_extractor_group.add_argument("--approximated", action="store_true", help="add approximated pareto front")
+        parser_pareto_extractor_group.add_argument("--cumulative", action="store_true", help="use cummulative approximated pareto fronts")
         parser_pareto_extractor.set_defaults(func=self._pareto_extract)
 
         parser_pareto_rank = pareto_subparsers.add_parser('rank', help='pareto front ranking')

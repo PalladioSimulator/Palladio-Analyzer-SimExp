@@ -1,4 +1,4 @@
-from .pareto_front_extractor import ParetoFrontExtractor
+from .pareto_front_extractor import ParetoFrontExtractor, ApproxParetoFrontExtractor, CumulativeParetoFrontExtractor
 from .pareto_front_ranking import ParetoFrontRanking
 from .pareto_fittest import ParetoFittest
 from .pareto_front_creator import ParetoFrontCreator
@@ -7,7 +7,7 @@ from .cumulative_pareto_front_creator import CumulativeParetoFrontCreator
 from .pareto_front_comparator import ParetoFrontComparator
 
 __all__ = [
-    "ParetoFrontExtractor",
+    "ParetoFrontExtractor", "ApproxParetoFrontExtractor", "CumulativeParetoFrontExtractor",
     "ParetoFrontRanking",
     "ParetoFittest",
     "ParetoFrontCreator", "ApproxParetoFrontCreator", "CumulativeParetoFrontCreator",
