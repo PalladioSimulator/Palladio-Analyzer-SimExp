@@ -20,6 +20,8 @@ class ParetoFrontCreator:
         (target_folder / "kubernetes").mkdir(exist_ok=True)
 
         generations = self._collect_generations(resource_folder)
+        if not generations:
+            raise RuntimeError("no generation files found in %s" % resource_folder)
         self._process_generations(resource_folder, target_folder, generations)
 
     def _collect_generations(self, resource_folder: Path) -> list[Generation]:
