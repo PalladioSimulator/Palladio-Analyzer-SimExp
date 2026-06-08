@@ -23,5 +23,6 @@ simulation_result pareto extract --cumulative <resource folder fixed front data>
 
 # Pareto front CSV rank 
 simulation_result pareto rank <resource folder fixed front data>
+# Needs fixed cumulated pareto fronts
 simulation_result pareto rank --cumulative <resource folder fixed front data>
 
