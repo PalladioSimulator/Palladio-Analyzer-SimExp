@@ -22,7 +22,7 @@ To run execute:
 '''
 
 # Vizualize accumulated pareto front
-vizualize_accumulated_pareto_front.ipynb
+Open in JupyterLab the file 'vizualize_accumulated_pareto_front.ipynb' and adapt the strategy name respectively.
 
 # Vizualize accumulated pareto front hypervolumne
-vizualize_accumulated_pareto_front_hypervolumne.ipynb
+Open in JupyterLab the file 'vizualize_accumulated_pareto_front_hypervolumne.ipynb' and adapt the strategy name respectively.
