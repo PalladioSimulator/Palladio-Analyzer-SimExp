@@ -62,7 +62,7 @@ Creates cummulated fronts file:
 resources/<strategy id>_cumulative_pareto_fronts.csv
 
 
-# Accumulated pareto hypervolumne calculation
+# Accumulated pareto front hypervolumne calculation
 Creates a cummulated pareto front files:
 '''
 ./simulation_result.sh pareto create --cumulative <path to raw resource folder>/resource/<strategy id>

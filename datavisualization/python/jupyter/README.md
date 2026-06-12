@@ -20,3 +20,9 @@ To run execute:
 '''
 ./venv/bin/jupyter-lab
 '''
+
+# Vizualize accumulated pareto front
+pareto_front-cumulative.ipynb
+
+# Vizualize accumulated pareto front hypervolumne
+pareto_front_cumulative_rank.ipynb
