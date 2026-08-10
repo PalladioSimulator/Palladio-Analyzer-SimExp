@@ -6,8 +6,8 @@ Bundle-Vendor: My Company
 Bundle-Version: 0.1.0.qualifier
 Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.smodel.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.palladiosimulator.simexp.dsl.smodel;bundle-version="[0.1.0,1.0)",
- org.palladiosimulator.simexp.dsl.smodel.ide;bundle-version="[0.1.0,1.0)",
+Require-Bundle: org.palladiosimulator.simexp.dsl.smodel,
+ org.palladiosimulator.simexp.dsl.smodel.ide,
  org.eclipse.xtext.ui,
  org.eclipse.xtext.ui.shared,
  org.eclipse.xtext.ui.codetemplates.ui,

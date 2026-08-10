@@ -5,9 +5,9 @@ Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.prism
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.simexp.pcm,
- org.palladiosimulator.solver.core;bundle-version="5.2.2",
- org.palladiosimulator.simexp.markovian.model;bundle-version="0.1.0",
- org.palladiosimulator.simexp.service;bundle-version="1.0.0",
+ org.palladiosimulator.solver.core,
+ org.palladiosimulator.simexp.markovian.model,
+ org.palladiosimulator.simexp.service,
  org.palladiosimulator.simexp.core,
  org.apache.log4j;bundle-version="1.2.19"
 Bundle-RequiredExecutionEnvironment: JavaSE-17

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: org.palladiosimulator.simexp.pcm.tests
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.tests
 Bundle-Version: 1.0.0.qualifier
-Fragment-Host: org.palladiosimulator.simexp.pcm;bundle-version="1.0.0"
+Fragment-Host: org.palladiosimulator.simexp.pcm
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.tests
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.junit;bundle-version="4.13.0",

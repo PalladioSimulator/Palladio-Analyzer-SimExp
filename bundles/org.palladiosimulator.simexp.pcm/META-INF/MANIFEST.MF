@@ -25,16 +25,16 @@ Require-Bundle: org.eclipse.debug.core;bundle-version="3.20.100",
  org.palladiosimulator.simexp.core,
  org.palladiosimulator.simexp.environmentaldynamics,
  org.palladiosimulator.simexp.distribution,
- org.palladiosimulator.simexp.markovian.model;bundle-version="0.1.0",
- org.palladiosimulator.simexp.markovian;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.markovian.model,
+ org.palladiosimulator.simexp.markovian,
  de.uka.ipd.sdq.scheduler,
- org.palladiosimulator.failuremodel;bundle-version="5.0.0",
+ org.palladiosimulator.failuremodel,
  org.palladiosimulator.envdyn.api,
  tools.mdsd.probdist.api,
  org.palladiosimulator.envdyn.model,
- org.palladiosimulator.simexp.commons.constants;bundle-version="1.0.0",
- de.uka.ipd.sdq.codegen.simucontroller.core;bundle-version="5.2.2",
- de.uka.ipd.sdq.workflow.mdsd.blackboard;bundle-version="5.2.2"
+ org.palladiosimulator.simexp.commons.constants,
+ de.uka.ipd.sdq.codegen.simucontroller.core,
+ de.uka.ipd.sdq.workflow.mdsd.blackboard
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm
 Bundle-ActivationPolicy: lazy
