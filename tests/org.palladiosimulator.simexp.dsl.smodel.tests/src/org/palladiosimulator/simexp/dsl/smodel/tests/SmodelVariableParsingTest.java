@@ -2,7 +2,7 @@ package org.palladiosimulator.simexp.dsl.smodel.tests;
 
 import static org.palladiosimulator.simexp.dsl.smodel.test.util.EcoreAssert.assertThat;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.eclipse.xtext.diagnostics.Diagnostic;
 import org.eclipse.xtext.testing.InjectWith;
