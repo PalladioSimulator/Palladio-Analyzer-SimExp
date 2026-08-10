@@ -11,4 +11,4 @@ Require-Bundle: org.junit;bundle-version="4.13.0",
  org.objenesis;bundle-version="2.6.0",
  org.palladiosimulator.experimentautomation.application.tooladapter.simulizar.model
 Automatic-Module-Name: org.palladiosimulator.simexp.model.io.tests
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21

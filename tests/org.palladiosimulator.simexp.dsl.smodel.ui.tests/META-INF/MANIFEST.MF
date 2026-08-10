@@ -14,6 +14,6 @@ Require-Bundle: org.palladiosimulator.simexp.dsl.smodel.ui,
  org.eclipse.core.runtime,
  org.eclipse.xtext.ui.testing,
  org.eclipse.ui.workbench;resolution:=optional
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Export-Package: org.palladiosimulator.simexp.dsl.smodel.ui.tests;x-internal=true,
  org.palladiosimulator.simexp.dsl.smodel.ui.tests;x-internal=true

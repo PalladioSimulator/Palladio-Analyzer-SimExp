@@ -6,7 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Export-Package: org.palladiosimulator.simexp.pcm.simulator,
  org.palladiosimulator.simexp.pcm.simulator.config,
  org.palladiosimulator.simexp.pcm.simulator.provider
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.simulator
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.33.0",

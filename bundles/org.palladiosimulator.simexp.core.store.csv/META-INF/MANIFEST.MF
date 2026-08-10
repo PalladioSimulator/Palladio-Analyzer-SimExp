@@ -6,7 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.simexp.service,
  org.palladiosimulator.simexp.core
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Automatic-Module-Name: org.palladiosimulator.simexp.core.store.csv
 Bundle-ActivationPolicy: lazy
 Export-Package: org.palladiosimulator.simexp.core.store.csv.accessor

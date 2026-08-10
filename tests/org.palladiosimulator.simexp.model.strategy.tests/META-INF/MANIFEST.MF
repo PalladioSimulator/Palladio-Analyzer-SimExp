@@ -11,4 +11,4 @@ Require-Bundle: org.junit;bundle-version="4.13.0",
  org.objenesis;bundle-version="2.6.0",
  org.assertj;bundle-version="3.20.2"
 Automatic-Module-Name: org.palladiosimulator.simexp.model.strategy.tests
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21

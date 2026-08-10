@@ -4,7 +4,7 @@ Bundle-Name: Examples
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.examples
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.palladiosimulator.simexp.pcm.examples.Activator
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.examples
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.apache.log4j,
