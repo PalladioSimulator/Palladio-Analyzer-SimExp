@@ -1158,7 +1158,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.xtext.junit4"
+         id="org.eclipse.xtext.testing"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1228,7 +1228,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.xtext.xbase.junit"
+         id="org.eclipse.xtext.xbase.testing"
          download-size="0"
          install-size="0"
          version="0.0.0"
