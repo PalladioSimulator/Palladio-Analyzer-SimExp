@@ -34,12 +34,6 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.apache.commons.lang"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.apache.commons.lang3"
@@ -217,19 +211,7 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.eclipse.xpand"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
-   <plugin
-         id="org.eclipse.xtend"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.eclipse.emf.mwe.core"
@@ -342,12 +324,6 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.eclipse.xtend.typesystem.emf"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.eclipse.emf.mwe.utils"
@@ -483,7 +459,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.io"
+         id="org.apache.commons.commons-io"
          download-size="0"
          install-size="0"
          version="0.0.0"
