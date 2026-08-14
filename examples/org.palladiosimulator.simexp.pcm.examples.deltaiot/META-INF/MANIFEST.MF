@@ -14,7 +14,7 @@ Automatic-Module-Name: org.palladiosimulator.simexp.pcm.examples.deltaiot
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.18.200",
  org.apache.log4j;bundle-version="1.2.15",
- org.apache.commons.csv;bundle-version="1.8.0",
+ org.apache.commons.commons-csv;bundle-version="1.8.0",
  com.google.guava;bundle-version="27.1.0",
  org.palladiosimulator.envdyn.api,
  org.palladiosimulator.envdyn.model,

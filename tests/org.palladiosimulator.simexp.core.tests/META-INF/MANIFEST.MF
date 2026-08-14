@@ -6,9 +6,9 @@ Fragment-Host: org.palladiosimulator.simexp.core
 Automatic-Module-Name: org.palladiosimulator.simexp.core.test
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Require-Bundle: org.junit,
- org.mockito.mockito-merged;bundle-version="3.3.3",
+ org.mockito.mockito-core,
  org.palladiosimulator.simexp.core,
- net.bytebuddy.byte-buddy;bundle-version="1.10.9",
- net.bytebuddy.byte-buddy-agent;bundle-version="1.10.9",
- org.objenesis;bundle-version="2.6.0",
- org.assertj;bundle-version="3.20.2"
+ net.bytebuddy.byte-buddy,
+ net.bytebuddy.byte-buddy-agent,
+ org.objenesis,
+ assertj-core;bundle-version="3.20.2"
