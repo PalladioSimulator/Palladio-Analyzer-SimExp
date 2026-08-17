@@ -21,13 +21,6 @@
    </requires>
 
    <plugin
-         id="com.ibm.icu"
-         download-size="0"
-         install-size="0"
-         version="67.1.0.v20200706-1749"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.log4j"
          download-size="0"
          install-size="0"
@@ -445,7 +438,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.csv"
+         id="org.apache.commons.commons-csv"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -566,7 +559,7 @@
          unpack="false"/>
 
    <plugin
-         id="io.github.classgraph"
+         id="io.github.classgraph.classgraph"
          download-size="0"
          install-size="0"
          version="0.0.0"
