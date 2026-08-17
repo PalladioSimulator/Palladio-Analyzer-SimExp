@@ -11,10 +11,6 @@
 			<repository location="https://updatesite.palladio-simulator.com/palladio-thirdparty-limbo/nightly/"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
-			<repository location="https://updatesite.palladio-simulator.com/palladio-thirdparty-wrapper/nightly/"/>
-			<unit id="org.apache.commons.math3" version="0.0.0"/>
-		</location>
-		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
 			<repository location="https://updatesite.mdsd.tools/thirdparty-library/nightly/"/>
 			<unit id="com.google.auto.factory-annotations.feature.feature.group" version="0.0.0"/>
 		</location>
