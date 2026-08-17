@@ -1,0 +1,246 @@
+package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+import java.util.concurrent.Future;
+import java.util.function.Function;
+import java.util.stream.IntStream;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
+import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
+import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.Run;
+import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.api.IFitnessResultIdentificator;
+import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
+import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.FitnessHelper;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.SetBoundsHelper;
+import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
+import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
+import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
+import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
+
+import io.jenetics.util.RandomRegistry;
+
+public class EAOptimizerTest {
+    private static final double DELTA = 0.0001;
+
+    private EAOptimizer optimizer;
+
+    @Mock
+    private IEAConfig eaConfig;
+    @Mock
+    private IEAEvolutionStatusReceiver statusReceiver;
+    @Mock
+    private IEAFitnessEvaluator fitnessEvaluator;
+    @Mock
+    private IOptimizableProvider optimizableProvider;
+    @Mock
+    private IQualityAttributeProvider qualityAttributeProvider;
+    @Mock
+    private IFitnessResultIdentificator fitnessResultIdentificator;
+    @Mock
+    private IExpressionCalculator calculator;
+    @Mock
+    private IPrecisionProvider precisionProvider;
+
+    @Captor
+    private ArgumentCaptor<List<OptimizableValue<?>>> optimizableListCaptor;
+
+    private SmodelCreator smodelCreator;
+    private ThreadLocal<Random> threadLocalRandom;
+    private Function<Random, EAResult> optFunction;
+    private SetBoundsHelper setBoundsHelper;
+    private RangeBoundsHelper rangeBoundsHelper;
+    private Answer<Future<Optional<Double>>> fitnessAnswer;
+
+    @Before
+    public void setUp() throws IOException {
+        initMocks(this);
+        smodelCreator = new SmodelCreator();
+        when(optimizableProvider.getExpressionCalculator()).thenReturn(calculator);
+        when(precisionProvider.getPrecision()).thenReturn(DELTA);
+        when(calculator.getPrecisionProvider()).thenReturn(precisionProvider);
+        when(eaConfig.getPrecisionProvider()).thenReturn(precisionProvider);
+        fitnessAnswer = new Answer<>() {
+            @Override
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
+                FitnessHelper fitnessHelper = new FitnessHelper();
+                return fitnessHelper.getFitnessFunctionAsFuture(invocation);
+            }
+        };
+        when(fitnessEvaluator.calcFitness(anyList())).thenAnswer(fitnessAnswer);
+        when(fitnessEvaluator.getQualityAttributeProvider()).thenReturn(qualityAttributeProvider);
+        when(fitnessEvaluator.getFitnessResultIdentificator()).thenReturn(fitnessResultIdentificator);
+        Run run = new Run(Collections.singletonMap("qa1", Arrays.asList(2.0)));
+        QualityMeasurements qualityMeasurements = new QualityMeasurements(Arrays.asList(run));
+        when(qualityAttributeProvider.getQualityMeasurements(anyList())).thenReturn(Optional.of(qualityMeasurements));
+        when(qualityAttributeProvider.getComparatorFactory()).thenReturn(s -> Double::compare);
+        when(fitnessResultIdentificator.getIdentificator(anyList())).thenReturn(Optional.of(""));
+
+        setBoundsHelper = new SetBoundsHelper();
+        rangeBoundsHelper = new RangeBoundsHelper();
+
+        threadLocalRandom = ThreadLocal.withInitial(() -> new Random(42));
+        optFunction = r -> {
+            return optimizer.internalOptimize(optimizableProvider, fitnessEvaluator, statusReceiver, Runnable::run);
+        };
+
+        when(eaConfig.populationSize()).thenReturn(SimulationConstants.DEFAULT_POPULATION_SIZE);
+        when(eaConfig.mutationRate()).thenReturn(SimulationConstants.DEFAULT_MUTATION_RATE);
+        when(eaConfig.crossoverRate()).thenReturn(SimulationConstants.DEFAULT_CROSSOVER_RATE);
+        when(eaConfig.survivorTournamentSize()).thenReturn(SimulationConstants.DEFAULT_SURVIVOR_TOURNAMENT_SIZE);
+        when(eaConfig.offspringTournamentSize()).thenReturn(SimulationConstants.DEFAULT_OFFSPRING_TOURNAMENT_SIZE);
+        when(eaConfig.steadyFitness()).thenReturn(Optional.empty());
+        when(eaConfig.maxGenerations()).thenReturn(Optional.of(20));
+
+        optimizer = new EAOptimizer(eaConfig);
+    }
+
+    @Test
+    public void booleanTest() throws IOException {
+        SetBounds setBound = setBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false), calculator);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.BOOL, setBound);
+        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
+
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
+
+        double expectedFitness = 50.0;
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
+    }
+
+    @Test
+    public void doubleTest() throws IOException {
+        SetBounds setBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator, List.of(8.0, 9.0), calculator);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, setBound);
+        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
+
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
+
+        double expectedFitness = 9.0;
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
+    }
+
+    @Test
+    public void stringTest() throws IOException {
+        SetBounds setBound = setBoundsHelper.initializeStringSetBound(smodelCreator, List.of("Hello", "123456"),
+                calculator);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.STRING, setBound);
+        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
+
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
+
+        double expectedFitness = 6.0;
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
+    }
+
+    @Test
+    public void integerSetTest() throws IOException {
+        SetBounds bound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, List.of(1, 10, 19), calculator);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, bound);
+        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
+
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
+
+        double expectedFitness = 19.0;
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
+    }
+
+    @Test
+    public void integerRangeTest() throws IOException {
+        RangeBounds bound = rangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 10, 1);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, bound);
+        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
+
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
+
+        double expectedFitness = 9.0;
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
+    }
+
+    @Test
+    public void integerWithNegativeNumbers() throws IOException {
+        SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, List.of(4, 85, -31), calculator);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
+        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
+
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
+
+        double expectedFitness = 85.0;
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
+    }
+
+    @Test
+    public void integerBooleanDoubleTest() throws IOException {
+        SetBounds integerSetBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator,
+                List.of(1, 3, 7, 3, 8, 2, 9), calculator);
+        Optimizable intOptimizable = smodelCreator.createOptimizable("test", DataType.INT, integerSetBound);
+        SetBounds boolSetBound = setBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false),
+                calculator);
+        Optimizable boolOptimizable = smodelCreator.createOptimizable("test", DataType.BOOL, boolSetBound);
+        SetBounds doubleSetBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator,
+                List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0), calculator);
+        Optimizable doubleOptimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, doubleSetBound);
+        when(optimizableProvider.getOptimizables())
+            .thenReturn(List.of(intOptimizable, boolOptimizable, doubleOptimizable));
+
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
+
+        double expectedFitness = 68.0;
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
+    }
+
+    @Test
+    public void emptyChromosomeTest() throws IOException {
+        Map<Optimizable, Object> optimizables = new LinkedHashMap<>();
+        int maxInt = 10;
+        List<Integer> ints = IntStream.rangeClosed(1, maxInt)
+            .boxed()
+            .toList();
+        SetBounds integerSetBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, ints, calculator);
+        optimizables.put(smodelCreator.createOptimizable("int", DataType.INT, integerSetBound), maxInt);
+        SetBounds stringSetBound = setBoundsHelper.initializeStringSetBound(smodelCreator,
+                Collections.singletonList("single"), calculator);
+        optimizables.put(smodelCreator.createOptimizable("str", DataType.STRING, stringSetBound), "single");
+        when(optimizableProvider.getOptimizables()).thenReturn(optimizables.keySet());
+
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
+
+        double expectedFitness = 16.0;
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
+    }
+}

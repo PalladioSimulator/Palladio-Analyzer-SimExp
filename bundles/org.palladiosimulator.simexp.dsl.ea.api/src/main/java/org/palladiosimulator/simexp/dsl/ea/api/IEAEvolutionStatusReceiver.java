@@ -1,0 +1,18 @@
+package org.palladiosimulator.simexp.dsl.ea.api;
+
+import java.util.List;
+
+import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
+
+public interface IEAEvolutionStatusReceiver extends AutoCloseable {
+    /**
+     * Called to report the current status of the EA.
+     * 
+     * @param optimizableValues
+     *            the optimizables with the currently highest fitness
+     * @param fitness
+     *            the fitness of the given optimization values
+     */
+    void reportStatus(long generation, List<OptimizableValue<?>> optimizableValues, double fitness,
+            List<IndividualResult> population);
+}

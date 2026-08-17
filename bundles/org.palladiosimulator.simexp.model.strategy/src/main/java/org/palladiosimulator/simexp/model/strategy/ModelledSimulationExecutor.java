@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.model.strategy;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
+import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
@@ -17,8 +18,9 @@ public class ModelledSimulationExecutor<R>
     public ModelledSimulationExecutor(ExperienceSimulator<PCMInstance, QVTOReconfigurator, R> experienceSimulator,
             Experiment experiment, SimulationParameters simulationParameters,
             Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy,
-            TotalRewardCalculation rewardCalculation, IExperimentProvider experimentProvider) {
+            TotalRewardCalculation rewardCalculation, IQualityEvaluator qualityEvaluator,
+            IExperimentProvider experimentProvider) {
         super(experienceSimulator, experiment, simulationParameters, reconfSelectionPolicy, rewardCalculation,
-                experimentProvider);
+                qualityEvaluator, experimentProvider);
     }
 }

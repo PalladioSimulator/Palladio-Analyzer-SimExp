@@ -333,7 +333,7 @@ public class SmodelPlanerTest {
 //  }
 //  """;
         Action expectedAction = smodelCreator.createAction("a");
-        RangeBounds expectedBounds = smodelCreator.createRangeBounds(smodelCreator.createIntLiteral(1),
+        RangeBounds expectedBounds = smodelCreator.createRangeBoundsClosedOpen(smodelCreator.createIntLiteral(1),
                 smodelCreator.createIntLiteral(3), smodelCreator.createIntLiteral(1));
         Optimizable expectedOptimizable = smodelCreator.createOptimizable("opt", DataType.INT, expectedBounds);
         ActionArguments expectedActionArguments = expectedAction.getArguments();

@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.simexp.environmentaldynamics,
  org.palladiosimulator.simexp.distribution,
  tools.mdsd.probdist.api;bundle-version="1.0.0",
- org.apache.commons.lang3;bundle-version="3.1.0"
+ org.apache.commons.lang3;bundle-version="3.1.0",
+ org.palladiosimulator.simexp.commons.constants;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Automatic-Module-Name: org.palladiosimulator.simexp.core
 Bundle-ActivationPolicy: lazy
@@ -22,7 +23,9 @@ Export-Package: org.palladiosimulator.simexp.core.action,
  org.palladiosimulator.simexp.core.entity,
  org.palladiosimulator.simexp.core.evaluation,
  org.palladiosimulator.simexp.core.process,
+ org.palladiosimulator.simexp.core.quality,
  org.palladiosimulator.simexp.core.reward,
+ org.palladiosimulator.simexp.core.simulation,
  org.palladiosimulator.simexp.core.state,
  org.palladiosimulator.simexp.core.statespace,
  org.palladiosimulator.simexp.core.statistics,

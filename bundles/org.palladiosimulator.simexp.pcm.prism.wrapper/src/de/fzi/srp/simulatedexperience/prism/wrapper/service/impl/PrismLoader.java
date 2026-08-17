@@ -13,9 +13,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Collections;
 
 import org.apache.commons.io.file.PathUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
@@ -34,7 +36,8 @@ public enum PrismLoader {
     private class LibraryList {
         public String architecture;
         public String folder;
-        public String binaryExtension;
+        public String executable;
+        public String posixPermissions;
     }
 
     public synchronized Path load() {
@@ -65,7 +68,13 @@ public enum PrismLoader {
             PathUtils.copyDirectory(folderPath, workspacePrismOsPath, StandardCopyOption.REPLACE_EXISTING);
 
             Path prismBinPath = workspacePrismOsPath.resolve("bin");
-            Path prismExe = prismBinPath.resolve(String.format("prism%s", libraryList.binaryExtension));
+            Path prismExe = prismBinPath.resolve(libraryList.executable);
+            if (StringUtils.isNotEmpty(libraryList.posixPermissions)) {
+                LOGGER
+                    .debug(String.format("Set posix permissions of %s to: %s", prismExe, libraryList.posixPermissions));
+                Files.setPosixFilePermissions(prismExe, PosixFilePermissions.fromString(libraryList.posixPermissions));
+            }
+
             return prismExe;
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e.getMessage(), e);

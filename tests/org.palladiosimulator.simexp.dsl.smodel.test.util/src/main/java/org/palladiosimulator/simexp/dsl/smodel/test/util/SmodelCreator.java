@@ -21,6 +21,8 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.StartKind;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.StopKind;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Variable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.VariableAssignment;
@@ -75,7 +77,35 @@ public class SmodelCreator {
         return bounds;
     }
 
-    public RangeBounds createRangeBounds(Literal start, Literal end, Literal step) {
+    public RangeBounds createRangeBoundsOpenOpen(Literal start, Literal end, Literal step) {
+        RangeBounds bounds = createRangeBounds(start, end, step);
+        bounds.setStart(StartKind.OPEN);
+        bounds.setStop(StopKind.OPEN);
+        return bounds;
+    }
+
+    public RangeBounds createRangeBoundsOpenClosed(Literal start, Literal end, Literal step) {
+        RangeBounds bounds = createRangeBounds(start, end, step);
+        bounds.setStart(StartKind.OPEN);
+        bounds.setStop(StopKind.CLOSED);
+        return bounds;
+    }
+
+    public RangeBounds createRangeBoundsClosedClosed(Literal start, Literal end, Literal step) {
+        RangeBounds bounds = createRangeBounds(start, end, step);
+        bounds.setStart(StartKind.CLOSED);
+        bounds.setStop(StopKind.CLOSED);
+        return bounds;
+    }
+
+    public RangeBounds createRangeBoundsClosedOpen(Literal start, Literal end, Literal step) {
+        RangeBounds bounds = createRangeBounds(start, end, step);
+        bounds.setStart(StartKind.CLOSED);
+        bounds.setStop(StopKind.OPEN);
+        return bounds;
+    }
+
+    private RangeBounds createRangeBounds(Literal start, Literal end, Literal step) {
         RangeBounds bounds = SmodelFactory.eINSTANCE.createRangeBounds();
         bounds.setStartValue(start);
         bounds.setEndValue(end);

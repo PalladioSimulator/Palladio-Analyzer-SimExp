@@ -1,0 +1,241 @@
+package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
+
+import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+
+import org.apache.log4j.Logger;
+import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
+import org.palladiosimulator.simexp.dsl.ea.api.IFitnessResultIdentificator;
+import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
+import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
+import org.palladiosimulator.simexp.dsl.ea.api.IndividualParetoResult;
+import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.ForceValidConstraint;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableIntNormalizer;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
+import org.palladiosimulator.simexp.dsl.ea.pareto.ParetoFrontBuilder;
+import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
+import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
+import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
+
+import io.jenetics.Crossover;
+import io.jenetics.EliteSelector;
+import io.jenetics.Gene;
+import io.jenetics.Genotype;
+import io.jenetics.IntegerGene;
+import io.jenetics.Mutator;
+import io.jenetics.Phenotype;
+import io.jenetics.TournamentSelector;
+import io.jenetics.UniformCrossover;
+import io.jenetics.engine.Engine;
+import io.jenetics.engine.Engine.Builder;
+import io.jenetics.engine.EvolutionResult;
+import io.jenetics.engine.EvolutionStart;
+import io.jenetics.engine.EvolutionStatistics;
+import io.jenetics.engine.EvolutionStream;
+import io.jenetics.engine.Limits;
+import io.jenetics.stat.DoubleMomentStatistics;
+import io.jenetics.util.Factory;
+import io.jenetics.util.RandomRegistry;
+import tools.mdsd.probdist.api.random.ISeedProvider;
+
+public class EAOptimizer implements IEAOptimizer {
+    private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
+
+    private final IEAConfig config;
+
+    public EAOptimizer(IEAConfig config) {
+        this.config = config;
+    }
+
+    @Override
+    public EAResult optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
+            IEAEvolutionStatusReceiver evolutionStatusReceiver) {
+        int availableProcessors = Runtime.getRuntime()
+            .availableProcessors();
+        LOGGER.info(String.format("available local processors:   %d", availableProcessors));
+        LOGGER.info(String.format("available launch parallelism: %d", fitnessEvaluator.getParallelism()));
+        int parallelism = Math.max(availableProcessors, fitnessEvaluator.getParallelism());
+        LOGGER.info(String.format("the fitness evaluator has an parallelism of: %d", parallelism));
+        ExecutorService executor = Executors.newFixedThreadPool(parallelism);
+        try {
+            return internalOptimize(optimizableProvider, fitnessEvaluator, evolutionStatusReceiver, executor);
+        } finally {
+            LOGGER.info("shut down executor service");
+            executor.shutdown();
+            try {
+                executor.awaitTermination(10, TimeUnit.SECONDS);
+                LOGGER.info("executor service shutt down");
+            } catch (InterruptedException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    EAResult internalOptimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
+            IEAEvolutionStatusReceiver evolutionStatusReceiver, Executor executor) {
+        IExpressionCalculator expressionCalculator = optimizableProvider.getExpressionCalculator();
+        ITranscoder<IntegerGene> transcoder = new OptimizableIntNormalizer(expressionCalculator);
+        return doOptimize(transcoder, optimizableProvider, fitnessEvaluator, evolutionStatusReceiver, executor);
+    }
+
+    private <G extends Gene<?, G>> EAResult doOptimize(ITranscoder<G> transcoder,
+            IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
+            IEAEvolutionStatusReceiver evolutionStatusReceiver, Executor executor) {
+        IExpressionCalculator expressionCalculator = optimizableProvider.getExpressionCalculator();
+        Collection<Optimizable> optimizables = optimizableProvider.getOptimizables();
+        PowerUtil powerUtil = new PowerUtil(expressionCalculator);
+        BigInteger overallPower = powerUtil.calculateComplexity(optimizables);
+        DecimalFormat df = new DecimalFormat();
+        df.setGroupingUsed(true);
+        LOGGER.info(String.format("optimizeable search space: %s", df.format(overallPower)));
+
+        IQualityAttributeProvider qualityAttributeProvider = fitnessEvaluator.getQualityAttributeProvider();
+        IFitnessResultIdentificator fitnessResultIdentificator = fitnessEvaluator.getFitnessResultIdentificator();
+
+        // Setup EA
+        Genotype<G> genotype = buildGenotype(optimizables, transcoder);
+        IPrecisionProvider precisionProvider = expressionCalculator.getPrecisionProvider();
+        final double penaltyForInvalids = config.penaltyForInvalids();
+        FitnessFunction<G> fitnessFunction = new FitnessFunction<>(precisionProvider, fitnessEvaluator, transcoder,
+                penaltyForInvalids);
+        Engine<G, Double> engine = buildEngine(fitnessFunction, genotype, executor);
+        EvaluationStatistics<G> evaluationStatistics = new EvaluationStatistics<>(fitnessFunction, overallPower);
+
+        // Run EA
+        return runOptimization(evaluationStatistics, evolutionStatusReceiver, transcoder, fitnessFunction,
+                qualityAttributeProvider, fitnessResultIdentificator, engine);
+    }
+
+    private <G extends Gene<?, G>> Genotype<G> buildGenotype(Collection<Optimizable> optimizables,
+            ITranscoder<G> normalizer) {
+        List<Optimizable> optimizableList = new ArrayList<>(optimizables);
+        Genotype<G> genotype = normalizer.toGenotype(optimizableList);
+        return genotype;
+    }
+
+    private <G extends Gene<?, G>> Engine<G, Double> buildEngine(FitnessFunction<G> fitnessFunction,
+            Genotype<G> genotype, Executor executor) {
+        Factory<Genotype<G>> constraintFactory = new ForceValidConstraint<G>().constrain(genotype);
+        Builder<G, Double> builder = Engine.builder(fitnessFunction::apply, constraintFactory)
+            .populationSize(config.populationSize())
+            .executor(executor)
+            .survivorsSelector(new EliteSelector<G, Double>(new TournamentSelector<>(config.survivorTournamentSize())))
+            .offspringSelector(new TournamentSelector<>(config.offspringTournamentSize()));
+
+        builder = addAlterers(builder);
+
+        return builder.build();
+    }
+
+    private <G extends Gene<?, G>> Builder<G, Double> addAlterers(Builder<G, Double> builder) {
+        Mutator<G, Double> mutator = new Mutator<>(config.mutationRate());
+        Crossover<G, Double> crossover = new UniformCrossover<>(config.crossoverRate());
+        return builder.alterers(crossover, mutator);
+    }
+
+    private <G extends Gene<?, G>> EAResult runOptimization(EvaluationStatistics<G> evaluationStatistics,
+            IEAEvolutionStatusReceiver evolutionStatusReceiver, ITranscoder<G> normalizer,
+            FitnessFunction<G> fitnessFunction, IQualityAttributeProvider qualityAttributeProvider,
+            IFitnessResultIdentificator fitnessResultIdentificator, final Engine<G, Double> engine) {
+        LOGGER.info("EA running...");
+
+        EvolutionResult<G, Double> initial = engine.stream()
+            .findFirst()
+            .orElseThrow();
+        EvolutionStart<G, Double> evolutionStart = initial.toEvolutionStart();
+        LOGGER.info(String.format("initial population of %d individuals created", evolutionStart.population()
+            .size()));
+        EvolutionStream<G, Double> evolutionStream = engine.stream(evolutionStart);
+        evolutionStream = addTerminationConditions(evolutionStream, config);
+
+        EAReporter<G> reporter = new EAReporter<>(evolutionStatusReceiver, normalizer, fitnessResultIdentificator);
+        EvolutionStatistics<Double, DoubleMomentStatistics> standardStatistics = EvolutionStatistics.ofNumber();
+        Stream<EvolutionResult<G, Double>> resultStream = evolutionStream.peek(reporter)
+            .peek(standardStatistics);
+
+        Optional<ISeedProvider> seedProvider = config.getSeedProvider();
+        final EvolutionResult<G, Double> result;
+        if (seedProvider.isEmpty()) {
+            result = resultStream.collect(EvolutionResult.toBestEvolutionResult());
+        } else {
+            long seed = seedProvider.get()
+                .getLong();
+            result = RandomRegistry.with(new Random(seed),
+                    r -> resultStream.collect(EvolutionResult.toBestEvolutionResult()));
+        }
+
+        LOGGER.info("EA finished");
+        EAResult eaResult = buildEAResult(initial, result, standardStatistics, evaluationStatistics, normalizer,
+                qualityAttributeProvider, fitnessResultIdentificator);
+        return eaResult;
+    }
+
+    private <G extends Gene<?, G>> EAResult buildEAResult(EvolutionResult<G, Double> initial,
+            EvolutionResult<G, Double> result, EvolutionStatistics<Double, DoubleMomentStatistics> standardStatistics,
+            EvaluationStatistics<G> evaluationStatistics, ITranscoder<G> normalizer,
+            IQualityAttributeProvider qualityAttributeProvider,
+            IFitnessResultIdentificator fitnessResultIdentificator) {
+        StringBuilder resultStatistics = new StringBuilder();
+        resultStatistics.append(standardStatistics.toString());
+        resultStatistics.append("\n");
+        resultStatistics.append(evaluationStatistics);
+        LOGGER.info(resultStatistics.toString());
+
+        List<IndividualResult> initialPopulation = initial.population()
+            .stream()
+            .map(p -> buildIndividualResult(normalizer, fitnessResultIdentificator, p))
+            .toList();
+
+        List<IndividualResult> finalPopulation = result.population()
+            .stream()
+            .map(p -> buildIndividualResult(normalizer, fitnessResultIdentificator, p))
+            .toList();
+        IndividualResult fittestIndividual = buildIndividualResult(normalizer, fitnessResultIdentificator,
+                result.bestPhenotype());
+
+        LOGGER.info("building pareto front");
+        ParetoFrontBuilder paretoFrontBuilder = new ParetoFrontBuilder(qualityAttributeProvider,
+                config.getPrecisionProvider());
+        List<IndividualParetoResult> paretoFront = paretoFrontBuilder.buildParetoFront(finalPopulation);
+
+        return new EAResult(fittestIndividual, paretoFront, initialPopulation, finalPopulation);
+    }
+
+    private <G extends Gene<?, G>> IndividualResult buildIndividualResult(ITranscoder<G> normalizer,
+            IFitnessResultIdentificator fitnessResultIdentificator, Phenotype<G, Double> phenotype) {
+        List<OptimizableValue<?>> optimizableValues = normalizer.toOptimizableValues(phenotype.genotype());
+        Optional<String> identificator = fitnessResultIdentificator.getIdentificator(optimizableValues);
+        return new IndividualResult(phenotype.fitness(), optimizableValues, identificator.orElse("n/a"));
+    }
+
+    private <G extends Gene<?, G>> EvolutionStream<G, Double> addTerminationConditions(
+            EvolutionStream<G, Double> evolutionStream, IEAConfig config) {
+        if (config.maxGenerations()
+            .isPresent()) {
+            evolutionStream = evolutionStream.limit(Limits.byFixedGeneration(config.maxGenerations()
+                .get()));
+        }
+        if (config.steadyFitness()
+            .isPresent()) {
+            evolutionStream = evolutionStream.limit(Limits.bySteadyFitness(config.steadyFitness()
+                .get()));
+        }
+        return evolutionStream;
+    }
+}

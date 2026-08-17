@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
+import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUpdateListStrategy;
@@ -59,6 +60,7 @@ import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
 public class SimulatorConfiguration {
     private SelectObservableValue<SimulationEngine> simulationEngineTarget;
     private SelectObservableValue<QualityObjective> qualityObjectiveTarget;
+    private SelectObservableValue<RewardType> rewardTypeTarget;
 
     private Text textMonitorRepository;
     private ListViewer monitors;
@@ -67,9 +69,11 @@ public class SimulatorConfiguration {
     private WritableList<String> propertyFilesTarget;
 
     public void createControl(Composite parent, DataBindingContext ctx, ModifyListener modifyListener) {
-        Composite simulationParent = new Composite(parent, SWT.BORDER);
+        Composite simulationParent = new Composite(parent, SWT.NONE);
         simulationParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        simulationParent.setLayout(new GridLayout(2, false));
+        GridLayout containerLayout = new GridLayout(2, false);
+        containerLayout.marginWidth = 0;
+        simulationParent.setLayout(containerLayout);
 
         Composite simulationEngineContainer = new Composite(simulationParent, SWT.NONE);
         simulationEngineContainer.setLayoutData(new GridData(SWT.None, SWT.TOP, false, true));
@@ -120,6 +124,27 @@ public class SimulatorConfiguration {
         Composite prismDetails = createEngineDetailsComposite(simulationDetails, SimulationEngine.PRISM);
         createPrismTab(prismDetails, modifyListener);
         engineDetailsMap.put(SimulationEngine.PRISM, prismDetails);
+
+        Group rewardGroup = new Group(simulationEngineContainer, SWT.NONE);
+        rewardGroup.setText(SimulationConstants.REWARD_TYPE);
+        rewardGroup.setLayout(new RowLayout(SWT.VERTICAL));
+        rewardTypeTarget = new SelectObservableValue<>();
+        for (RewardType rewardType : RewardType.values()) {
+            Button button = new Button(rewardGroup, SWT.RADIO);
+            button.setText(rewardType.getName());
+            ISWTObservableValue<Boolean> observeable = WidgetProperties.buttonSelection()
+                .observe(button);
+            rewardTypeTarget.addOption(rewardType, observeable);
+        }
+        ISideEffect.create(() -> {
+            return rewardTypeTarget.getValue();
+        }, new Consumer<RewardType>() {
+
+            @Override
+            public void accept(RewardType selectedEngine) {
+                modifyListener.modifyText(null);
+            }
+        });
     }
 
     private Composite createEngineDetailsComposite(Composite parent, SimulationEngine engine) {
@@ -294,6 +319,7 @@ public class SimulatorConfiguration {
     public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
         configuration.setAttribute(SimulationConstants.SIMULATION_ENGINE,
                 SimulationConstants.DEFAULT_SIMULATION_ENGINE.name());
+        configuration.setAttribute(SimulationConstants.REWARD_TYPE, SimulationConstants.DEFAULT_REWARD_TYPE.name());
     }
 
     public void initializeFrom(ILaunchConfiguration configuration, DataBindingContext ctx) {
@@ -306,6 +332,13 @@ public class SimulatorConfiguration {
 
         initializeFromPCM(configuration, ctx);
         initializeFromPRISM(configuration, ctx);
+
+        IObservableValue<RewardType> rewardTypeModel = ConfigurationProperties
+            .enummeration(SimulationConstants.REWARD_TYPE, RewardType.class)
+            .observe(configuration);
+        UpdateValueStrategy<RewardType, RewardType> rewardTypeUpdateStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        ctx.bindValue(rewardTypeTarget, rewardTypeModel, rewardTypeUpdateStrategy, null);
     }
 
     private void initializeFromPCM(ILaunchConfiguration configuration, DataBindingContext ctx) {

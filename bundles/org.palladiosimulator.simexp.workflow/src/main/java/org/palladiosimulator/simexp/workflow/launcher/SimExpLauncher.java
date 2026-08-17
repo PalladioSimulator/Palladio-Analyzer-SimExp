@@ -1,6 +1,5 @@
 package org.palladiosimulator.simexp.workflow.launcher;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,6 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -30,21 +30,28 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.palladiosimulator.analyzer.workflow.core.configurations.AbstractPCMLaunchConfigurationDelegate;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
+import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
+import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
+import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
-import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
+import org.palladiosimulator.simexp.version.git.GitVersion;
 import org.palladiosimulator.simexp.workflow.api.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.config.EvolutionaryAlgorithmConfiguration;
 import org.palladiosimulator.simexp.workflow.config.MonitorConfiguration;
 import org.palladiosimulator.simexp.workflow.config.PrismConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 
 import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.logging.console.LoggerAppenderStruct;
+import de.uka.ipd.sdq.workflow.logging.console.StreamsProxyAppender;
 import tools.mdsd.probdist.api.random.FixedSeedProvider;
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
@@ -57,22 +64,36 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
         LOGGER.debug("Create SimExp workflow root job");
         try {
             SimulationParameters simulationParameters = config.getSimulationParameters();
-            LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
+            SimulatedExperienceStoreDescription description = new SimulatedExperienceStoreDescription(
+                    simulationParameters.getNumberOfSimulationsPerRun());
             Optional<ISeedProvider> seedProvider = config.getSeedProvider();
 
             SimulationExecutorLookup simulationExecutorLookup = new SimulationExecutorLookup();
+            String simulationID = simulationParameters.getSimulationID();
+            Path resourcePath = getResourcePath(simulationID);
+            Files.createDirectories(resourcePath);
+            ISimulatedExperienceAccessor accessor = new CsvAccessor(resourcePath);
+            String launcherName = launch.getLaunchConfiguration()
+                .getName();
             SimulationExecutor simulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(config,
-                    launchDescriptionProvider, seedProvider);
+                    launcherName, description, seedProvider, accessor, resourcePath);
             if (simulationExecutor == null) {
                 throw new IllegalArgumentException("Unable to create simulation executor");
             }
-            String policyId = simulationExecutor.getPolicyId();
-            launchDescriptionProvider.setPolicyId(policyId);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
         } catch (Exception e) {
             IStatus status = Status.error(e.getMessage(), e);
             throw new CoreException(status);
         }
+    }
+
+    private Path getResourcePath(String strategyId) {
+        IPath workspaceBasePath = ResourcesPlugin.getWorkspace()
+            .getRoot()
+            .getLocation();
+        Path outputBasePath = Paths.get(workspaceBasePath.toString());
+        Path resourcePath = outputBasePath.resolve("resource");
+        return resourcePath.resolve(strategyId);
     }
 
     @Override
@@ -86,21 +107,28 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
     private SimExpWorkflowConfiguration buildWorkflowConfiguration(ILaunchConfiguration configuration, String mode) {
         SimExpWorkflowConfiguration workflowConfiguration = null;
         try {
-            Map<String, Object> launchConfigurationParams = configuration.getAttributes();
+            LOGGER.info(String.format("Git tags:        %s", GitVersion.TAGS));
+            LOGGER.info(String.format("Git branch:      %s", GitVersion.BRANCH));
+            LOGGER.info(String.format("Git commit:      %s", GitVersion.COMMIT_ID));
+            LOGGER.info(String.format("Git description: %s", GitVersion.DESCRIBE));
 
-            if (LOGGER.isDebugEnabled()) {
-                for (Entry<String, Object> entry : launchConfigurationParams.entrySet()) {
-                    LOGGER.debug(
-                            String.format("launch configuration param ['%s':'%s']", entry.getKey(), entry.getValue()));
-                }
+            Map<String, Object> launchConfigurationParams = configuration.getAttributes();
+            for (Entry<String, Object> entry : launchConfigurationParams.entrySet()) {
+                LOGGER.info(String.format("launch configuration param ['%s':'%s']", entry.getKey(), entry.getValue()));
             }
 
             String simulatorTypeStr = (String) launchConfigurationParams.get(SimulationConstants.SIMULATOR_TYPE);
             SimulatorType simulatorType = SimulatorType.valueOf(simulatorTypeStr);
             String simulationEngineStr = (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ENGINE);
             SimulationEngine simulationEngine = SimulationEngine.valueOf(simulationEngineStr);
+            String rewardTypeStr = (String) launchConfigurationParams.get(SimulationConstants.REWARD_TYPE);
+            RewardType rewardType = RewardType.valueOf(rewardTypeStr);
             Set<String> transformationNames = configuration.getAttribute(SimulationConstants.TRANSFORMATIONS_ACTIVE,
                     Collections.emptySet());
+            String modelledOptimizationTypeStr = (String) launchConfigurationParams
+                .get(SimulationConstants.MODELLED_OPTIMIZATION_TYPE);
+            ModelledOptimizationType modelledOptimizationType = ModelledOptimizationType
+                .valueOf(modelledOptimizationTypeStr);
 
             SimulationParameters simulationParameters = new SimulationParameters(
                     (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ID),
@@ -152,10 +180,24 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
                 seedProvider = Optional.of(new FixedSeedProvider(customSeed));
             }
 
+            int populationSize = (Integer) launchConfigurationParams.get(SimulationConstants.POPULATION_SIZE);
+            double mutationRate = extractDouble(launchConfigurationParams, SimulationConstants.MUTATION_RATE);
+            double crossoverRate = extractDouble(launchConfigurationParams, SimulationConstants.CROSSOVER_RATE);
+            double errorReward = extractDouble(launchConfigurationParams, SimulationConstants.ERROR_REWARD);
+            Optional<Integer> maxGenerations = Optional
+                .ofNullable((Integer) launchConfigurationParams.get(SimulationConstants.MAX_GENERATIONS));
+            Optional<Integer> steadyFitness = Optional
+                .ofNullable((Integer) launchConfigurationParams.get(SimulationConstants.STEADY_FITNESS));
+            int memoryUsage = (Integer) launchConfigurationParams.get(SimulationConstants.MEMORY_USAGE);
+            EvolutionaryAlgorithmConfiguration eaConfig = new EvolutionaryAlgorithmConfiguration(populationSize,
+                    errorReward, maxGenerations, steadyFitness, mutationRate, crossoverRate, memoryUsage);
+
+            Map<String, Object> optimizedValues = getOptimizedValues(configuration);
+
             /** FIXME: split workflow configuraiton based on simulation type: PCM, PRISM */
-            workflowConfiguration = new SimExpWorkflowConfiguration(simulatorType, simulationEngine,
-                    transformationNames, qualityObjective, architecturalModels, monitors, prismConfig,
-                    environmentalModels, simulationParameters, seedProvider);
+            workflowConfiguration = new SimExpWorkflowConfiguration(simulatorType, simulationEngine, rewardType,
+                    transformationNames, qualityObjective, architecturalModels, modelledOptimizationType, monitors,
+                    prismConfig, environmentalModels, simulationParameters, seedProvider, eaConfig, optimizedValues);
         } catch (CoreException e) {
             LOGGER.error(
                     "Failed to read workflow configuration from passed launch configuration. Please check the provided launch configuration",
@@ -165,17 +207,55 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
         return workflowConfiguration;
     }
 
+    protected Map<String, Object> getOptimizedValues(ILaunchConfiguration configuration) throws CoreException {
+        return null;
+    }
+
+    private double extractDouble(Map<String, Object> launchConfigurationParams, String key) {
+        Optional<Double> optional = extractOptionalDouble(launchConfigurationParams, key);
+        if (optional.isEmpty()) {
+            throw new RuntimeException("empty: " + key);
+        }
+        return optional.get();
+    }
+
+    private Optional<Double> extractOptionalDouble(Map<String, Object> launchConfigurationParams, String key) {
+        String stringValue = (String) launchConfigurationParams.get(key);
+        if (stringValue == null) {
+            return Optional.empty();
+        }
+        double value = Double.parseDouble(stringValue);
+        return Optional.of(value);
+    }
+
     @Override
     protected List<LoggerAppenderStruct> configureLogging(ILaunchConfiguration configuration) throws CoreException {
-        Path simulationLogFolder = getSimulationLogFolder();
+        // Level logLevel = getLogLevel(configuration);
 
+        final Appender customAppender;
         try {
-            Files.createDirectories(simulationLogFolder);
-        } catch (IOException e) {
+            customAppender = createAppender(configuration);
+        } catch (Exception e) {
             IStatus status = new Status(IStatus.ERROR, "org.palladiosimulator.simexp.workflow", 0, e.getMessage(), e);
             throw new CoreException(status);
         }
 
+        Level logLevel = Level.INFO;
+        List<LoggerAppenderStruct> appenders = setupLogging(logLevel);
+        for (LoggerAppenderStruct entry : appenders) {
+            Logger entryLogger = entry.getLogger();
+            entryLogger.addAppender(customAppender);
+            StreamsProxyAppender appender = entry.getAppender();
+            appender.setThreshold(Level.INFO);
+        }
+        return appenders;
+    }
+
+    protected Appender createAppender(ILaunchConfiguration configuration) throws Exception {
+        FileAppender fa = new FileAppender();
+        fa.setName("SimulationLogger");
+        Path simulationLogFolder = getSimulationLogFolder();
+        Files.createDirectories(simulationLogFolder);
         Map<String, Object> launchConfigurationParams = configuration.getAttributes();
         String simulationId = (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ID);
 
@@ -184,20 +264,11 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
         String currentDateTime = dateFormat.format(currentDate);
         String simulationFileName = String.format("%s_%s.log", simulationId, currentDateTime);
         Path simulationLogFile = simulationLogFolder.resolve(simulationFileName);
-
-        FileAppender fa = new FileAppender();
-        fa.setName("SimulationLogger");
         fa.setFile(simulationLogFile.toString());
         fa.setLayout(new PatternLayout("%d %-5p [%-10t] [%F:%L]: %m%n"));
         fa.setThreshold(Level.DEBUG);
         fa.activateOptions();
-        Level logLevel = getLogLevel(configuration);
-        List<LoggerAppenderStruct> appenders = setupLogging(logLevel);
-        for (LoggerAppenderStruct entry : appenders) {
-            Logger entryLogger = entry.getLogger();
-            entryLogger.addAppender(fa);
-        }
-        return appenders;
+        return fa;
     }
 
     private Path getSimulationLogFolder() {
@@ -211,17 +282,27 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
 
     @Override
     protected List<LoggerAppenderStruct> setupLogging(Level logLevel) throws CoreException {
-        // FIXME: during development set debug level hard-coded to DEBUG
-        List<LoggerAppenderStruct> loggerList = new ArrayList<>(super.setupLogging(Level.DEBUG));
-        loggerList.add(setupLogger("org.palladiosimulator.simexp", logLevel,
-                Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN));
-        loggerList.add(setupLogger("org.palladiosimulator.experimentautomation.application", logLevel,
-                Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN));
-        loggerList.add(setupLogger("org.palladiosimulator.simulizar.reconfiguration.qvto", logLevel,
-                Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN));
-        loggerList.add(setupLogger("de.fzi.srp.simulatedexperience.prism.wrapper.service", logLevel,
-                Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN));
-        loggerList.add(setupLogger("org.palladiosimulator.envdyn.api.entity", logLevel, SHORT_LOG_PATTERN));
+        // String layout = Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN;
+        String layout = "%d{ABSOLUTE} %-5p [%-10t] [%F:%L]: %m%n";
+        // ArrayList<LoggerAppenderStruct> loggerList = super.setupLogging(Level.DEBUG);
+        ArrayList<LoggerAppenderStruct> loggerList = new ArrayList<>();
+
+        loggerList.add(setupLogger("de.uka.ipd.sdq.workflow", logLevel, layout));
+        loggerList.add(setupLogger("de.uka.ipd.sdq.workflow.ExecutionTimeLoggingProgressMonitor", Level.WARN, layout));
+        loggerList.add(setupLogger("org.palladiosimulator.experimentautomation.application.jobs.CopyPartitionJob",
+                Level.WARN, layout));
+        loggerList.add(setupLogger("org.openarchitectureware", logLevel, layout));
+
+        loggerList.add(setupLogger("org.palladiosimulator.simexp", logLevel, layout));
+
+        loggerList.add(setupLogger("org.palladiosimulator.experimentautomation.application", logLevel, layout));
+        loggerList
+            .add(setupLogger("org.palladiosimulator.experimentautomation.application.jobs.LogExperimentInformationJob",
+                    Level.WARN, layout));
+        loggerList.add(setupLogger("org.palladiosimulator.simulizar.reconfiguration.qvto", logLevel, layout));
+        loggerList.add(setupLogger("org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator",
+                Level.WARN, layout));
+        loggerList.add(setupLogger("de.fzi.srp.simulatedexperience.prism.wrapper.service", logLevel, layout));
         return loggerList;
     }
 }

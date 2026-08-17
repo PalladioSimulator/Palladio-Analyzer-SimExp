@@ -135,6 +135,10 @@ public class ReliabilityPrioritizedStrategy<C> extends ReconfigurationStrategy<Q
         isFilteringActivated = false;
     }
 
+    @Override
+    public void dispose() {
+    }
+
     private QVToReconfiguration manageReliability(boolean isSensorNoiseIncreased, boolean isImgBrightnessIncreased,
             Set<QVToReconfiguration> options) {
         var bothValuesIncreased = isSensorNoiseIncreased && isImgBrightnessIncreased;

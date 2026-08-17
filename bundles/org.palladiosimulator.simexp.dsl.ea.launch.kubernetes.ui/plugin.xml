@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.palladiosimulator.simexp.dsl.ea.ui.preferences.EAPreferencePage"
+            class="org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.ui.preferences.KubernetesWorkbenchPreferencePage"
+            id="org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.ui.preferences.KubernetesPreferencePage"
+            name="Kubernetes">
+      </page>
+   </extension>
+
+</plugin>

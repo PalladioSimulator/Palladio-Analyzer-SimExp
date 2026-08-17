@@ -108,19 +108,23 @@ public class DeltaIoTDefaultReconfigurationStrategy
         }
 
         MoteContextFilter moteFiler = new MoteContextFilter(knowledge);
+        boolean powerChanging = false;
         for (MoteContext eachMote : moteFiler.getAllMoteContexts()) {
             for (WirelessLink eachLink : eachMote.links) {
+                powerChanging = false;
                 if (customizer instanceof ITransmissionPowerReconfiguration) {
                     ITransmissionPowerReconfiguration transmissionPowerReconfiguration = (ITransmissionPowerReconfiguration) customizer;
                     if (eachLink.SNR > 0 && eachLink.transmissionPower > 0) {
                         decreaseTransmissionPower(eachMote.mote, eachLink, transmissionPowerReconfiguration);
+                        powerChanging = true;
                     } else if (eachLink.SNR < 0 && eachLink.transmissionPower < 15) {
                         increaseTransmissionPower(eachMote.mote, eachLink, transmissionPowerReconfiguration);
+                        powerChanging = true;
                     }
                 }
             }
 
-            if (eachMote.hasTwoLinks()) {
+            if (eachMote.hasTwoLinks() && adaptDistributionFactor(powerChanging)) {
                 if (customizer instanceof IDistributionFactorReconfiguration) {
                     IDistributionFactorReconfiguration distributionFactorReconfiguration = (IDistributionFactorReconfiguration) customizer;
 
@@ -154,6 +158,13 @@ public class DeltaIoTDefaultReconfigurationStrategy
         }
         MultiQVToReconfiguration reconfiguration = MultiQVToReconfiguration.of(singleReconfigurations);
         return reconfiguration;
+    }
+
+    protected boolean adaptDistributionFactor(boolean powerChanging) {
+        if (powerChanging) {
+            return false;
+        }
+        return true;
     }
 
     private void setDistributionFactorsUniformally(IDistributionFactorReconfiguration reconfiguration,

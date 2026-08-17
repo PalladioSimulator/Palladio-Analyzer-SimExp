@@ -60,8 +60,14 @@ SetBounds:
 	;
 
 RangeBounds:
-	'[' startValue=Literal ',' endValue=Literal ',' stepSize=Literal ']'
+	start=StartKind startValue=Literal ',' endValue=Literal ',' stepSize=Literal stop=StopKind
 	;
+enum StartKind:
+	OPEN = '(' | CLOSED = '['
+;
+enum StopKind:
+	OPEN = ')' | CLOSED = ']'
+;
 
 Action: 
 	'action' name=ID '(' arguments=ActionArguments ')' ';'

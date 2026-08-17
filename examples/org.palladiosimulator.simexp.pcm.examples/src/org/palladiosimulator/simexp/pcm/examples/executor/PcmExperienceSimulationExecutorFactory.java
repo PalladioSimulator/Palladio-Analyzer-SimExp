@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.pcm.examples.executor;
 
+import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -14,16 +15,26 @@ import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourRep
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
 import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
+import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
+import org.palladiosimulator.simexp.core.evaluation.AverageRewardEvaluator;
+import org.palladiosimulator.simexp.core.evaluation.ExpectedRewardEvaluator;
+import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
+import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
+import org.palladiosimulator.simexp.core.quality.QualityEvaluator;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
+import org.palladiosimulator.simexp.core.reward.SimulatedRewardReceiver;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
+import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.activity.StateQuantityMonitor;
 import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
@@ -53,22 +64,26 @@ import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V, T extends SimulatedMeasurementSpecification> {
     private final IWorkflowConfiguration workflowConfiguration;
     private final ModelLoader.Factory modelLoaderFactory;
-    private final SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore;
+    private final ISimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore;
     private final IProbabilityDistributionFactory<CategoricalValue> distributionFactory;
     private final IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry;
     private final ParameterParser parameterParser;
     private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
     private final Optional<ISeedProvider> seedProvider;
+    private final ISimulatedExperienceAccessor accessor;
+    private final Path resourcePath;
 
     public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
-            Optional<ISeedProvider> seedProvider) {
+            ISimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            Optional<ISeedProvider> seedProvider, ISimulatedExperienceAccessor accessor, Path resourcePath) {
         this.workflowConfiguration = workflowConfiguration;
         this.modelLoaderFactory = modelLoaderFactory;
         this.simulatedExperienceStore = simulatedExperienceStore;
         this.parameterParser = new DefaultParameterParser();
         this.seedProvider = seedProvider;
+        this.accessor = accessor;
+        this.resourcePath = resourcePath;
 
         ProbabilityDistributionFactory defaultProbabilityDistributionFactory = new ProbabilityDistributionFactory(
                 seedProvider);
@@ -78,6 +93,39 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         ProbabilityDistributionRepository probabilityDistributionRepository = BasicDistributionTypesLoader
             .loadRepository();
         this.probDistRepoLookup = new ProbabilityDistributionRepositoryLookup(probabilityDistributionRepository);
+    }
+
+    protected Path getResourcePath() {
+        return resourcePath;
+    }
+
+    protected ISimulatedExperienceAccessor getAccessor() {
+        return accessor;
+    }
+
+    protected TotalRewardCalculation createRewardCalculation(String policyId) {
+        RewardType rewardType = workflowConfiguration.getRewardType();
+        String simulationID = getSimulationParameters().getSimulationID();
+        switch (rewardType) {
+        case EXPECTED:
+            return new ExpectedRewardEvaluator(getAccessor());
+        case ACCUMULATED:
+            String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(simulationID, policyId);
+            return SimulatedExperienceEvaluator.of(getAccessor(), simulationID, sampleSpaceId);
+        case AVERAGE:
+            return new AverageRewardEvaluator(getAccessor());
+        }
+        throw new RuntimeException("unknown reward type: " + rewardType);
+    }
+
+    protected QualityEvaluator createQualityEvaluator(
+            List<? extends SimulatedMeasurementSpecification> measurementSpecs) {
+        return new QualityEvaluator(measurementSpecs);
+    }
+
+    protected IQualityLogger createQualityLogger(Path qaPath,
+            List<? extends SimulatedMeasurementSpecification> measurementSpecs) {
+        return new QualityLogger(qaPath, measurementSpecs);
     }
 
     protected Optional<ISeedProvider> getSeedProvider() {
@@ -144,7 +192,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         return parameterParser;
     }
 
-    protected SimulatedExperienceStore<QVTOReconfigurator, R> getSimulatedExperienceStore() {
+    protected ISimulatedExperienceStore<QVTOReconfigurator, R> getSimulatedExperienceStore() {
         return simulatedExperienceStore;
     }
 
@@ -170,12 +218,14 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             List<? extends SimulatedMeasurementSpecification> specs, List<ExperienceSimulationRunner> runners,
             SimulationParameters params, List<Initializable> beforeExecutionInitializables,
             EnvironmentProcess<QVTOReconfigurator, R, V> envProcess,
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            ISimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, V> navigator,
             Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy, Set<QVToReconfiguration> reconfigurations,
-            RewardEvaluator<R> evaluator, boolean hidden, IExperimentProvider experimentProvider,
-            SimulationRunnerHolder simulationRunnerHolder, SampleDumper sampleDumper,
-            Optional<ISeedProvider> seedProvider) {
+            RewardEvaluator<R> evaluator, StateQuantityMonitor stateQuantityMonitor, boolean hidden,
+            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder,
+            SampleDumper sampleDumper, Optional<ISeedProvider> seedProvider) {
+        SimulatedRewardReceiver<PCMInstance, QVTOReconfigurator, R, V> rewardReceiver = SimulatedRewardReceiver
+            .<PCMInstance, QVTOReconfigurator, R, V> with(evaluator);
 
         return PcmExperienceSimulationBuilder
             .<QVTOReconfigurator, QVToReconfiguration, R, V> newBuilder(experimentProvider, simulationRunnerHolder)
@@ -201,9 +251,8 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             .addReconfigurations(reconfigurations)
             .andReconfigurationStrategy(reconfStrategy)
             .done()
-            .specifyRewardHandling()
-            .withRewardEvaluator(evaluator)
-            .done()
+            .withRewardReceiver(rewardReceiver)
+            .withStateQuantityMonitor(stateQuantityMonitor)
             .build();
     }
 

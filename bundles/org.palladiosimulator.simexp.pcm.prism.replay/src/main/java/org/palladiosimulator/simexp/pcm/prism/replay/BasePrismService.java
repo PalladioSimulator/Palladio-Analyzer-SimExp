@@ -3,7 +3,6 @@ package org.palladiosimulator.simexp.pcm.prism.replay;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.csv.CSVFormat;
@@ -43,8 +42,11 @@ abstract class BasePrismService implements PrismService {
 
     private double extractResult(PrismContext context, PrismResult result) {
         String trimmedPropertyFileContent = extractPrismKey(context);
-        Optional<Double> resultValue = result.getResultOf(trimmedPropertyFileContent);
-        return resultValue.get();
+        if (result.getProperty()
+            .equals(trimmedPropertyFileContent)) {
+            return result.getValue();
+        }
+        throw new RuntimeException(String.format("property not found: %s", trimmedPropertyFileContent));
     }
 
     protected String extractPrismKey(PrismContext context) {

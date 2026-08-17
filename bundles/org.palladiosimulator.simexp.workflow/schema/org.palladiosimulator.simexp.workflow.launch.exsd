@@ -55,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.palladiosimulator.simexp.workflow.config.ILaunchFactory"/>
+                  <meta.attribute kind="java" basedOn=":org.palladiosimulator.simexp.workflow.api.ILaunchFactory"/>
                </appinfo>
             </annotation>
          </attribute>

@@ -1,8 +1,7 @@
 package org.palladiosimulator.simexp.pcm.prism.service;
 
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Optional;
+import java.time.Duration;
 
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismContext;
 
@@ -10,24 +9,27 @@ public interface PrismService {
 
     public static class PrismResult {
 
-        private final HashMap<String, Double> prismResults = new HashMap<>();
+        private final String property;
+        private final double value;
+        private final Duration duration;
 
-        public void addResult(String property, Double result) {
-            prismResults.put(property, result);
+        public PrismResult(String property, Double result, Duration duration) {
+            this.property = property;
+            this.value = result;
+            this.duration = duration;
         }
 
-        public Optional<Double> getResultOf(String property) {
-            return Optional.ofNullable(prismResults.get(property));
+        public String getProperty() {
+            return property;
         }
 
-        public void mergeWith(PrismResult resultToMerge) {
-            if (resultToMerge == null) {
-                return;
-            }
-
-            prismResults.putAll(resultToMerge.prismResults);
+        public double getValue() {
+            return value;
         }
 
+        public Duration getDuration() {
+            return duration;
+        }
     }
 
     public void initialise(Path logFilePath, String strategyId);

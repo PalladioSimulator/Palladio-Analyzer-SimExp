@@ -10,6 +10,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ResolvedAction;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
@@ -107,7 +108,7 @@ public class ActionCallExecutorTest {
         Action action = smodelCreator.createAction("a");
         ActionCall actionCall = smodelCreator.createActionCall(action);
         ActionArguments actionArguments = action.getArguments();
-        RangeBounds bounds = smodelCreator.createRangeBounds(smodelCreator.createIntLiteral(0),
+        RangeBounds bounds = smodelCreator.createRangeBoundsClosedOpen(smodelCreator.createIntLiteral(0),
                 smodelCreator.createIntLiteral(1), smodelCreator.createIntLiteral(1));
         Optimizable optimizable = smodelCreator.createOptimizable("o", DataType.INT, bounds);
         actionArguments.getOptimizables()
@@ -133,7 +134,7 @@ public class ActionCallExecutorTest {
         Parameter parameter = smodelCreator.createParameter("p", DataType.INT);
         actionArguments.getParameters()
             .add(parameter);
-        RangeBounds bounds = smodelCreator.createRangeBounds(smodelCreator.createIntLiteral(0),
+        RangeBounds bounds = smodelCreator.createRangeBoundsClosedOpen(smodelCreator.createIntLiteral(0),
                 smodelCreator.createIntLiteral(1), smodelCreator.createIntLiteral(1));
         Optimizable optimizable = smodelCreator.createOptimizable("o", DataType.INT, bounds);
         actionArguments.getOptimizables()

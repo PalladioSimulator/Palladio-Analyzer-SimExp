@@ -8,29 +8,29 @@ import org.palladiosimulator.simexp.core.entity.DefaultSimulatedExperience;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
-import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 
-public class SimulatedExperienceStore<A, R> {
+public class SimulatedExperienceStore<A, R> implements ISimulatedExperienceStore<A, R> {
 
-    private final DescriptionProvider descriptionProvider;
-    private final SimulatedExperienceAccessor simExperienceAccessor;
+    private final SimulatedExperienceStoreDescription description;
+    private final ISimulatedExperienceAccessor accessor;
 
-    public SimulatedExperienceStore(DescriptionProvider descriptionProvider) {
-        this.descriptionProvider = descriptionProvider;
-        // TODO exception handling
-        this.simExperienceAccessor = ServiceRegistry.get()
-            .findService(SimulatedExperienceAccessor.class)
-            .orElseThrow(() -> new RuntimeException(""));
-        ServiceRegistry.get()
-            .findService(SimulatedExperienceCache.class)
-            .ifPresent(cache -> simExperienceAccessor.setOptionalCache(cache));
+    public SimulatedExperienceStore(ISimulatedExperienceAccessor accessor,
+            SimulatedExperienceStoreDescription description) {
+        this.description = description;
+        this.accessor = accessor;
     }
 
+    @Override
+    public ISimulatedExperienceAccessor getAccessor() {
+        return accessor;
+    }
+
+    @Override
     public void store(Trajectory<A, R> trajectory) {
-        SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
-        simExperienceAccessor.connect(description);
-        simExperienceAccessor.store(toSimulatedExperience(trajectory));
-        simExperienceAccessor.close();
+        try (SimulatedExperienceWriteAccessor writeAccessor = getAccessor()
+            .createSimulatedExperienceWriteAccessor(description)) {
+            writeAccessor.store(toSimulatedExperience(trajectory));
+        }
     }
 
     private List<SimulatedExperience> toSimulatedExperience(Trajectory<A, R> trajectory) {
@@ -40,36 +40,27 @@ public class SimulatedExperienceStore<A, R> {
             .collect(Collectors.toList());
     }
 
+    @Override
     public void store(Sample<A, R> sample) {
         SimulatedExperience simExp = DefaultSimulatedExperience.of(sample);
         if (isAlreadyStored(simExp)) {
             return;
         }
 
-        SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
-        simExperienceAccessor.connect(description);
-        simExperienceAccessor.store(simExp);
-        simExperienceAccessor.close();
+        try (SimulatedExperienceWriteAccessor writeAccessor = getAccessor()
+            .createSimulatedExperienceWriteAccessor(description)) {
+            writeAccessor.store(simExp);
+        }
     }
 
     private boolean isAlreadyStored(SimulatedExperience simExp) {
         return findSimulatedExperience(simExp.getId()).isPresent();
     }
 
-    public Optional<SimulatedExperience> findSimulatedExperience(String id) {
-        SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
-        simExperienceAccessor.connect(description);
-        Optional<SimulatedExperience> result = simExperienceAccessor.findSimulatedExperience(id);
-        simExperienceAccessor.close();
-        return result;
+    private Optional<SimulatedExperience> findSimulatedExperience(String id) {
+        try (SimulatedExperienceReadAccessor readAccessor = getAccessor().createSimulatedExperienceReadAccessor()) {
+            Optional<SimulatedExperience> result = readAccessor.findSimulatedExperience(id);
+            return result;
+        }
     }
-
-    public Optional<SimulatedExperience> findSelfAdaptiveSystemState(String id) {
-        SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
-        simExperienceAccessor.connect(description);
-        Optional<SimulatedExperience> result = simExperienceAccessor.findSelfAdaptiveSystemState(id);
-        simExperienceAccessor.close();
-        return result;
-    }
-
 }

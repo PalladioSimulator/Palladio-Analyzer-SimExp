@@ -1,0 +1,276 @@
+package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.dispatcher;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.TimeZone;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.emf.common.util.URI;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
+import org.palladiosimulator.simexp.dsl.ea.api.IFitnessResultIdentificator;
+import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
+import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.api.util.IRewardFormater;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.DeploymentDispatcher;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.NodeInfo;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.PodRestartObserver;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.KubernetesPreferenceConstants;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.CompositeResultHandler;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.KubernetesFitnessResultIdentificator;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.KubernetesQualityAttributeProvider;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.csv.CsvResultLogger;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.json.JsonQualityAttributesResultLogger;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.TaskManager;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.TaskReceiver;
+import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
+import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmWorkflowConfiguration;
+import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
+import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
+
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+
+import io.fabric8.kubernetes.client.Config;
+import io.fabric8.kubernetes.client.ConfigBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.KubernetesClientBuilder;
+import tools.mdsd.probdist.api.random.ISeedProvider;
+
+public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
+    private static final Logger LOGGER = Logger.getLogger(KubernetesDispatcher.class);
+
+    private final IModelledWorkflowConfiguration config;
+    private final String launcherName;
+    private final Path resourcePath;
+    private final IPreferencesService preferencesService;
+    private final IRewardFormater rewardFormater;
+    private final ClassLoader classloader;
+
+    private EAFitnessEvaluator fitnessEvaluator;
+
+    public KubernetesDispatcher(IModelledWorkflowConfiguration config, String launcherName,
+            SimulatedExperienceStoreDescription description, Optional<ISeedProvider> seedProvider,
+            Factory modelLoaderFactory, Path resourcePath, IPreferencesService preferencesService,
+            IRewardFormater rewardFormater) {
+        this.launcherName = launcherName;
+        this.config = config;
+        this.resourcePath = resourcePath;
+        this.preferencesService = preferencesService;
+        this.rewardFormater = rewardFormater;
+        this.classloader = Thread.currentThread()
+            .getContextClassLoader();
+    }
+
+    @Override
+    public void evaluate(EvaluatorClient evaluatorClient) {
+        String clusterURL = getPreference(KubernetesPreferenceConstants.CLUSTER_URL);
+        String apiToken = getPreference(KubernetesPreferenceConstants.API_TOKEN);
+        Config config = new ConfigBuilder().withMasterUrl(clusterURL)
+            .withOauthToken(apiToken)
+            .withTrustCerts(true)
+            .build();
+        LOGGER.info(String.format("Connecting to kubernetes at: %s", clusterURL));
+        try (KubernetesClient client = new KubernetesClientBuilder().withConfig(config)
+            .build()) {
+            LOGGER.info("Connected to kubernetes");
+            try (PodRestartObserver restartObserver = new PodRestartObserver(client)) {
+                evaluateWithRabbitMQ(client, evaluatorClient, restartObserver);
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        } finally {
+            LOGGER.info("done");
+        }
+    }
+
+    private void evaluateWithRabbitMQ(KubernetesClient client, EvaluatorClient evaluatorClient,
+            PodRestartObserver restartObserver) throws IOException, TimeoutException {
+        String rabbitMQString = getPreference(KubernetesPreferenceConstants.RABBIT_MQ_URL);
+        URL rabbitMQURL = new URL(rabbitMQString);
+
+        LOGGER.info(String.format("Connecting to RabbitMQ at: %s", rabbitMQURL));
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(rabbitMQURL.getHost());
+        factory.setPort(rabbitMQURL.getPort());
+        factory.setRequestedHeartbeat(60);
+        try (Connection conn = factory.newConnection()) {
+            LOGGER.info("Connected to RabbitMQ");
+            try (Channel channel = conn.createChannel()) {
+                setupQueues(channel);
+                evaluateWithMessageChannel(client, channel, evaluatorClient, restartObserver);
+            }
+        }
+    }
+
+    private void evaluateWithMessageChannel(KubernetesClient client, Channel channel, EvaluatorClient evaluatorClient,
+            PodRestartObserver restartObserver) throws IOException {
+        String inQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_IN);
+        String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);
+        int maxDelivery = preferencesService.getInt(KubernetesPreferenceConstants.ID,
+                KubernetesPreferenceConstants.RABBIT_MAX_DELIVERY, 3, null);
+
+        try (TaskReceiver taskReceiver = new TaskReceiver(channel, inQueueName, classloader)) {
+            Path kubernetesResourcesPath = resourcePath.resolve("kubernetes");
+            Path csvResourcePath = kubernetesResourcesPath.resolve("simulation_result.csv");
+            Path taskResourcesPath = kubernetesResourcesPath.resolve("tasks");
+            Files.createDirectories(csvResourcePath.getParent());
+            Files.createDirectories(taskResourcesPath);
+            CsvResultLogger resultLogger = new CsvResultLogger(csvResourcePath);
+            JsonQualityAttributesResultLogger qualityAttributesResultLogger = new JsonQualityAttributesResultLogger(
+                    taskResourcesPath);
+            KubernetesQualityAttributeProvider qualityAttributeProvider = new KubernetesQualityAttributeProvider();
+            KubernetesFitnessResultIdentificator fitnessResultIdentificator = new KubernetesFitnessResultIdentificator();
+            CompositeResultHandler compositeResultLogger = new CompositeResultHandler(Arrays.asList(resultLogger,
+                    qualityAttributesResultLogger, qualityAttributeProvider, fitnessResultIdentificator));
+            try {
+                TaskManager taskManager = new TaskManager(compositeResultLogger, rewardFormater);
+                TaskSender taskSender = new TaskSender(channel, outQueueName);
+                taskReceiver.registerTaskConsumer(taskManager);
+                String imageRegistryStr = getPreference(KubernetesPreferenceConstants.INTERNAL_IMAGE_REGISTRY_URL);
+                URL imageRegistryUrl = new URL(imageRegistryStr);
+                String timeZone = TimeZone.getDefault()
+                    .getID();
+                DeploymentDispatcher dispatcher = new DeploymentDispatcher(classloader, client, imageRegistryUrl,
+                        timeZone);
+                String brokerUrl = buildBrokerURL();
+                List<Path> projectPaths = getProjectPaths(config);
+                int parallelism = getRawCPUCores(client);
+                fitnessEvaluator = new EAFitnessEvaluator(taskManager, taskSender, qualityAttributeProvider,
+                        fitnessResultIdentificator, launcherName, projectPaths, timeZone, parallelism, classloader);
+                int memoryUsage = ((IEvolutionaryAlgorithmWorkflowConfiguration) config).getMemoryUsage();
+                dispatcher.dispatch(memoryUsage, brokerUrl, outQueueName, inQueueName, maxDelivery, new Runnable() {
+
+                    @Override
+                    public void run() {
+                        evaluatorClient.process(KubernetesDispatcher.this);
+                    }
+                });
+            } finally {
+                compositeResultLogger.dispose();
+            }
+        }
+    }
+
+    private int getRawCPUCores(KubernetesClient client) {
+        NodeInfo nodeInfo = new NodeInfo();
+        Integer sum = client.nodes()
+            .list()
+            .getItems()
+            .stream()
+            .filter(n -> nodeInfo.isWorker(n))
+            .mapToInt(n -> nodeInfo.nodeCPUCores(n))
+            .sum();
+        return sum;
+    }
+
+    private String buildBrokerURL() throws MalformedURLException {
+        String internalRabbitMQ = getPreference(KubernetesPreferenceConstants.INTERNAL_RABBIT_MQ_URL);
+        URL internalRabbitMQURL = new URL(internalRabbitMQ);
+        String jobRabbitHost = internalRabbitMQURL.getHost();
+        int jobRabbitPort = internalRabbitMQURL.getPort();
+        List<String> urlArguments = new ArrayList<>();
+        urlArguments.add("blocked_connection_timeout=30");
+        urlArguments.add("connection_attempts=3");
+        urlArguments.add("retry_delay=5");
+        urlArguments.add("heartbeat=60");
+        String arguments = StringUtils.join(urlArguments, "&");
+        String brokerUrl = String.format("amqp://guest:guest@%s:%d/?%s", jobRabbitHost, jobRabbitPort, arguments);
+        return brokerUrl;
+    }
+
+    private void setupQueues(Channel channel) throws IOException {
+        String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);
+        String inQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_IN);
+        int consumerTimeout = preferencesService.getInt(KubernetesPreferenceConstants.ID,
+                KubernetesPreferenceConstants.RABBIT_CONSUMER_TIMEOUT, 14, null);
+
+        LOGGER.info("Deleting queues ...");
+        channel.queueDelete(inQueueName);
+        channel.queueDelete(outQueueName);
+        LOGGER.info("Queues deleted");
+
+        boolean durable = true;
+        boolean exclusive = false;
+        boolean autoDelete = false;
+        Map<String, Object> outArguments = new HashMap<>();
+        outArguments.put("x-queue-type", "quorum");
+        outArguments.put("x-consumer-timeout", TimeUnit.MILLISECONDS.convert(consumerTimeout, TimeUnit.HOURS));
+        channel.queueDeclare(outQueueName, durable, exclusive, autoDelete, outArguments);
+        channel.queueDeclare(inQueueName, durable, exclusive, autoDelete, null);
+    }
+
+    private List<Path> getProjectPaths(IModelledWorkflowConfiguration config) {
+        URI experiments = config.getExperimentsURI();
+        URI staticModel = config.getStaticModelURI();
+        URI dynamicModel = config.getDynamicModelURI();
+        URI smodel = config.getSmodelURI();
+        List<URI> uris = Arrays.asList(experiments, staticModel, dynamicModel, smodel);
+
+        List<Path> projectPaths = uris.stream()
+            .filter(Objects::nonNull)
+            .map(u -> getProjectPath(u))
+            .distinct()
+            .collect(Collectors.toList());
+        return projectPaths;
+    }
+
+    private Path getProjectPath(URI uri) {
+        String platformResourcePath = uri.toPlatformString(true);
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IWorkspaceRoot workspaceRoot = workspace.getRoot();
+        IResource memberResource = workspaceRoot.findMember(platformResourcePath);
+        IProject project = memberResource.getProject();
+        IPath projectLocation = project.getLocation();
+        String osProjectPath = projectLocation.toOSString();
+        return Paths.get(osProjectPath);
+    }
+
+    private String getPreference(String key) {
+        String value = preferencesService.getString(KubernetesPreferenceConstants.ID, key, "", null);
+        return value;
+    }
+
+    @Override
+    public int getParallelism() {
+        return fitnessEvaluator.getParallelism();
+    }
+
+    @Override
+    public IQualityAttributeProvider getQualityAttributeProvider() {
+        return fitnessEvaluator.getQualityAttributeProvider();
+    }
+
+    @Override
+    public IFitnessResultIdentificator getFitnessResultIdentificator() {
+        return fitnessEvaluator.getFitnessResultIdentificator();
+    }
+
+    @Override
+    public Future<Optional<Double>> calcFitness(List<OptimizableValue<?>> optimizableValues) throws IOException {
+        return fitnessEvaluator.calcFitness(optimizableValues);
+    }
+}

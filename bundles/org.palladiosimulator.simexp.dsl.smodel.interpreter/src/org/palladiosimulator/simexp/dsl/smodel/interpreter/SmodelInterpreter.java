@@ -12,10 +12,11 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.SmodelPlaner;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Analyzer;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Planner;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.ConstantValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.FieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.OptimizableValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.SaveFieldValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.VariableValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.impl.FieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.impl.SaveFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.impl.StaticValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.impl.VariableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 
 public class SmodelInterpreter implements Analyzer, Planner, IResettable {
@@ -24,22 +25,23 @@ public class SmodelInterpreter implements Analyzer, Planner, IResettable {
     private final SmodelAnalyzer smodelAnalyzer;
     private final SmodelPlaner smodelPlaner;
     private final VariableValueProvider variableValueProvider;
+    private final StaticValueProvider staticProbeValueProvider;
+    private final StaticValueProvider staticEnvVariableValueProvider;
+    private final StaticValueProvider staticOptimizableValueProvider;
 
     public SmodelInterpreter(Smodel model, IFieldValueProvider probeValueProvider,
-            IFieldValueProvider envVariableValueProvider) {
-        IFieldValueProvider optimizableValueProvider = new OptimizableValueProvider();
-        ISmodelConfig smodelConfig = new ISmodelConfig() {
-
-            @Override
-            public double getEpsilon() {
-                return 0.0001;
-            }
-        };
+            IFieldValueProvider envVariableValueProvider, OptimizableValueProvider optimizableValueProvider) {
+        ISmodelConfig smodelConfig = new DefaultSmodelConfig();
         IFieldValueProvider constantValueProvider = new ConstantValueProvider(smodelConfig);
-        variableValueProvider = new VariableValueProvider(smodelConfig, constantValueProvider, probeValueProvider,
-                optimizableValueProvider, envVariableValueProvider);
+        this.staticProbeValueProvider = new StaticValueProvider(probeValueProvider, model.getProbes());
+        this.staticEnvVariableValueProvider = new StaticValueProvider(envVariableValueProvider,
+                model.getEnvVariables());
+        this.staticOptimizableValueProvider = new StaticValueProvider(optimizableValueProvider,
+                model.getOptimizables());
+        variableValueProvider = new VariableValueProvider(smodelConfig, constantValueProvider, staticProbeValueProvider,
+                staticOptimizableValueProvider, staticEnvVariableValueProvider);
         IFieldValueProvider fieldValueProvider = new FieldValueProvider(constantValueProvider, variableValueProvider,
-                probeValueProvider, optimizableValueProvider, envVariableValueProvider);
+                staticProbeValueProvider, staticOptimizableValueProvider, staticEnvVariableValueProvider);
         IFieldValueProvider saveFieldValueProvider = new SaveFieldValueProvider(fieldValueProvider);
         this.smodelAnalyzer = new SmodelAnalyzer(model, smodelConfig, saveFieldValueProvider);
         this.smodelPlaner = new SmodelPlaner(model, smodelConfig, saveFieldValueProvider, variableValueProvider);
@@ -53,6 +55,10 @@ public class SmodelInterpreter implements Analyzer, Planner, IResettable {
 
     @Override
     public boolean analyze() {
+        // Ensure dynamic values keep their values during an analyze/plan cycle
+        staticProbeValueProvider.assignStatic();
+        staticEnvVariableValueProvider.assignStatic();
+        staticOptimizableValueProvider.assignStatic();
         return smodelAnalyzer.analyze();
     }
 

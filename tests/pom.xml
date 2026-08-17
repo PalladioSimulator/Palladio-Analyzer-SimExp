@@ -15,12 +15,22 @@
 		<module>org.palladiosimulator.simexp.core.tests</module>
 		<module>org.palladiosimulator.simexp.model.io.tests</module>
 		<module>org.palladiosimulator.simexp.pcm.tests</module>
+		<module>org.palladiosimulator.simexp.distribution.tests</module>
+		<module>org.palladiosimulator.simexp.dsl.smodel.api.tests</module>
 		<module>org.palladiosimulator.simexp.dsl.smodel.test.util</module>
 		<module>org.palladiosimulator.simexp.dsl.smodel.tests</module>
 		<module>org.palladiosimulator.simexp.dsl.smodel.ui.tests</module>
 		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter.tests</module>
 		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.tests</module>
 		<module>org.palladiosimulator.simexp.model.strategy.tests</module>
+		<module>org.palladiosimulator.simexp.dsl.ea.api.tests</module>
+		<module>org.palladiosimulator.simexp.dsl.ea.pareto.tests</module>
+		<module>org.palladiosimulator.simexp.dsl.ea.launch.tests</module>
+		<module>org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.tests</module>
+		<module>org.palladiosimulator.simexp.dsl.ea.optimizer.tests</module>
+		<module>org.palladiosimulator.simexp.pcm.modelled.tests</module>
+		<module>org.palladiosimulator.simexp.workflow.tests</module>
+		<module>org.palladiosimulator.simexp.pcm.examples.deltaiot.tests</module>
 	</modules>
 	
 </project>

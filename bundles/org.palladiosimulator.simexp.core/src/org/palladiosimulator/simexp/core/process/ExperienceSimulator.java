@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
 import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
@@ -16,23 +16,17 @@ public class ExperienceSimulator<C, A, R> {
     private final MarkovSampling<A, R> markovSampler;
     private final List<ExperienceSimulationRunner> simulationRunners;
     private final List<Initializable> beforeExecutionInitializations;
-    private final SimulatedExperienceStore<A, R> simulatedExperienceStore;
+    private final ISimulatedExperienceStore<A, R> simulatedExperienceStore;
     private final int numberOfRuns;
 
-    private ExperienceSimulator(ExperienceSimulationConfiguration<C, A, R> config,
-            SimulatedExperienceStore<A, R> simulatedExperienceStore, SimulationRunnerHolder simulationRunnerHolder) {
+    public ExperienceSimulator(ExperienceSimulationConfiguration<C, A, R> config,
+            ISimulatedExperienceStore<A, R> simulatedExperienceStore, SimulationRunnerHolder simulationRunnerHolder) {
         this.numberOfRuns = config.getNumberOfRuns();
         this.markovSampler = config.getMarkovSampler();
         this.simulationRunners = config.getSimulationRunners();
         this.beforeExecutionInitializations = config.getBeforeExecutionInitialization();
         simulationRunnerHolder.registerSimulationRunners(simulationRunners);
         this.simulatedExperienceStore = simulatedExperienceStore;
-    }
-
-    public static <S, A, R> ExperienceSimulator<S, A, R> createSimulator(
-            ExperienceSimulationConfiguration<S, A, R> config, SimulatedExperienceStore<A, R> simulatedExperienceStore,
-            SimulationRunnerHolder simulationRunnerHolder) {
-        return new ExperienceSimulator<>(config, simulatedExperienceStore, simulationRunnerHolder);
     }
 
     public void run() {
@@ -42,6 +36,7 @@ public class ExperienceSimulator<C, A, R> {
             runExperienceSimulator();
             LOGGER.info(String.format("End simulator run: %d/%d", run + 1, numberOfRuns));
         }
+        disposeInitializer();
     }
 
     private void initExperienceSimulator() {
@@ -60,5 +55,10 @@ public class ExperienceSimulator<C, A, R> {
             simulatedExperienceStore.store(each);
         }
         simulatedExperienceStore.store(traj);
+    }
+
+    private void disposeInitializer() {
+        beforeExecutionInitializations.stream()
+            .forEach(Initializable::dispose);
     }
 }

@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.EObject;
+import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IVariableAssigner;
@@ -101,7 +103,8 @@ public class SmodelPlaner extends SmodelSwitch<List<ResolvedAction>> implements 
     public List<ResolvedAction> caseVariableAssignment(VariableAssignment variableAssignment) {
         SmodelDumper dumper = new SmodelDumper(fieldValueProvider);
         StringBuilder sb = new StringBuilder();
-        if (LOGGER.isDebugEnabled()) {
+        Level assignmentLogLevel = Level.DEBUG;
+        if (logAssignments(assignmentLogLevel)) {
             sb.append("assign ");
             Variable variableRef = variableAssignment.getVariableRef();
             sb.append(variableRef.getName());
@@ -110,11 +113,15 @@ public class SmodelPlaner extends SmodelSwitch<List<ResolvedAction>> implements 
             sb.append(dumper.doSwitch(value));
         }
         Object assignedValue = variableAssigner.assign(variableAssignment);
-        if (LOGGER.isDebugEnabled()) {
+        if (logAssignments(assignmentLogLevel)) {
             sb.append(" := ");
             sb.append(dumper.formatValue(assignedValue));
-            LOGGER.debug(sb.toString());
+            LOGGER.log(assignmentLogLevel, sb.toString());
         }
         return Collections.emptyList();
+    }
+
+    private boolean logAssignments(Level level) {
+        return LOGGER.isEnabledFor(level);
     }
 }

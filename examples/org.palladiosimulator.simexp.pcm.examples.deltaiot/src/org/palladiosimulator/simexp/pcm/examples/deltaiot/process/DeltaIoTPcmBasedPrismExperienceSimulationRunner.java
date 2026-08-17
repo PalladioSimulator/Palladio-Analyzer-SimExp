@@ -50,6 +50,10 @@ public class DeltaIoTPcmBasedPrismExperienceSimulationRunner<A> extends
         updateModelReferences(pcmPartition);
     }
 
+    @Override
+    public void dispose() {
+    }
+
     private void updateModelReferences(PCMResourceSetPartition pcmPartition) {
         updateDistributionFactorReferences(retrieveRepo(pcmPartition.getRepositories()));
         updateAndResetTransmissionPower(pcmPartition.getSystem());

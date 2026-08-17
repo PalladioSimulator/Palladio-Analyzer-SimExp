@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.activity.RewardReceiver;
+import org.palladiosimulator.simexp.markovian.activity.StateQuantityMonitor;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.type.BasicMarkovian;
 import org.palladiosimulator.simexp.markovian.type.DecisionBasedMarkovian;
@@ -14,6 +15,7 @@ public class DecisionBasedMarkovianBuilder<A, Aa extends Action<A>, R>
         Builder<DecisionBasedMarkovian<A, Aa, R>> {
 
     private RewardReceiver<A, R> rewardCalc;
+    private StateQuantityMonitor stateQuantityMonitor;
     private Set<Aa> actionSpace;
     private Policy<A, Aa> policy;
     private BasicMarkovian<A, R> basicMarkovian;
@@ -28,6 +30,11 @@ public class DecisionBasedMarkovianBuilder<A, Aa extends Action<A>, R>
     @Override
     public DecisionBasedMarkovianBuilder<A, Aa, R> calculateRewardWith(RewardReceiver<A, R> reCalc) {
         this.rewardCalc = reCalc;
+        return this;
+    }
+
+    public DecisionBasedMarkovianBuilder<A, Aa, R> withStateQuantityMonitor(StateQuantityMonitor stateQuantityMonitor) {
+        this.stateQuantityMonitor = stateQuantityMonitor;
         return this;
     }
 
@@ -54,8 +61,8 @@ public class DecisionBasedMarkovianBuilder<A, Aa extends Action<A>, R>
         Objects.requireNonNull(rewardCalc, "");
         Objects.requireNonNull(actionSpace, "");
 
-        DecisionBasedMarkovian<A, Aa, R> decisionBasedMarkovian = new DecisionBasedMarkovian<A, Aa, R>(basicMarkovian,
-                policy, rewardCalc, actionSpace);
+        DecisionBasedMarkovian<A, Aa, R> decisionBasedMarkovian = new DecisionBasedMarkovian<>(basicMarkovian,
+                policy, rewardCalc, stateQuantityMonitor, actionSpace);
         return decisionBasedMarkovian;
     }
 }

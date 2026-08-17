@@ -14,19 +14,20 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulationConfigurati
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
-import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.reward.SimulatedRewardReceiver;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.EnvironmentDrivenStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.environmentaldynamics.process.UnobservableEnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.activity.StateQuantityMonitor;
 import org.palladiosimulator.simexp.markovian.builder.MarkovianBuilder;
 import org.palladiosimulator.simexp.markovian.builder.StateSpaceNavigatorBuilder;
 import org.palladiosimulator.simexp.markovian.config.MarkovianConfig;
@@ -47,10 +48,11 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     private int numberOfRuns = 0;
     private int numberOfSamplesPerRun = 0;
     private Set<Aa> reconfigurationSpace = null;
-    private RewardEvaluator<R> rewardEvaluator = null;
+    private SimulatedRewardReceiver<C, A, R, V> rewardReceiver;
+    private StateQuantityMonitor stateQuantityMonitor;
     private Policy<A, Aa> policy = null;
     private EnvironmentProcess<A, R, V> envProcess = null;
-    private SimulatedExperienceStore<A, R> simulatedExperienceStore;
+    private ISimulatedExperienceStore<A, R> simulatedExperienceStore;
     private SimulationRunnerHolder simulationRunnerHolder;
     private boolean isHiddenProcess = false;
     private Optional<MarkovModel<A, R>> markovModel = Optional.empty();
@@ -76,8 +78,16 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
         return new ReconfigurationSpaceBuilder();
     }
 
-    public RewardReceiverBuilder specifyRewardHandling() {
-        return new RewardReceiverBuilder();
+    public ExperienceSimulationBuilder<C, A, Aa, R, V> withRewardReceiver(
+            SimulatedRewardReceiver<C, A, R, V> rewardReceiver) {
+        this.rewardReceiver = rewardReceiver;
+        return this;
+    }
+
+    public ExperienceSimulationBuilder<C, A, Aa, R, V> withStateQuantityMonitor(
+            StateQuantityMonitor stateQuantityMonitor) {
+        this.stateQuantityMonitor = stateQuantityMonitor;
+        return this;
     }
 
     public ExperienceSimulator<C, A, R> build() {
@@ -91,12 +101,11 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
             .addSimulationRunner(getSimulationRunner())
             .sampleWith(buildMarkovSampler(seedProvider, sampleDumper))
             .build();
-        return ExperienceSimulator.createSimulator(config, simulatedExperienceStore, simulationRunnerHolder);
+        return new ExperienceSimulator<>(config, simulatedExperienceStore, simulationRunnerHolder);
     }
 
     private void checkValidity() {
         // TODO exception handling
-        Objects.requireNonNull(rewardEvaluator, "");
         Objects.requireNonNull(reconfigurationSpace, "");
         Objects.requireNonNull(policy, "");
         if (envProcess == null && navigator == null) {
@@ -144,10 +153,10 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
             throw new RuntimeException("The environment must be unobservable to declare the process as POMDP.");
         }
 
-        SimulatedRewardReceiver<C, A, R, V> rewardReceiver = SimulatedRewardReceiver.<C, A, R, V> with(rewardEvaluator);
         return MarkovianBuilder.<A, Aa, R> createPartiallyObservableMDP()
             .createStateSpaceNavigator(navigator)
             .calculateRewardWith(rewardReceiver)
+            .withStateQuantityMonitor(stateQuantityMonitor)
             .selectActionsAccordingTo(policy)
             .withActionSpace(getReconfigurationSpace())
             .withInitialStateDistribution(initialDist)
@@ -158,7 +167,8 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     private Markovian<A, R> buildMDP(ProbabilityMassFunction<State> initialDist, StateSpaceNavigator<A> navigator) {
         return MarkovianBuilder.<A, Aa, R> createMarkovDecisionProcess()
             .createStateSpaceNavigator(navigator)
-            .calculateRewardWith(SimulatedRewardReceiver.<C, A, R, V> with(rewardEvaluator))
+            .calculateRewardWith(rewardReceiver)
+            .withStateQuantityMonitor(stateQuantityMonitor)
             .selectActionsAccordingTo(policy)
             .withActionSpace(getReconfigurationSpace())
             .withInitialStateDistribution(initialDist)
@@ -182,8 +192,8 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
 
     private StateSpaceNavigator<A> createInductiveStateSpaceNavigator() {
         if (envProcess != null) {
-            return EnvironmentDrivenStateSpaceNavigator.with(envProcess, simulatedExperienceStore,
-                    simulationRunnerHolder);
+            ISimulatedExperienceAccessor accessor = simulatedExperienceStore.getAccessor();
+            return EnvironmentDrivenStateSpaceNavigator.with(envProcess, accessor, simulationRunnerHolder);
         }
         return navigator;
     }
@@ -229,7 +239,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     public class SelfAdaptiveSystemBuilder {
 
         public SelfAdaptiveSystemBuilder asEnvironmentalDrivenProcess(EnvironmentProcess<A, R, V> envProcess,
-                SimulatedExperienceStore<A, R> simulatedExperienceStore,
+                ISimulatedExperienceStore<A, R> simulatedExperienceStore,
                 SimulationRunnerHolder simulationRunnerHolder) {
             ExperienceSimulationBuilder.this.envProcess = envProcess;
             ExperienceSimulationBuilder.this.simulatedExperienceStore = simulatedExperienceStore;
@@ -314,18 +324,6 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
         public ReconfigurationSpaceBuilder andReconfigurationStrategy(ReconfigurationStrategy<A, Aa> strategy) {
             // todo: setup mape-k executor here
             ExperienceSimulationBuilder.this.policy = new ReconfigurationStrategyAdapter(strategy);
-            return this;
-        }
-
-        public ExperienceSimulationBuilder<C, A, Aa, R, V> done() {
-            return ExperienceSimulationBuilder.this;
-        }
-    }
-
-    public class RewardReceiverBuilder {
-
-        public RewardReceiverBuilder withRewardEvaluator(RewardEvaluator<R> evaluator) {
-            ExperienceSimulationBuilder.this.rewardEvaluator = evaluator;
             return this;
         }
 

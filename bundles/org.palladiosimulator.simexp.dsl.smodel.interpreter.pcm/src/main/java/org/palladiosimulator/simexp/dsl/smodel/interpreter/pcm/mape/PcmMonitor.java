@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.mape;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
@@ -23,10 +24,10 @@ public class PcmMonitor implements Monitor {
     private final ProbeValueProviderMeasurementInjector pvpInjector;
     private final PerceivedEnvironmentalStateValueInjector environmentalStateValueInjector;
 
-    public PcmMonitor(List<SimulatedMeasurementSpecification> measurementSpecs,
+    public PcmMonitor(List<? extends SimulatedMeasurementSpecification> measurementSpecs,
             ProbeValueProviderMeasurementInjector pvpInjector,
             PerceivedEnvironmentalStateValueInjector environmentalStateValueInjector) {
-        this.measurementSpecs = measurementSpecs;
+        this.measurementSpecs = new ArrayList<>(measurementSpecs);
         this.pvpInjector = pvpInjector;
         this.environmentalStateValueInjector = environmentalStateValueInjector;
     }

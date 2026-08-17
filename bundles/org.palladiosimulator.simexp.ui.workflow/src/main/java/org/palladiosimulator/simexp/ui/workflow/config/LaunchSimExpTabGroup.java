@@ -24,9 +24,11 @@ public class LaunchSimExpTabGroup extends AbstractLaunchConfigurationTabGroup {
     public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
         SimExpModelsTab modelsTab = new SimExpModelsTab(ctx);
         ITrafoNameProvider trafoNameProvider = new TrafoNameProviderCache(new TrafoNameProvider());
+        SimExpConfigurationTab simExpConfigurationTab = new SimExpConfigurationTab(ctx, modelsTab, trafoNameProvider);
         ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] { //
                 modelsTab, //
-                new SimExpConfigurationTab(ctx, modelsTab, trafoNameProvider), //
+                simExpConfigurationTab, //
+                new EvolutionaryAlgorithmConfigurationTab(ctx, simExpConfigurationTab), //
                 new CommonTab() };
 
         setTabs(tabs);

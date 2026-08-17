@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.tests
+Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.tests
+Automatic-Module-Name: org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.tests
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: org.palladiosimulator.simexp.dsl.ea.launch.kubernetes;bundle-version="0.1.0"
+Require-Bundle: org.junit;bundle-version="4.13.0",
+ org.mockito.mockito-merged;bundle-version="3.3.3",
+ net.bytebuddy.byte-buddy;bundle-version="1.10.9",
+ net.bytebuddy.byte-buddy-agent;bundle-version="1.10.9",
+ org.objenesis;bundle-version="2.6.0",
+ org.assertj;bundle-version="3.20.2"
+Bundle-RequiredExecutionEnvironment: JavaSE-17

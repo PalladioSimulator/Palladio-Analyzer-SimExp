@@ -1,0 +1,157 @@
+package org.palladiosimulator.simexp.app.console.simulation;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
+
+import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.ILaunchManager;
+import org.palladiosimulator.simexp.app.console.Arguments;
+import org.palladiosimulator.simexp.app.console.simulation.launcher.ISimulationLaunch;
+import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
+import org.palladiosimulator.simexp.console.api.OptimizableValues;
+import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
+
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+public class SimulationExecutor {
+    private final static Logger LOGGER = Logger.getLogger(SimulationExecutor.class);
+
+    private final ILaunchManager launchManager;
+    private final Gson gson;
+
+    public SimulationExecutor(ILaunchManager launchManager) {
+        this.launchManager = launchManager;
+        this.gson = new GsonBuilder() //
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .serializeNulls()
+            .setPrettyPrinting()
+            .create();
+    }
+
+    public void runSimulation(Arguments arguments, Path instancePath) throws IOException {
+        ConsoleSimulationResult result = doRunSimulation(arguments, instancePath);
+        Path resultFile = resolvePath(arguments.getResultFile(), instancePath);
+        writeResult(result, resultFile);
+    }
+
+    private void writeResult(ConsoleSimulationResult result, Path resultFile) throws IOException {
+        try (Writer writer = Files.newBufferedWriter(resultFile, StandardCharsets.UTF_8)) {
+            gson.toJson(result, writer);
+        }
+    }
+
+    private ConsoleSimulationResult doRunSimulation(Arguments arguments, Path instancePath) {
+        try {
+            IProject project = prepareSimulation(instancePath, arguments);
+            ISimulationResult simulationResult = executeSimulation(launchManager, project, arguments, instancePath);
+            return new ConsoleSimulationResult(simulationResult.getTotalReward(), simulationResult.getRewardType()
+                .name(), simulationResult.getQualityMeasurements());
+        } catch (Exception e) {
+            LOGGER.error("simulation failed", e);
+            return new ConsoleSimulationResult(e.getMessage());
+        }
+    }
+
+    private IProject prepareSimulation(Path instancePath, Arguments arguments)
+            throws InvocationTargetException, InterruptedException, CoreException {
+        Path projectPath = instancePath.resolve(arguments.getProjectName());
+        IProject project = openProject(projectPath);
+        return project;
+    }
+
+    private IProject openProject(Path projectPath) throws CoreException {
+        LOGGER.info(String.format("open project: %s", projectPath));
+        // it is acceptable to use the ResourcesPlugin class
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IProject project = workspace.getRoot()
+            .getProject(projectPath.getFileName()
+                .toString());
+
+        if (project.exists()) {
+            return project;
+        }
+
+        if (!project.isOpen()) {
+            IProjectDescription desc = project.getWorkspace()
+                .newProjectDescription(project.getName());
+            project.create(desc, null);
+            project.open(null);
+        } else {
+            project.refreshLocal(IResource.DEPTH_INFINITE, null);
+        }
+
+        return project;
+    }
+
+    private ISimulationResult executeSimulation(ILaunchManager launchManager, IProject project, Arguments arguments,
+            Path instancePath) throws CoreException, IOException {
+        ILaunchConfiguration launchConfiguration = getLaunchConfiguration(launchManager, arguments, instancePath);
+        String launchMode = ILaunchManager.RUN_MODE;
+        LOGGER.info(String.format("experiment start:  %s", launchConfiguration.getName()));
+        ILaunch launch = launchConfiguration.launch(launchMode, new NullProgressMonitor(), false, false);
+        LOGGER.info(String.format("experiment finish: %s", launchConfiguration.getName()));
+        ISimulationLaunch simulationLaunch = (ISimulationLaunch) launch;
+        ISimulationResult simulationResult = simulationLaunch.getSimulationResult();
+        return simulationResult;
+    }
+
+    private ILaunchConfiguration getLaunchConfiguration(ILaunchManager launchManager, Arguments arguments,
+            Path instancePath) throws CoreException, IOException {
+        String launchConfigName = arguments.getLaunchConfig();
+        ILaunchConfiguration launchConfiguration = findLaunchConfiguration(launchManager, launchConfigName);
+        if (launchConfiguration == null) {
+            throw new RuntimeException(
+                    String.format("launch config %s not found in: %s", launchConfigName, arguments.getProjectName()));
+        }
+
+        ILaunchConfigurationWorkingCopy workingLaunchConfig = launchConfiguration.getWorkingCopy();
+        Path optimizablesPath = resolvePath(arguments.getOptimizables(), instancePath);
+        OptimizableValues optimizableValues = readOptimizeableValues(optimizablesPath);
+        String jsonValues = gson.toJson(optimizableValues);
+        workingLaunchConfig.setAttribute(SimulationConstants.OPTIMIZED_VALUES, jsonValues);
+
+        return workingLaunchConfig;
+    }
+
+    private Path resolvePath(Path path, Path instancePath) {
+        if (path.isAbsolute()) {
+            return path;
+        }
+        return instancePath.resolve(path);
+    }
+
+    private OptimizableValues readOptimizeableValues(Path optimizablesPath) throws IOException {
+        try (Reader reader = Files.newBufferedReader(optimizablesPath, StandardCharsets.UTF_8)) {
+            OptimizableValues value = gson.fromJson(reader, OptimizableValues.class);
+            return value;
+        }
+    }
+
+    private ILaunchConfiguration findLaunchConfiguration(ILaunchManager launchManager, String launchConfigName)
+            throws CoreException {
+        for (ILaunchConfiguration lc : launchManager.getLaunchConfigurations()) {
+            if (Objects.equals(launchConfigName, lc.getName())) {
+                return lc;
+            }
+        }
+        return null;
+    }
+}

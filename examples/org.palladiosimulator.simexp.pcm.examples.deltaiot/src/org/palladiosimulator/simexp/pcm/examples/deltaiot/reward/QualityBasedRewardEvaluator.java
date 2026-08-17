@@ -5,6 +5,7 @@ import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCo
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.UPPER_BOUND_ENERGY_CONSUMPTION;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.UPPER_BOUND_PACKET_LOSS;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
@@ -13,22 +14,18 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Rew
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.RewardImpl;
 
 public class QualityBasedRewardEvaluator implements RewardEvaluator<Double> {
+    private static final Logger LOGGER = Logger.getLogger(QualityBasedRewardEvaluator.class);
 
     public static class RealValuedReward extends RewardImpl<Double> {
 
-        private RealValuedReward(double value) {
+        public RealValuedReward(double value) {
             super.setValue(value);
-        }
-
-        public static RealValuedReward of(double value) {
-            return new RealValuedReward(value);
         }
 
         @Override
         public String toString() {
             return Double.toString(getValue());
         }
-
     }
 
     private final SimulatedMeasurementSpecification packetLossSpec;
@@ -42,44 +39,39 @@ public class QualityBasedRewardEvaluator implements RewardEvaluator<Double> {
 
     @Override
     public Reward<Double> evaluate(StateQuantity quantifiedState) {
-        double value = 0.0;
         SimulatedMeasurement packetLoss = quantifiedState.findMeasurementWith(packetLossSpec)
             .orElseThrow();
         double normalizedPacketLoss = normalizePacketLoss(packetLoss.getValue());
-        value += normalizedPacketLoss;
         SimulatedMeasurement energyConsumption = quantifiedState.findMeasurementWith(energyConsumptionSpec)
             .orElseThrow();
         double normalizedEnergyConsumption = normalizeEnergyConsumption(energyConsumption.getValue());
-        value += normalizedEnergyConsumption;
 
         double normalizedValue = normalizedPacketLoss + normalizedEnergyConsumption;
 
-        return RealValuedReward.of(normalizedValue);
+        Reward<Double> reward = new RealValuedReward(normalizedValue);
+        return reward;
     }
 
     private double normalizeEnergyConsumption(double ec) {
-        if (ec > UPPER_BOUND_ENERGY_CONSUMPTION) {
-            return 0;
-        }
-
-        if (ec < LOWER_BOUND_ENERGY_CONSUMPTION) {
-            return 1;
-        }
-
-        return (1 / (UPPER_BOUND_ENERGY_CONSUMPTION - LOWER_BOUND_ENERGY_CONSUMPTION))
-                * (UPPER_BOUND_ENERGY_CONSUMPTION - ec);
+        return normalize(ec, LOWER_BOUND_ENERGY_CONSUMPTION, UPPER_BOUND_ENERGY_CONSUMPTION, "energy consumption");
     }
 
     private double normalizePacketLoss(double pl) {
-        if (pl > UPPER_BOUND_PACKET_LOSS) {
+        return normalize(pl, LOWER_BOUND_PACKET_LOSS, UPPER_BOUND_PACKET_LOSS, "packet loss");
+    }
+
+    double normalize(double value, double lower, double upper, String name) {
+        if (value > upper) {
+            LOGGER.error(String.format("%s value out of bounds (%f,%f): %f", name, lower, upper, value));
             return 0;
         }
 
-        if (pl < LOWER_BOUND_PACKET_LOSS) {
+        if (value < lower) {
+            LOGGER.error(String.format("%s value out of bounds (%f,%f): %f", name, lower, upper, value));
             return 1;
         }
 
-        return (1 / (UPPER_BOUND_PACKET_LOSS - LOWER_BOUND_PACKET_LOSS)) * (UPPER_BOUND_PACKET_LOSS - pl);
+        return (1 / (upper - lower)) * (upper - value);
     }
 
 }
