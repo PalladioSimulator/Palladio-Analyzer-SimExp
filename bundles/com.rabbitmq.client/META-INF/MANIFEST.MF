@@ -13,6 +13,6 @@ Export-Package: com.rabbitmq.client,
  com.rabbitmq.tools.json,
  com.rabbitmq.tools.jsonrpc,
  com.rabbitmq.utility
-Require-Bundle: org.slf4j.api;bundle-version="1.7.30"
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Require-Bundle: slf4j.api
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-ClassPath: lib/amqp-client.jar

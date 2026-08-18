@@ -18,4 +18,4 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.26.100",
  org.palladiosimulator.simexp.pcm.examples;bundle-version="1.0.0"
 Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.ea.api;singleton:=true
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
