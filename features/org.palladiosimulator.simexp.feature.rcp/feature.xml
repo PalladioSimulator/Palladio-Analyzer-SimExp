@@ -103,14 +103,7 @@
          id="com.google.guava"
          download-size="0"
          install-size="0"
-         version="27.1.0.v20190517-1946"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.guava"
-         download-size="0"
-         install-size="0"
-         version="30.1.0.v20221112-0806"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -470,7 +463,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.jxpath"
+         id="org.apache.commons.commons-jxpath"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -548,20 +541,6 @@
 
    <plugin
          id="org.eclipse.net4j.util"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.emf.query"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.emf.query.ocl"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -714,28 +693,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.w3c.css.sac"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.w3c.dom.events"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.w3c.dom.smil"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.w3c.dom.svg"
+         id="org.eclipse.orbit.xml-apis-ext"
          download-size="0"
          install-size="0"
          version="0.0.0"

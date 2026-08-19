@@ -1422,7 +1422,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.security.win32.x86_64"
+         id="org.eclipse.equinox.security.win32"
          os="win32"
          arch="x86_64"
          download-size="0"
