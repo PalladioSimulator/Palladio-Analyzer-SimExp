@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.io.IOUtils;
@@ -117,7 +117,7 @@ public class WorkspaceEntryFactory implements IWorkspaceEntryFactory {
     private void addFileToTarGz(TarArchiveOutputStream tar, Path path, Path base, List<PathMatcher> ignoreMatchers)
             throws IOException {
         Path entryName = base.resolve(path.getFileName());
-        ArchiveEntry tarEntry = tar.createArchiveEntry(path, entryName.toString());
+        TarArchiveEntry tarEntry = tar.createArchiveEntry(path, entryName.toString());
         tar.putArchiveEntry(tarEntry);
         if (Files.isRegularFile(path)) {
             LOGGER.debug(String.format("add tar entry %s -> %s", entryName, path));
