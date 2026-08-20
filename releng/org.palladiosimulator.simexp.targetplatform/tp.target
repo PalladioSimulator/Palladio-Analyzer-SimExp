@@ -189,30 +189,20 @@
 			<unit id="com.google.inject" version="0.0.0"/>
 			<unit id="org.aopalliance" version="0.0.0"/>
 			<unit id="org.apache.commons.commons-io" version="0.0.0"/>
-			<unit id="org.apache.xalan" version="0.0.0"/>
 			<repository location="https://download.eclipse.org/releases/2025-12/202512101000/"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
+			<unit id="com.fasterxml.jackson.core.jackson-annotations" version="0.0.0"/>
+			<unit id="com.fasterxml.jackson.core.jackson-core" version="0.0.0"/>
+			<unit id="com.fasterxml.jackson.core.jackson-databind" version="0.0.0"/>
 			<unit id="com.google.inject.assistedinject" version="0.0.0"/>
+			<unit id="org.apache.commons.commons-compress" version="0.0.0"/>
 			<unit id="org.apache.commons.commons-csv" version="0.0.0"/>
 			<unit id="org.apache.commons.commons-jxpath" version="0.0.0"/>
 			<unit id="org.apache.xalan" version="0.0.0"/>
 			<unit id="org.apache.xml.serializer" version="0.0.0"/>
 			<unit id="org.apache.xmlgraphics" version="0.0.0"/>
 			<unit id="org.eclipse.orbit.xml-apis-ext" version="0.0.0"/>
-			<repository location="https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/release/4.38.0/"/>
-		</location>
-		<!-- Added on master for the EA integration. The Orbit aggregation renamed
-		     commons-compress and slf4j.api, and dropped the log4j 1.2 binding in favour
-		     of reload4j. -->
-		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
-			<unit id="com.google.inject.assistedinject" version="0.0.0"/>
-			<unit id="org.apache.commons.commons-csv" version="0.0.0"/>
-			<unit id="org.apache.commons.commons-jxpath" version="0.0.0"/>
-			<unit id="com.fasterxml.jackson.core.jackson-annotations" version="0.0.0"/>
-			<unit id="com.fasterxml.jackson.core.jackson-core" version="0.0.0"/>
-			<unit id="com.fasterxml.jackson.core.jackson-databind" version="0.0.0"/>
-			<unit id="org.apache.commons.commons-compress" version="0.0.0"/>
 			<unit id="slf4j.api" version="0.0.0"/>
 			<unit id="slf4j.reload4j" version="0.0.0"/>
 			<repository location="https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/release/4.38.0/"/>
