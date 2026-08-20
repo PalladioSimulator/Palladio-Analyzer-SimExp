@@ -1,6 +1,6 @@
 package org.palladiosimulator.simexp.dsl.smodel.acceptance.tests;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;

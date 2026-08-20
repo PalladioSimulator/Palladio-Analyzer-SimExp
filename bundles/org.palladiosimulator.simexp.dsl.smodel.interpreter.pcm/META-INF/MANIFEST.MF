@@ -18,4 +18,4 @@ Require-Bundle: org.palladiosimulator.simexp.core,
  org.palladiosimulator.simexp.dsl.smodel.interpreter,
  org.palladiosimulator.simexp.environmentaldynamics
 Automatic-Module-Name: org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21

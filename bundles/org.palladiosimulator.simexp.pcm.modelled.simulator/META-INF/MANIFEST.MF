@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.modelled.simulator
 Bundle-Version: 1.0.0.qualifier
 Export-Package: org.palladiosimulator.simexp.pcm.modelled.simulator,
  org.palladiosimulator.simexp.pcm.modelled.simulator.config
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.modelled.simulator
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.apache.log4j;bundle-version="1.2.19",

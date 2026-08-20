@@ -22,7 +22,7 @@ Require-Bundle: org.palladiosimulator.simexp.dsl.smodel,
  org.eclipse.ui.forms,
  org.apache.commons.lang3;bundle-version="3.1.0"
 Import-Package: org.apache.log4j
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Export-Package: org.palladiosimulator.simexp.dsl.smodel.ui.contentassist,
  org.palladiosimulator.simexp.dsl.smodel.ui.internal,
  org.palladiosimulator.simexp.dsl.smodel.ui.quickfix,

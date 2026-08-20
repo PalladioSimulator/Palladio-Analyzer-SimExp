@@ -4,7 +4,7 @@ Bundle-Name: Interpreter
 Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.smodel.interpreter
 Bundle-Version: 0.1.0.qualifier
 Automatic-Module-Name: org.palladiosimulator.simexp.dsl.smodel.interpreter
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Require-Bundle: org.palladiosimulator.simexp.dsl.smodel,
  org.palladiosimulator.edp2,
  org.apache.log4j,

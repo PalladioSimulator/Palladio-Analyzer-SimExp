@@ -55,19 +55,7 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="de.mdelab.sdm.interpreter.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
-   <plugin
-         id="de.mdelab.sdm.interpreter.core.eclipse"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.apache.batik.awt.util"
@@ -131,7 +119,6 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
    <plugin
          id="org.apache.xalan"
          download-size="0"
@@ -154,14 +141,14 @@
          unpack="false"/>
 
    <plugin
-         id="org.bouncycastle.bcpg"
+         id="bcpg"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.bouncycastle.bcprov"
+         id="bcprov"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -657,12 +644,6 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.eclipse.gmf.runtime.notation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.eclipse.help"
@@ -1109,7 +1090,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.xtext.junit4"
+         id="org.eclipse.xtext.testing"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1179,7 +1160,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.xtext.xbase.junit"
+         id="org.eclipse.xtext.xbase.testing"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1193,7 +1174,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.hamcrest.core"
+         id="org.hamcrest"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1262,12 +1243,6 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.osgi.service.provisioning"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.osgi.service.upnp"
@@ -1297,19 +1272,7 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.osgi.util.measurement"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
-   <plugin
-         id="org.osgi.util.position"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.osgi.util.promise"
@@ -1339,47 +1302,11 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.storydriven.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
-   <plugin
-         id="org.storydriven.storydiagrams"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
-   <plugin
-         id="org.storydriven.storydiagrams.expressions"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
-   <plugin
-         id="org.storydriven.storydiagrams.expressions.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
-   <plugin
-         id="org.storydriven.storydiagrams.interpreter.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
-   <plugin
-         id="org.storydriven.storydiagrams.interpreter.eclipse"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.tukaani.xz"
@@ -1422,7 +1349,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.security.win32.x86_64"
+         id="org.eclipse.equinox.security.win32"
          os="win32"
          arch="x86_64"
          download-size="0"

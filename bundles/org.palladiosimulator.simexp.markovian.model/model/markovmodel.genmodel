@@ -9,7 +9,7 @@
     editorPluginClass="org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.presentation.MarkovmodelEditorPlugin"
     rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" codeFormatting="true"
     testSuiteClass="org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.tests.MarkovmodelAllTests"
-    importerID="org.eclipse.emf.importer.ecore" complianceLevel="17.0" copyrightFields="false"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="21.0" copyrightFields="false"
     editPluginID="org.palladiosimulator.simexp.markovian.model.edit" editorPluginID="org.palladiosimulator.simexp.markovian.model.editor"
     operationReflection="true" importOrganizing="true">
   <foreignModel>markovmodel.ecore</foreignModel>

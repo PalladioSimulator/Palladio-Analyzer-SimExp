@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.simexp.markovian.model,
  org.palladiosimulator.simexp.service,
  org.apache.log4j
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Automatic-Module-Name: org.palladiosimulator.simexp.markovian
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.emf.common.util,
