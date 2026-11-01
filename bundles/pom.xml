@@ -62,6 +62,7 @@
 		<module>org.palladiosimulator.simexp.dsl.ea.ui</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.pareto</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.launch</module>
+		<module>org.palladiosimulator.simexp.dsl.bf.launch</module>
 
 		<module>org.palladiosimulator.simexp.console.api</module>
 
