@@ -189,6 +189,7 @@
 			<unit id="com.google.inject" version="0.0.0"/>
 			<unit id="org.aopalliance" version="0.0.0"/>
 			<unit id="org.apache.commons.commons-io" version="0.0.0"/>
+			<unit id="org.osgi.service.coordinator" version="0.0.0"/>
 			<repository location="https://download.eclipse.org/releases/2025-12/202512101000/"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
@@ -211,6 +212,15 @@
 			<unit id="org.eclipse.core.runtime.feature.feature.group" version="0.0.0"/>
 			<unit id="org.eclipse.equinox.executable.feature.group" version="0.0.0"/>
 			<repository location="https://download.eclipse.org/releases/2025-12/202512101000/"/>
+		</location>
+
+		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
+			<unit id="org.eclipse.emf.henshin.sdk.feature.group" version="0.0.0"/>
+			<repository location="http://download.eclipse.org/modeling/emft/henshin/updates/1.6.0/"/>
+		</location>
+		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
+			<unit id="javax.inject" version="1.0.0.v20091030"/>
+			<repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20201130205003/repository"/>
 		</location>
 	</locations>
 </target>
