@@ -15,7 +15,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.palladiosimulator.simexp.dsl.ea.api.util.IRewardFormater;
+import org.palladiosimulator.simexp.dsl.dispatcher.util.IRewardFormater;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.concurrent.SettableFutureTask;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.TaskManager.TaskState;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;

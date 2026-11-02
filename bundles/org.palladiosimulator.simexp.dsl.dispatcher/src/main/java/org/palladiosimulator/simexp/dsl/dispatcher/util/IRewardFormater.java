@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.api.util;
+package org.palladiosimulator.simexp.dsl.dispatcher.util;
 
 public interface IRewardFormater {
 
