@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.palladiosimulator.simexp.dsl.ea.api" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.palladiosimulator.simexp.dsl.dispatcher" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.palladiosimulator.simexp.dsl.ea.api" id="org.palladiosimulator.simexp.dsl.ea.api.dispatcher" name="EvolutionaryAlgorithmDispatcher"/>
+         <meta.schema plugin="org.palladiosimulator.simexp.dsl.dispatcher" id="org.palladiosimulator.simexp.dsl.dispatcher" name="EvolutionaryAlgorithmDispatcher"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]

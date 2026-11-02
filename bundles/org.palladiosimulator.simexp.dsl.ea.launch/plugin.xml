@@ -8,7 +8,7 @@
       </factory>
    </extension>
    <extension
-         point="org.palladiosimulator.simexp.dsl.ea.api.dispatcher">
+         point="org.palladiosimulator.simexp.dsl.dispatcher">
       <dispatcher
             class="org.palladiosimulator.simexp.dsl.ea.launch.dispatcher.LocalDispatcherProvider">
       </dispatcher>

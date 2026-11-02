@@ -17,7 +17,7 @@ import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class DispatcherLookup {
-    private static final String ID = "org.palladiosimulator.simexp.dsl.ea.api.dispatcher";
+    private static final String ID = "org.palladiosimulator.simexp.dsl.dispatcher";
 
     private final IExtensionRegistry registry;
 
