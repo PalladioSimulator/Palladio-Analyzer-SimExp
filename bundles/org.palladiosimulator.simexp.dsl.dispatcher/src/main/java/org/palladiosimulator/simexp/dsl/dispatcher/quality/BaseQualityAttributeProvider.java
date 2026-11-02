@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.launch.quality;
+package org.palladiosimulator.simexp.dsl.dispatcher.quality;
 
 import java.util.Comparator;
 import java.util.HashMap;

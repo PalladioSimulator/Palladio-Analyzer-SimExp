@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.launch.quality;
+package org.palladiosimulator.simexp.dsl.dispatcher.quality;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
