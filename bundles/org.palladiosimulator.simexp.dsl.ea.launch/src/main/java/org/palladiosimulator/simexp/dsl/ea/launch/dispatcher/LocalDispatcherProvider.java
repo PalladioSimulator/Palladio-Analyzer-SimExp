@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluatorProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableRewardEvaluator;
-import org.palladiosimulator.simexp.dsl.dispatcher.preferences.EAPreferenceConstants;
+import org.palladiosimulator.simexp.dsl.dispatcher.preferences.DispatcherPreferenceConstants;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.IRewardFormater;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.local.LocalEAFitnessEvaluator;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
@@ -19,7 +19,7 @@ public class LocalDispatcherProvider implements IRewardEvaluatorProvider {
 
     @Override
     public String getName() {
-        return EAPreferenceConstants.DEFAULT_DISPATCHER;
+        return DispatcherPreferenceConstants.DEFAULT_DISPATCHER;
     }
 
     @Override

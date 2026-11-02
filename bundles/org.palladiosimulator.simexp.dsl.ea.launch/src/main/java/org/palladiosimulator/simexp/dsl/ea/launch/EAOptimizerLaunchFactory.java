@@ -13,7 +13,7 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableRewardEvaluator;
-import org.palladiosimulator.simexp.dsl.dispatcher.preferences.EAPreferenceConstants;
+import org.palladiosimulator.simexp.dsl.dispatcher.preferences.DispatcherPreferenceConstants;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.IRewardFormater;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.RewardFormater;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.DispatcherLookup;
@@ -82,7 +82,7 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
     private IDisposeableRewardEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config,
             String launcherName, SimulatedExperienceStoreDescription description, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, IRewardFormater rewardFormater, Path resourcePath) throws CoreException {
-        String dispatchername = preferencesService.getString(EAPreferenceConstants.ID, EAPreferenceConstants.DISPATCHER,
+        String dispatchername = preferencesService.getString(DispatcherPreferenceConstants.ID, DispatcherPreferenceConstants.DISPATCHER,
                 "", null);
         DispatcherLookup dispatcherLookup = new DispatcherLookup();
         return dispatcherLookup.createEvaluator(dispatchername, config, launcherName, description, seedProvider,

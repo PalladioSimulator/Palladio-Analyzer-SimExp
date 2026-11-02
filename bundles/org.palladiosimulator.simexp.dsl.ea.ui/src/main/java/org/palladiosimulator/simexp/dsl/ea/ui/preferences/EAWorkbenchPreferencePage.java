@@ -13,7 +13,7 @@ import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
-import org.palladiosimulator.simexp.dsl.dispatcher.preferences.EAPreferenceConstants;
+import org.palladiosimulator.simexp.dsl.dispatcher.preferences.DispatcherPreferenceConstants;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.DispatcherLookup;
 
 public class EAWorkbenchPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
@@ -25,7 +25,7 @@ public class EAWorkbenchPreferencePage extends FieldEditorPreferencePage impleme
 
     @Override
     public void init(IWorkbench workbench) {
-        setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, EAPreferenceConstants.ID));
+        setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, DispatcherPreferenceConstants.ID));
         setDescription("Evolutionary algorithm preferences");
     }
 
@@ -41,7 +41,7 @@ public class EAWorkbenchPreferencePage extends FieldEditorPreferencePage impleme
             .map(l -> l.stream()
                 .toArray(String[]::new))
             .toArray(String[][]::new);
-        addField(new RadioGroupFieldEditor(EAPreferenceConstants.DISPATCHER, "Dispatcher selection", 1, labelAndValues,
+        addField(new RadioGroupFieldEditor(DispatcherPreferenceConstants.DISPATCHER, "Dispatcher selection", 1, labelAndValues,
                 getFieldEditorParent()));
     }
 
