@@ -9,7 +9,7 @@ import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
-import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.KubernetesPreferenceConstants;
+import org.palladiosimulator.simexp.dsl.dispatcher.kubernetes.preferences.KubernetesPreferenceConstants;
 
 public class KubernetesWorkbenchPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 

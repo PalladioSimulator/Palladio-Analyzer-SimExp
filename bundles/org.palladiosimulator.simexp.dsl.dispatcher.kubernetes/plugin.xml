@@ -5,13 +5,13 @@
          id="org.palladiosimulator.simexp.dsl.dispatcher.kubernetes"
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.impl.KubernetesPreferenceInitializer">
+            class="org.palladiosimulator.simexp.dsl.dispatcher.kubernetes.preferences.impl.KubernetesPreferenceInitializer">
       </initializer>
    </extension>
    <extension
          point="org.palladiosimulator.simexp.dsl.dispatcher">
       <dispatcher
-            class="org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.dispatcher.KubernetesDispatcherProvider">
+            class="org.palladiosimulator.simexp.dsl.dispatcher.kubernetes.dispatcher.KubernetesDispatcherProvider">
       </dispatcher>
    </extension>
 
