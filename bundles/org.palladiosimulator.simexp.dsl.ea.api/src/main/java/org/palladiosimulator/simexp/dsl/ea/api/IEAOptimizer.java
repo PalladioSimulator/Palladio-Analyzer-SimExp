@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.api;
 
+import org.palladiosimulator.simexp.dsl.dispatcher.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 

@@ -9,10 +9,10 @@ import java.util.concurrent.Future;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.dispatcher.IResultIdentificator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.OptimizableValueToString;
-import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 public class CachingEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {

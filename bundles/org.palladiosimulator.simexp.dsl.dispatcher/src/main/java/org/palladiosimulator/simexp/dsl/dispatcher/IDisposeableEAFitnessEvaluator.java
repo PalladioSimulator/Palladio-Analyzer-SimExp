@@ -1,6 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.api.dispatcher;
-
-import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+package org.palladiosimulator.simexp.dsl.dispatcher;
 
 public interface IDisposeableEAFitnessEvaluator extends IEAFitnessEvaluator {
     interface EvaluatorClient {

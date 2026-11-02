@@ -11,7 +11,7 @@ import java.util.concurrent.Future;
 import java.util.function.Function;
 
 import org.apache.log4j.Logger;
-import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.util.RewardFormater;
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
