@@ -43,7 +43,7 @@
    <features>
       <feature id="org.eclipse.e4.rcp"/>
       <feature id="org.palladiosimulator.simexp.feature"/>
-      <feature id="org.palladiosimulator.simexp.feature.dsl.ea.kubernetes"/>
+      <feature id="org.palladiosimulator.simexp.feature.dsl.dispatcher.kubernetes"/>
       <feature id="org.palladiosimulator.simexp.feature.palladio"/>
       <feature id="org.palladiosimulator.simexp.feature.palladio.ui"/>
       <feature id="org.palladiosimulator.simexp.feature.rcp"/>

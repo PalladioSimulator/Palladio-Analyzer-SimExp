@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.palladiosimulator.simexp.feature.dsl.ea.kubernetes"
-      label="SimExp DSL EA kubernetes feature"
+      id="org.palladiosimulator.simexp.feature.dsl.dispatcher.kubernetes"
+      label="SimExp DSL kubernetes feature"
       version="1.0.0.qualifier">
 
    <description url="http://www.example.com/description">
@@ -33,13 +33,13 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.palladiosimulator.simexp.dsl.ea.launch.kubernetes"
+         id="org.palladiosimulator.simexp.dsl.dispatcher.kubernetes"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
 
    <plugin
-         id="org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.ui"
+         id="org.palladiosimulator.simexp.dsl.dispatcher.kubernetes.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

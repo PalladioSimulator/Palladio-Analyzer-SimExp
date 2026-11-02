@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.ui</name>
+	<name>org.palladiosimulator.simexp.dsl.dispatcher.kubernetes.ui</name>
 	<comment></comment>
 	<projects>
 	</projects>
