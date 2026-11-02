@@ -12,11 +12,11 @@ import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimization
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
+import org.palladiosimulator.simexp.dsl.dispatcher.DispatcherLookup;
 import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.preferences.DispatcherPreferenceConstants;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.IRewardFormater;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.RewardFormater;
-import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.DispatcherLookup;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.CachingEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.smodel.api.ISmodelConstants;
 import org.palladiosimulator.simexp.dsl.smodel.api.PrecisionProvider;

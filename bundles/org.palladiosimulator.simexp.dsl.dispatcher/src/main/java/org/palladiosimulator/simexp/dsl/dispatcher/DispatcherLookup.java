@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.api.dispatcher;
+package org.palladiosimulator.simexp.dsl.dispatcher;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -10,8 +10,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
-import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluatorProvider;
-import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.IRewardFormater;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;

@@ -13,8 +13,8 @@ import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.palladiosimulator.simexp.dsl.dispatcher.DispatcherLookup;
 import org.palladiosimulator.simexp.dsl.dispatcher.preferences.DispatcherPreferenceConstants;
-import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.DispatcherLookup;
 
 public class EAWorkbenchPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
     private static final Logger LOGGER = Logger.getLogger(EAWorkbenchPreferencePage.class);
