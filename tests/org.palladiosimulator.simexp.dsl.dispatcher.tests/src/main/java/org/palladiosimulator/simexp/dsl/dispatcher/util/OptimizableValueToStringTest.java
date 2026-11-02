@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.api.util;
+package org.palladiosimulator.simexp.dsl.dispatcher.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.palladiosimulator.simexp.dsl.dispatcher.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
