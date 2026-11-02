@@ -26,7 +26,7 @@ public class EAWorkbenchPreferencePage extends FieldEditorPreferencePage impleme
     @Override
     public void init(IWorkbench workbench) {
         setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, DispatcherPreferenceConstants.ID));
-        setDescription("Evolutionary algorithm preferences");
+        setDescription("Dispatcher preferences");
     }
 
     @Override
@@ -41,8 +41,8 @@ public class EAWorkbenchPreferencePage extends FieldEditorPreferencePage impleme
             .map(l -> l.stream()
                 .toArray(String[]::new))
             .toArray(String[][]::new);
-        addField(new RadioGroupFieldEditor(DispatcherPreferenceConstants.DISPATCHER, "Dispatcher selection", 1, labelAndValues,
-                getFieldEditorParent()));
+        addField(new RadioGroupFieldEditor(DispatcherPreferenceConstants.DISPATCHER, "Dispatcher selection", 1,
+                labelAndValues, getFieldEditorParent()));
     }
 
     private List<String> getProviderNames() {
