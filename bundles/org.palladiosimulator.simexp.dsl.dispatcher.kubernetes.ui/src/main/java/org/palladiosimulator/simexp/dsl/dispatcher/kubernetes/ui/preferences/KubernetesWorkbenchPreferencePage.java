@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.ui.preferences;
+package org.palladiosimulator.simexp.dsl.dispatcher.kubernetes.ui.preferences;
 
 import java.util.concurrent.TimeUnit;
 
