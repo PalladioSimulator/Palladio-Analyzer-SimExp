@@ -12,18 +12,12 @@ import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimization
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
-import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.DispatcherLookup;
-import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.ea.api.preferences.EAPreferenceConstants;
-import org.palladiosimulator.simexp.dsl.ea.api.util.IRewardFormater;
-import org.palladiosimulator.simexp.dsl.ea.api.util.RewardFormater;
 import org.palladiosimulator.simexp.dsl.smodel.api.ISmodelConstants;
 import org.palladiosimulator.simexp.dsl.smodel.api.PrecisionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
-import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
 import org.palladiosimulator.simexp.pcm.modelled.ModelledModelLoader;
 import org.palladiosimulator.simexp.workflow.api.ILaunchFactory;
 
@@ -69,22 +63,29 @@ public class EABruteForceLaunchFactory implements ILaunchFactory {
         // TODO: get from SModel
         final int places = ISmodelConstants.PLACES;
         PrecisionProvider precisionProvider = new PrecisionProvider(places);
-        RewardFormater rewardFormater = new RewardFormater(precisionProvider);
-        IDisposeableEAFitnessEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration,
-                launcherName, description, seedProvider, modelLoaderFactory, rewardFormater, resourcePath);
-        // return new EAOptimizerSimulationExecutor(smodel, fitnessEvaluator,
-        // (IEvolutionaryAlgorithmWorkflowConfiguration) config, precisionProvider, rewardFormater,
-        // resourcePath);
+        /*
+         * RewardFormater rewardFormater = new RewardFormater(precisionProvider);
+         * IDisposeableEAFitnessEvaluator fitnessEvaluator =
+         * createFitnessEvaluator(modelledWorkflowConfiguration, launcherName, description,
+         * seedProvider, modelLoaderFactory, rewardFormater, resourcePath); // return new
+         * EAOptimizerSimulationExecutor(smodel, fitnessEvaluator, //
+         * (IEvolutionaryAlgorithmWorkflowConfiguration) config, precisionProvider, rewardFormater,
+         * // resourcePath);
+         * 
+         * return new BruteForceSimulationExecutor(smodel, fitnessEvaluator, config,
+         * precisionProvider, rewardFormater, resourcePath);
+         */
         return null;
     }
 
-    private IDisposeableEAFitnessEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config,
-            String launcherName, SimulatedExperienceStoreDescription description, Optional<ISeedProvider> seedProvider,
-            Factory modelLoaderFactory, IRewardFormater rewardFormater, Path resourcePath) throws CoreException {
-        String dispatchername = preferencesService.getString(EAPreferenceConstants.ID, EAPreferenceConstants.DISPATCHER,
-                "", null);
-        DispatcherLookup dispatcherLookup = new DispatcherLookup();
-        return dispatcherLookup.createEvaluator(dispatchername, config, launcherName, description, seedProvider,
-                modelLoaderFactory, rewardFormater, resourcePath);
-    }
+    /*
+     * private IDisposeableEAFitnessEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration
+     * config, String launcherName, SimulatedExperienceStoreDescription description,
+     * Optional<ISeedProvider> seedProvider, Factory modelLoaderFactory, IRewardFormater
+     * rewardFormater, Path resourcePath) throws CoreException { String dispatchername =
+     * preferencesService.getString(EAPreferenceConstants.ID, EAPreferenceConstants.DISPATCHER, "",
+     * null); DispatcherLookup dispatcherLookup = new DispatcherLookup(); return
+     * dispatcherLookup.createEvaluator(dispatchername, config, launcherName, description,
+     * seedProvider, modelLoaderFactory, rewardFormater, resourcePath); }
+     */
 }
