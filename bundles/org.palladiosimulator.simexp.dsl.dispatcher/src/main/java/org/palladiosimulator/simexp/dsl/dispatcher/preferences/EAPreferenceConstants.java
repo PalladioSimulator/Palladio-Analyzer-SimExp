@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.api.preferences;
+package org.palladiosimulator.simexp.dsl.dispatcher.preferences;
 
 public interface EAPreferenceConstants {
     static final String ID = "org.palladiosimulator.simexp.dsl.ea.api";

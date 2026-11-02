@@ -1,9 +1,9 @@
-package org.palladiosimulator.simexp.dsl.ea.api.preferences.impl;
+package org.palladiosimulator.simexp.dsl.dispatcher.preferences.impl;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.osgi.service.prefs.Preferences;
-import org.palladiosimulator.simexp.dsl.ea.api.preferences.EAPreferenceConstants;
+import org.palladiosimulator.simexp.dsl.dispatcher.preferences.EAPreferenceConstants;
 
 public class EAPreferenceInitializer extends AbstractPreferenceInitializer {
 
