@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.ui.preferences;
+package org.palladiosimulator.simexp.dsl.dispatcher.preferences;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +14,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.palladiosimulator.simexp.dsl.dispatcher.DispatcherLookup;
-import org.palladiosimulator.simexp.dsl.dispatcher.preferences.DispatcherPreferenceConstants;
 
 public class EAWorkbenchPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
     private static final Logger LOGGER = Logger.getLogger(EAWorkbenchPreferencePage.class);

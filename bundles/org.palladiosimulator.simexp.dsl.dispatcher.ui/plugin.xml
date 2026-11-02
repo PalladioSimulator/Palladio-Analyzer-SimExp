@@ -5,7 +5,7 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.palladiosimulator.simexp.ui.workflow.preferences.SimExpPreferencePage"
-            class="org.palladiosimulator.simexp.dsl.ea.ui.preferences.EAWorkbenchPreferencePage"
+            class="org.palladiosimulator.simexp.dsl.dispatcher.preferences.EAWorkbenchPreferencePage"
             id="org.palladiosimulator.simexp.dsl.ea.ui.preferences.EAPreferencePage"
             name="Evolutionary algorithm">
       </page>
