@@ -5,7 +5,7 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.osgi.service.prefs.Preferences;
 import org.palladiosimulator.simexp.dsl.dispatcher.preferences.EAPreferenceConstants;
 
-public class EAPreferenceInitializer extends AbstractPreferenceInitializer {
+public class DispatcherPreferenceInitializer extends AbstractPreferenceInitializer {
 
     @Override
     public void initializeDefaultPreferences() {
