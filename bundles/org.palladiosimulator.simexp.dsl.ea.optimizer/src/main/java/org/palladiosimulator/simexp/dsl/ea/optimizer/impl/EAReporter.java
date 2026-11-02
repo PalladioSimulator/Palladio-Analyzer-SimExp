@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.palladiosimulator.simexp.dsl.dispatcher.IFitnessResultIdentificator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IResultIdentificator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
@@ -17,10 +17,10 @@ import io.jenetics.engine.EvolutionResult;
 public class EAReporter<G extends Gene<?, G>> implements Consumer<EvolutionResult<G, Double>> {
     private final IEAEvolutionStatusReceiver evolutionStatusReceiver;
     private final ITranscoder<G> transcoder;
-    private final IFitnessResultIdentificator fitnessResultIdentificator;
+    private final IResultIdentificator fitnessResultIdentificator;
 
     public EAReporter(IEAEvolutionStatusReceiver evolutionStatusReceiver, ITranscoder<G> transcoder,
-            IFitnessResultIdentificator fitnessResultIdentificator) {
+            IResultIdentificator fitnessResultIdentificator) {
         this.evolutionStatusReceiver = evolutionStatusReceiver;
         this.transcoder = transcoder;
         this.fitnessResultIdentificator = fitnessResultIdentificator;

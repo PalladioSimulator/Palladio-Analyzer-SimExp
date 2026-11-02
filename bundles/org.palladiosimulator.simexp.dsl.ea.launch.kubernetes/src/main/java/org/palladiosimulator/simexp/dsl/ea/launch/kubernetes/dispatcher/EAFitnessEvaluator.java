@@ -9,7 +9,7 @@ import java.util.concurrent.Future;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.palladiosimulator.simexp.dsl.dispatcher.IFitnessResultIdentificator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IResultIdentificator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.concurrent.SettableFutureTask;
@@ -30,7 +30,7 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
     private final ITaskManager taskManager;
     private final ITaskSender taskSender;
     private final IQualityAttributeProvider qualityAttributeProvider;
-    private final IFitnessResultIdentificator fitnessResultIdentificator;
+    private final IResultIdentificator fitnessResultIdentificator;
     private final String launcherName;
     private final List<Path> projectPaths;
     private final ClassLoader classloader;
@@ -41,7 +41,7 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
     private int count = 0;
 
     public EAFitnessEvaluator(ITaskManager taskManager, ITaskSender taskSender,
-            IQualityAttributeProvider qualityAttributeProvider, IFitnessResultIdentificator fitnessResultIdentificator,
+            IQualityAttributeProvider qualityAttributeProvider, IResultIdentificator fitnessResultIdentificator,
             String launcherName, List<Path> projectPaths, String timeZone, int parallelism, ClassLoader classloader) {
         this.taskManager = taskManager;
         this.taskSender = taskSender;
@@ -66,7 +66,7 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
     }
 
     @Override
-    public IFitnessResultIdentificator getFitnessResultIdentificator() {
+    public IResultIdentificator getFitnessResultIdentificator() {
         return this.fitnessResultIdentificator;
     }
 

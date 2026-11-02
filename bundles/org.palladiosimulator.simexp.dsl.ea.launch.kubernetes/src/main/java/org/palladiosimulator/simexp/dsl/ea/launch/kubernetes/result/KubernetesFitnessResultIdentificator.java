@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.palladiosimulator.simexp.dsl.dispatcher.IFitnessResultIdentificator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IResultIdentificator;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.IResultHandler;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.JobResult;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.JobResult.Status;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
-public class KubernetesFitnessResultIdentificator implements IFitnessResultIdentificator, IResultHandler {
+public class KubernetesFitnessResultIdentificator implements IResultIdentificator, IResultHandler {
     private final Map<List<OptimizableValue<?>>, String> idMap;
 
     public KubernetesFitnessResultIdentificator() {

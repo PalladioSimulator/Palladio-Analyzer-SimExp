@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
-import org.palladiosimulator.simexp.dsl.dispatcher.IFitnessResultIdentificator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IResultIdentificator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
@@ -106,7 +106,7 @@ public class EAOptimizer implements IEAOptimizer {
         LOGGER.info(String.format("optimizeable search space: %s", df.format(overallPower)));
 
         IQualityAttributeProvider qualityAttributeProvider = fitnessEvaluator.getQualityAttributeProvider();
-        IFitnessResultIdentificator fitnessResultIdentificator = fitnessEvaluator.getFitnessResultIdentificator();
+        IResultIdentificator fitnessResultIdentificator = fitnessEvaluator.getFitnessResultIdentificator();
 
         // Setup EA
         Genotype<G> genotype = buildGenotype(optimizables, transcoder);
@@ -152,7 +152,7 @@ public class EAOptimizer implements IEAOptimizer {
     private <G extends Gene<?, G>> EAResult runOptimization(EvaluationStatistics<G> evaluationStatistics,
             IEAEvolutionStatusReceiver evolutionStatusReceiver, ITranscoder<G> normalizer,
             FitnessFunction<G> fitnessFunction, IQualityAttributeProvider qualityAttributeProvider,
-            IFitnessResultIdentificator fitnessResultIdentificator, final Engine<G, Double> engine) {
+            IResultIdentificator fitnessResultIdentificator, final Engine<G, Double> engine) {
         LOGGER.info("EA running...");
 
         EvolutionResult<G, Double> initial = engine.stream()
@@ -190,7 +190,7 @@ public class EAOptimizer implements IEAOptimizer {
             EvolutionResult<G, Double> result, EvolutionStatistics<Double, DoubleMomentStatistics> standardStatistics,
             EvaluationStatistics<G> evaluationStatistics, ITranscoder<G> normalizer,
             IQualityAttributeProvider qualityAttributeProvider,
-            IFitnessResultIdentificator fitnessResultIdentificator) {
+            IResultIdentificator fitnessResultIdentificator) {
         StringBuilder resultStatistics = new StringBuilder();
         resultStatistics.append(standardStatistics.toString());
         resultStatistics.append("\n");
@@ -218,7 +218,7 @@ public class EAOptimizer implements IEAOptimizer {
     }
 
     private <G extends Gene<?, G>> IndividualResult buildIndividualResult(ITranscoder<G> normalizer,
-            IFitnessResultIdentificator fitnessResultIdentificator, Phenotype<G, Double> phenotype) {
+            IResultIdentificator fitnessResultIdentificator, Phenotype<G, Double> phenotype) {
         List<OptimizableValue<?>> optimizableValues = normalizer.toOptimizableValues(phenotype.genotype());
         Optional<String> identificator = fitnessResultIdentificator.getIdentificator(optimizableValues);
         return new IndividualResult(phenotype.fitness(), optimizableValues, identificator.orElse("n/a"));

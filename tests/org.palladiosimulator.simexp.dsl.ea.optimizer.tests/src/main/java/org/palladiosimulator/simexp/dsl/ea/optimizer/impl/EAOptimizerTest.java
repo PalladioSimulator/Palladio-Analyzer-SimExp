@@ -27,7 +27,7 @@ import org.mockito.stubbing.Answer;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.Run;
-import org.palladiosimulator.simexp.dsl.dispatcher.IFitnessResultIdentificator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IResultIdentificator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
@@ -64,7 +64,7 @@ public class EAOptimizerTest {
     @Mock
     private IQualityAttributeProvider qualityAttributeProvider;
     @Mock
-    private IFitnessResultIdentificator fitnessResultIdentificator;
+    private IResultIdentificator fitnessResultIdentificator;
     @Mock
     private IExpressionCalculator calculator;
     @Mock

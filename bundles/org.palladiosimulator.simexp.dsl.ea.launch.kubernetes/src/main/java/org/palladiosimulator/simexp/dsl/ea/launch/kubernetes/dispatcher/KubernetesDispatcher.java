@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
-import org.palladiosimulator.simexp.dsl.dispatcher.IFitnessResultIdentificator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IResultIdentificator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.util.IRewardFormater;
@@ -265,7 +265,7 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
     }
 
     @Override
-    public IFitnessResultIdentificator getFitnessResultIdentificator() {
+    public IResultIdentificator getFitnessResultIdentificator() {
         return fitnessEvaluator.getFitnessResultIdentificator();
     }
 
