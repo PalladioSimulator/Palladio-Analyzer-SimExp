@@ -11,7 +11,7 @@ import java.util.concurrent.Future;
 import java.util.function.Function;
 
 import org.apache.log4j.Logger;
-import org.palladiosimulator.simexp.dsl.dispatcher.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.RewardFormater;
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
@@ -23,14 +23,14 @@ public class FitnessFunction<G extends Gene<?, G>>
         implements Function<Genotype<G>, Double>, IEvaluationStatisticsReporter {
     private static final Logger LOGGER = Logger.getLogger(FitnessFunction.class);
 
-    private final IEAFitnessEvaluator fitnessEvaluator;
+    private final IRewardEvaluator fitnessEvaluator;
     private final ITranscoder<G> transcoder;
     private final RewardFormater rewardUtil;
     private final double penaltyForInvalids;
 
     private Set<List<OptimizableValue<?>>> evaluatedOptimizables = Collections.synchronizedSet(new HashSet<>());
 
-    public FitnessFunction(IPrecisionProvider precisionProvider, IEAFitnessEvaluator fitnessEvaluator,
+    public FitnessFunction(IPrecisionProvider precisionProvider, IRewardEvaluator fitnessEvaluator,
             ITranscoder<G> transcoder, double penaltyForInvalids) {
         this.rewardUtil = new RewardFormater(precisionProvider);
         this.fitnessEvaluator = fitnessEvaluator;
@@ -47,7 +47,7 @@ public class FitnessFunction<G extends Gene<?, G>>
         List<OptimizableValue<?>> optimizableValues = transcoder.toOptimizableValues(genotype);
         evaluatedOptimizables.add(optimizableValues);
         try {
-            Future<Optional<Double>> fitnessFuture = fitnessEvaluator.calcFitness(optimizableValues);
+            Future<Optional<Double>> fitnessFuture = fitnessEvaluator.calcReward(optimizableValues);
             Optional<Double> optionalFitness = fitnessFuture.get();
 
             double fitness = optionalFitness.isPresent() ? optionalFitness.get() : penaltyForInvalids;

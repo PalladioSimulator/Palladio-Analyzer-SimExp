@@ -12,7 +12,7 @@ import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimization
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
-import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.preferences.EAPreferenceConstants;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.IRewardFormater;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.RewardFormater;
@@ -72,14 +72,14 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
         final int places = ISmodelConstants.PLACES;
         PrecisionProvider precisionProvider = new PrecisionProvider(places);
         RewardFormater rewardFormater = new RewardFormater(precisionProvider);
-        IDisposeableEAFitnessEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration,
+        IDisposeableRewardEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration,
                 launcherName, description, seedProvider, modelLoaderFactory, rewardFormater, resourcePath);
         fitnessEvaluator = new CachingEAFitnessEvaluator(fitnessEvaluator);
         return new EAOptimizerSimulationExecutor(smodel, fitnessEvaluator,
                 (IEvolutionaryAlgorithmWorkflowConfiguration) config, precisionProvider, rewardFormater, resourcePath);
     }
 
-    private IDisposeableEAFitnessEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config,
+    private IDisposeableRewardEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config,
             String launcherName, SimulatedExperienceStoreDescription description, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, IRewardFormater rewardFormater, Path resourcePath) throws CoreException {
         String dispatchername = preferencesService.getString(EAPreferenceConstants.ID, EAPreferenceConstants.DISPATCHER,

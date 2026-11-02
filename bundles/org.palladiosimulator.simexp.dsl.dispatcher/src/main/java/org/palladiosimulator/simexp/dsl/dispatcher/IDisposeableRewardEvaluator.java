@@ -1,8 +1,8 @@
 package org.palladiosimulator.simexp.dsl.dispatcher;
 
-public interface IDisposeableEAFitnessEvaluator extends IEAFitnessEvaluator {
+public interface IDisposeableRewardEvaluator extends IRewardEvaluator {
     interface EvaluatorClient {
-        void process(IEAFitnessEvaluator evaluator);
+        void process(IRewardEvaluator evaluator);
     }
 
     void evaluate(EvaluatorClient evaluatorClient);

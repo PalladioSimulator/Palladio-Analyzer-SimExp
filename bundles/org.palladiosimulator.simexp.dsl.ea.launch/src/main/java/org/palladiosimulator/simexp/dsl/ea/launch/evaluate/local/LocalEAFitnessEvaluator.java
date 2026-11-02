@@ -23,7 +23,7 @@ import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
 import org.palladiosimulator.simexp.dsl.dispatcher.IResultIdentificator;
-import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.ea.launch.EAOptimizerLaunchFactory;
@@ -35,7 +35,7 @@ import org.palladiosimulator.simexp.workflow.launcher.SimulationExecutorLookup;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
-public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
+public class LocalEAFitnessEvaluator implements IDisposeableRewardEvaluator {
     private static final Logger LOGGER = Logger.getLogger(LocalEAFitnessEvaluator.class);
 
     private final IModelledWorkflowConfiguration config;
@@ -100,7 +100,7 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     }
 
     @Override
-    public synchronized Future<Optional<Double>> calcFitness(List<OptimizableValue<?>> optimizableValues) {
+    public synchronized Future<Optional<Double>> calcReward(List<OptimizableValue<?>> optimizableValues) {
         int currentCounter = counter++;
         Future<Optional<Double>> future = executor.submit(new Callable<>() {
 

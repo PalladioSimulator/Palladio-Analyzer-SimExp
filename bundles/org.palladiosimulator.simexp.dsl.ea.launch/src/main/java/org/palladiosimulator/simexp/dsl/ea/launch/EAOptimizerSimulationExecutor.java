@@ -16,8 +16,8 @@ import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
 import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
-import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.dispatcher.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableRewardEvaluator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
@@ -43,7 +43,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
     private static final Logger LOGGER = Logger.getLogger(EAOptimizerSimulationExecutor.class);
 
     private final Smodel smodel;
-    private final IDisposeableEAFitnessEvaluator fitnessEvaluator;
+    private final IDisposeableRewardEvaluator fitnessEvaluator;
     private final IEvolutionaryAlgorithmWorkflowConfiguration configuration;
     private final Path resourcePath;
     private final IPrecisionProvider precisionProvider;
@@ -51,7 +51,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
 
     private EAResult optimizationResult;
 
-    public EAOptimizerSimulationExecutor(Smodel smodel, IDisposeableEAFitnessEvaluator fitnessEvaluator,
+    public EAOptimizerSimulationExecutor(Smodel smodel, IDisposeableRewardEvaluator fitnessEvaluator,
             IEvolutionaryAlgorithmWorkflowConfiguration configuration, IPrecisionProvider precisionProvider,
             IRewardFormater rewardFormater, Path resourcePath) {
         this.smodel = smodel;
@@ -164,10 +164,10 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
     private void runOptimization(IEAOptimizer optimizer) {
         final IOptimizableProvider optimizableProvider = new OptimizableProvider(smodel);
         LOGGER.info("EA optimization initialization");
-        fitnessEvaluator.evaluate(new IDisposeableEAFitnessEvaluator.EvaluatorClient() {
+        fitnessEvaluator.evaluate(new IDisposeableRewardEvaluator.EvaluatorClient() {
 
             @Override
-            public void process(IEAFitnessEvaluator evaluator) {
+            public void process(IRewardEvaluator evaluator) {
                 try (EAEvolutionStatusReceiverDispatcher eaEvolutionStatusReceiverDispatcher = new EAEvolutionStatusReceiverDispatcher()) {
                     Path generationsPath = resourcePath.resolve("generations");
                     Files.createDirectories(generationsPath);

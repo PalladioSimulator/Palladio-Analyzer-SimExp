@@ -11,15 +11,15 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 /**
  * Interface to calculate the fitness of of {@link Optimizable} values.
  */
-public interface IEAFitnessEvaluator {
+public interface IRewardEvaluator {
     /**
-     * Evaluates the fitness of a set of {@link Optimizable} values.
+     * Evaluates the reward of a set of {@link Optimizable} values.
      * 
      * @param optimizableValues
      *            the optimizables to evaluate
-     * @return a future receiving the fitness of the provided {@link Optimizable} values
+     * @return a future receiving the reward of the provided {@link Optimizable} values
      */
-    Future<Optional<Double>> calcFitness(List<OptimizableValue<?>> optimizableValues) throws IOException;
+    Future<Optional<Double>> calcReward(List<OptimizableValue<?>> optimizableValues) throws IOException;
 
     /**
      * Returns the parallelism provided by the evaluator.

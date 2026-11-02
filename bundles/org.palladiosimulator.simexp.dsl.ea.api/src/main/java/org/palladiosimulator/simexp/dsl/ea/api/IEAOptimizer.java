@@ -1,6 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.api;
 
-import org.palladiosimulator.simexp.dsl.dispatcher.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
@@ -17,7 +17,7 @@ public interface IEAOptimizer {
      * @param evolutionStatusReceiver
      *            receives the current status of the EA
      */
-    EAResult optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
+    EAResult optimize(IOptimizableProvider optimizableProvider, IRewardEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver);
 
 }

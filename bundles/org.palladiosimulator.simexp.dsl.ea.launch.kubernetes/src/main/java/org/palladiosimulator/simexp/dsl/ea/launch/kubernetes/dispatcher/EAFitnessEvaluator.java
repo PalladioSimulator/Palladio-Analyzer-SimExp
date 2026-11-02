@@ -10,7 +10,7 @@ import java.util.concurrent.Future;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.dispatcher.IResultIdentificator;
-import org.palladiosimulator.simexp.dsl.dispatcher.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.concurrent.SettableFutureTask;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.CachingWorkspaceEntryFactory;
@@ -24,7 +24,7 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class EAFitnessEvaluator implements IEAFitnessEvaluator {
+public class EAFitnessEvaluator implements IRewardEvaluator {
     private static final Logger LOGGER = Logger.getLogger(EAFitnessEvaluator.class);
 
     private final ITaskManager taskManager;
@@ -71,7 +71,7 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
     }
 
     @Override
-    public Future<Optional<Double>> calcFitness(List<OptimizableValue<?>> optimizableValues) throws IOException {
+    public Future<Optional<Double>> calcReward(List<OptimizableValue<?>> optimizableValues) throws IOException {
         ClassLoader oldContextClassLoader = Thread.currentThread()
             .getContextClassLoader();
         Thread.currentThread()

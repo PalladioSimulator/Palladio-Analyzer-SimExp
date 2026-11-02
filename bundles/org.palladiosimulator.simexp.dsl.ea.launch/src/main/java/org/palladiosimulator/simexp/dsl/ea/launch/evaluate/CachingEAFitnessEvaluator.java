@@ -9,27 +9,27 @@ import java.util.concurrent.Future;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.dispatcher.IResultIdentificator;
-import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.dispatcher.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableRewardEvaluator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
-public class CachingEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
+public class CachingEAFitnessEvaluator implements IDisposeableRewardEvaluator {
     private static final Logger LOGGER = Logger.getLogger(CachingEAFitnessEvaluator.class);
 
-    private final IDisposeableEAFitnessEvaluator delegate;
+    private final IDisposeableRewardEvaluator delegate;
     private final Map<List<OptimizableValue<?>>, Future<Optional<Double>>> cache = new HashMap<>();
     private final ClassLoader classloader;
 
-    public CachingEAFitnessEvaluator(IDisposeableEAFitnessEvaluator delegate) {
+    public CachingEAFitnessEvaluator(IDisposeableRewardEvaluator delegate) {
         this.delegate = delegate;
         this.classloader = Thread.currentThread()
             .getContextClassLoader();
     }
 
     @Override
-    public synchronized Future<Optional<Double>> calcFitness(List<OptimizableValue<?>> optimizableValues)
+    public synchronized Future<Optional<Double>> calcReward(List<OptimizableValue<?>> optimizableValues)
             throws IOException {
         ClassLoader oldContextClassLoader = Thread.currentThread()
             .getContextClassLoader();
@@ -40,7 +40,7 @@ public class CachingEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator
             OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
             if (future == null) {
                 LOGGER.info(String.format("cache miss: %s", optimizableValueToString.asString(optimizableValues)));
-                future = delegate.calcFitness(optimizableValues);
+                future = delegate.calcReward(optimizableValues);
                 cache.put(optimizableValues, future);
             } else {
                 LOGGER.info(String.format("cache hit: %s", optimizableValueToString.asString(optimizableValues)));
@@ -60,7 +60,7 @@ public class CachingEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator
         }
 
         @Override
-        public void process(IEAFitnessEvaluator evaluator) {
+        public void process(IRewardEvaluator evaluator) {
             delegate.process(CachingEAFitnessEvaluator.this);
         }
     }

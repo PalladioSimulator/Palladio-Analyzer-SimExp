@@ -10,7 +10,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
-import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.IRewardFormater;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
@@ -38,13 +38,13 @@ public class DispatcherLookup {
         return names;
     }
 
-    public IDisposeableEAFitnessEvaluator createEvaluator(String dispatcherName, IWorkflowConfiguration config,
+    public IDisposeableRewardEvaluator createEvaluator(String dispatcherName, IWorkflowConfiguration config,
             String launcherName, SimulatedExperienceStoreDescription description, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, IRewardFormater rewardFormater, Path resourcePath) throws CoreException {
         List<IDispatcherProvider> providers = lookupProvider(registry);
         for (IDispatcherProvider provider : providers) {
             if (dispatcherName.equals(provider.getName())) {
-                IDisposeableEAFitnessEvaluator evaluator = provider.createEvaluator(config, launcherName, description,
+                IDisposeableRewardEvaluator evaluator = provider.createEvaluator(config, launcherName, description,
                         seedProvider, modelLoaderFactory, rewardFormater, resourcePath);
                 return evaluator;
             }

@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
-import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.IRewardFormater;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDispatcherProvider;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
@@ -23,7 +23,7 @@ public class KubernetesDispatcherProvider implements IDispatcherProvider {
     }
 
     @Override
-    public IDisposeableEAFitnessEvaluator createEvaluator(IWorkflowConfiguration config, String launcherName,
+    public IDisposeableRewardEvaluator createEvaluator(IWorkflowConfiguration config, String launcherName,
             SimulatedExperienceStoreDescription description, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, IRewardFormater rewardFormater, Path resourcePath) {
         IModelledWorkflowConfiguration modelledConfig = (IModelledWorkflowConfiguration) config;

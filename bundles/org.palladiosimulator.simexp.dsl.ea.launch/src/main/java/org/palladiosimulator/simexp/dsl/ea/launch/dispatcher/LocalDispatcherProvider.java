@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
-import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.preferences.EAPreferenceConstants;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.IRewardFormater;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDispatcherProvider;
@@ -23,7 +23,7 @@ public class LocalDispatcherProvider implements IDispatcherProvider {
     }
 
     @Override
-    public IDisposeableEAFitnessEvaluator createEvaluator(IWorkflowConfiguration config, String launcherName,
+    public IDisposeableRewardEvaluator createEvaluator(IWorkflowConfiguration config, String launcherName,
             SimulatedExperienceStoreDescription description, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, IRewardFormater rewardFormater, Path resourcePath) {
         IModelledWorkflowConfiguration modelledConfig = (IModelledWorkflowConfiguration) config;

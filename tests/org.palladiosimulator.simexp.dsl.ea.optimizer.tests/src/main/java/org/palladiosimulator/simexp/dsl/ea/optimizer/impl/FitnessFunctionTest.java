@@ -19,7 +19,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.palladiosimulator.simexp.dsl.dispatcher.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
@@ -37,7 +37,7 @@ public class FitnessFunctionTest {
     private FitnessFunction<BitGene> fitnessFunction;
 
     @Mock
-    private IEAFitnessEvaluator fitnessEvaluator;
+    private IRewardEvaluator fitnessEvaluator;
     @Mock
     private ITranscoder<BitGene> normalizer;
     @Mock
@@ -66,7 +66,7 @@ public class FitnessFunctionTest {
         genotype = Genotype.of(chromosome);
 
         when(normalizer.toOptimizableValues(genotype)).thenReturn(List.of(optimizableValue));
-        when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
+        when(fitnessEvaluator.calcReward(ArgumentMatchers.any())).thenReturn(fitnessFuture);
 
         fitnessFunction = new FitnessFunction<>(precisionProvider, fitnessEvaluator, normalizer, 0.0);
     }
@@ -78,7 +78,7 @@ public class FitnessFunctionTest {
         double actualFitness = fitnessFunction.apply(genotype);
 
         assertThat(actualFitness).isEqualTo(50.0, withPrecision(EPSILON));
-        verify(fitnessEvaluator).calcFitness(captor.capture());
+        verify(fitnessEvaluator).calcReward(captor.capture());
         assertTrue(captor.getAllValues()
             .get(0)
             .contains(optimizableValue));
@@ -118,7 +118,7 @@ public class FitnessFunctionTest {
         double actualFitness = fitnessFunction.apply(genotype);
 
         assertThat(actualFitness).isEqualTo(50.123, withPrecision(EPSILON));
-        verify(fitnessEvaluator).calcFitness(captor.capture());
+        verify(fitnessEvaluator).calcReward(captor.capture());
         assertTrue(captor.getAllValues()
             .get(0)
             .contains(optimizableValue));
@@ -135,7 +135,7 @@ public class FitnessFunctionTest {
         double actualFitness = fitnessFunction.apply(genotype);
 
         assertThat(actualFitness).isEqualTo(50.123456789012, withPrecision(smallEpsilon));
-        verify(fitnessEvaluator).calcFitness(captor.capture());
+        verify(fitnessEvaluator).calcReward(captor.capture());
         assertTrue(captor.getAllValues()
             .get(0)
             .contains(optimizableValue));

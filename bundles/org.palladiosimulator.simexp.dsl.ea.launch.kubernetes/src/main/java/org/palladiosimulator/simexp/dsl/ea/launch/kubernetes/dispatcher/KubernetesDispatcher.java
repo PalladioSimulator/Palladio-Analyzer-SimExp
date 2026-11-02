@@ -32,7 +32,7 @@ import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.dsl.dispatcher.IResultIdentificator;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.IRewardFormater;
-import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.DeploymentDispatcher;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.NodeInfo;
@@ -60,7 +60,7 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
-public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
+public class KubernetesDispatcher implements IDisposeableRewardEvaluator {
     private static final Logger LOGGER = Logger.getLogger(KubernetesDispatcher.class);
 
     private final IModelledWorkflowConfiguration config;
@@ -270,7 +270,7 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
     }
 
     @Override
-    public Future<Optional<Double>> calcFitness(List<OptimizableValue<?>> optimizableValues) throws IOException {
-        return fitnessEvaluator.calcFitness(optimizableValues);
+    public Future<Optional<Double>> calcReward(List<OptimizableValue<?>> optimizableValues) throws IOException {
+        return fitnessEvaluator.calcReward(optimizableValues);
     }
 }

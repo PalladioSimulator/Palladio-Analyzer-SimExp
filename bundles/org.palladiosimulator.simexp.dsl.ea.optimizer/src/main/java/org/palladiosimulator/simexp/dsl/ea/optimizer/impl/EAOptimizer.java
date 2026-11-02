@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.dispatcher.IResultIdentificator;
-import org.palladiosimulator.simexp.dsl.dispatcher.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
@@ -64,7 +64,7 @@ public class EAOptimizer implements IEAOptimizer {
     }
 
     @Override
-    public EAResult optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
+    public EAResult optimize(IOptimizableProvider optimizableProvider, IRewardEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver) {
         int availableProcessors = Runtime.getRuntime()
             .availableProcessors();
@@ -87,7 +87,7 @@ public class EAOptimizer implements IEAOptimizer {
         }
     }
 
-    EAResult internalOptimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
+    EAResult internalOptimize(IOptimizableProvider optimizableProvider, IRewardEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver, Executor executor) {
         IExpressionCalculator expressionCalculator = optimizableProvider.getExpressionCalculator();
         ITranscoder<IntegerGene> transcoder = new OptimizableIntNormalizer(expressionCalculator);
@@ -95,7 +95,7 @@ public class EAOptimizer implements IEAOptimizer {
     }
 
     private <G extends Gene<?, G>> EAResult doOptimize(ITranscoder<G> transcoder,
-            IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
+            IOptimizableProvider optimizableProvider, IRewardEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver, Executor executor) {
         IExpressionCalculator expressionCalculator = optimizableProvider.getExpressionCalculator();
         Collection<Optimizable> optimizables = optimizableProvider.getOptimizables();

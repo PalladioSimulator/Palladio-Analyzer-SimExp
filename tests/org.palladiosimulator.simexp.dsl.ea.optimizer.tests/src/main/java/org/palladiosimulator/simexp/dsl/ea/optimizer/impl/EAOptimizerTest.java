@@ -28,7 +28,7 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.Run;
 import org.palladiosimulator.simexp.dsl.dispatcher.IResultIdentificator;
-import org.palladiosimulator.simexp.dsl.dispatcher.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
@@ -58,7 +58,7 @@ public class EAOptimizerTest {
     @Mock
     private IEAEvolutionStatusReceiver statusReceiver;
     @Mock
-    private IEAFitnessEvaluator fitnessEvaluator;
+    private IRewardEvaluator fitnessEvaluator;
     @Mock
     private IOptimizableProvider optimizableProvider;
     @Mock
@@ -95,7 +95,7 @@ public class EAOptimizerTest {
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
         };
-        when(fitnessEvaluator.calcFitness(anyList())).thenAnswer(fitnessAnswer);
+        when(fitnessEvaluator.calcReward(anyList())).thenAnswer(fitnessAnswer);
         when(fitnessEvaluator.getQualityAttributeProvider()).thenReturn(qualityAttributeProvider);
         when(fitnessEvaluator.getFitnessResultIdentificator()).thenReturn(fitnessResultIdentificator);
         Run run = new Run(Collections.singletonMap("qa1", Arrays.asList(2.0)));
