@@ -6,16 +6,16 @@ import java.util.Optional;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
+import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluatorProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.IRewardFormater;
-import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDispatcherProvider;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
-public class KubernetesDispatcherProvider implements IDispatcherProvider {
+public class KubernetesDispatcherProvider implements IRewardEvaluatorProvider {
 
     @Override
     public String getName() {

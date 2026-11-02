@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
+import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluatorProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.IRewardFormater;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
@@ -31,7 +32,7 @@ public class DispatcherLookup {
     }
 
     public List<String> lookupProviderNames() throws CoreException {
-        List<IDispatcherProvider> provider = lookupProvider(registry);
+        List<IRewardEvaluatorProvider> provider = lookupProvider(registry);
         List<String> names = provider.stream()
             .map(p -> p.getName())
             .toList();
@@ -41,8 +42,8 @@ public class DispatcherLookup {
     public IDisposeableRewardEvaluator createEvaluator(String dispatcherName, IWorkflowConfiguration config,
             String launcherName, SimulatedExperienceStoreDescription description, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, IRewardFormater rewardFormater, Path resourcePath) throws CoreException {
-        List<IDispatcherProvider> providers = lookupProvider(registry);
-        for (IDispatcherProvider provider : providers) {
+        List<IRewardEvaluatorProvider> providers = lookupProvider(registry);
+        for (IRewardEvaluatorProvider provider : providers) {
             if (dispatcherName.equals(provider.getName())) {
                 IDisposeableRewardEvaluator evaluator = provider.createEvaluator(config, launcherName, description,
                         seedProvider, modelLoaderFactory, rewardFormater, resourcePath);
@@ -52,12 +53,12 @@ public class DispatcherLookup {
         throw new RuntimeException("unknown dispatcher: " + dispatcherName);
     }
 
-    private List<IDispatcherProvider> lookupProvider(IExtensionRegistry registry) throws CoreException {
+    private List<IRewardEvaluatorProvider> lookupProvider(IExtensionRegistry registry) throws CoreException {
         IConfigurationElement[] config = registry.getConfigurationElementsFor(ID);
-        List<IDispatcherProvider> factories = new ArrayList<>();
+        List<IRewardEvaluatorProvider> factories = new ArrayList<>();
         for (IConfigurationElement e : config) {
             final Object o = e.createExecutableExtension("class");
-            if (o instanceof IDispatcherProvider launchFactory) {
+            if (o instanceof IRewardEvaluatorProvider launchFactory) {
                 factories.add(launchFactory);
             }
         }

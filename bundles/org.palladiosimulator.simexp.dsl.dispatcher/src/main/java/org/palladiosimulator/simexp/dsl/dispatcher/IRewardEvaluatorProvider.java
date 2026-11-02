@@ -1,17 +1,16 @@
-package org.palladiosimulator.simexp.dsl.ea.api.dispatcher;
+package org.palladiosimulator.simexp.dsl.dispatcher;
 
 import java.nio.file.Path;
 import java.util.Optional;
 
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
-import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.IRewardFormater;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
-public interface IDispatcherProvider {
+public interface IRewardEvaluatorProvider {
     String getName();
 
     IDisposeableRewardEvaluator createEvaluator(IWorkflowConfiguration config, String launcherName,
