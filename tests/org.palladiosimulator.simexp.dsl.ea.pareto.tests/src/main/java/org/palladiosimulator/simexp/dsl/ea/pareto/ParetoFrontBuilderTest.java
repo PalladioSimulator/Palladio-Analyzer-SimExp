@@ -12,9 +12,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
-import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
+import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
+import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IndividualParetoResult;
-import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 

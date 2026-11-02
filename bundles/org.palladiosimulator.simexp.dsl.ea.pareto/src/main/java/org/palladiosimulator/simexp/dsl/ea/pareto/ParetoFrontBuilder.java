@@ -9,10 +9,10 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
-import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
+import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
+import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
+import org.palladiosimulator.simexp.dsl.dispatcher.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.ea.api.IndividualParetoResult;
-import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
-import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.ea.pareto.impl.AverageProvider;
 import org.palladiosimulator.simexp.dsl.ea.pareto.impl.CachingAverageProvider;
 import org.palladiosimulator.simexp.dsl.ea.pareto.impl.IAverageProvider;

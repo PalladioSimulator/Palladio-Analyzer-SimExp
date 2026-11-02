@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
-import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
+import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 public class BaseQualityAttributeProvider implements IQualityAttributeProvider {

@@ -8,8 +8,8 @@ import java.util.Optional;
 
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.Run;
-import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
-import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
+import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
+import org.palladiosimulator.simexp.dsl.dispatcher.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 public class QualityAttributesAverageCalculator {

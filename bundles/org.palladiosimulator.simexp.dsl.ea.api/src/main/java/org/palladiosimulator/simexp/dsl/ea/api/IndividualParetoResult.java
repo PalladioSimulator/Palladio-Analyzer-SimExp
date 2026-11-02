@@ -3,6 +3,8 @@ package org.palladiosimulator.simexp.dsl.ea.api;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
+
 public class IndividualParetoResult {
 
     private final IndividualResult individualResult;

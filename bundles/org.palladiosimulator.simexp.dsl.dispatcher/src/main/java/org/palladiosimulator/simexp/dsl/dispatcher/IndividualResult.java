@@ -1,11 +1,11 @@
-package org.palladiosimulator.simexp.dsl.ea.api;
+package org.palladiosimulator.simexp.dsl.dispatcher;
 
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
+import org.palladiosimulator.simexp.dsl.dispatcher.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 public class IndividualResult {

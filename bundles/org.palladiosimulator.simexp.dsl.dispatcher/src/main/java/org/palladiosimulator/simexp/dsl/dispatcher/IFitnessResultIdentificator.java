@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.api;
+package org.palladiosimulator.simexp.dsl.dispatcher;
 
 import java.util.List;
 import java.util.Optional;

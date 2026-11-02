@@ -10,7 +10,7 @@ import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.log4j.Logger;
-import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
+import org.palladiosimulator.simexp.dsl.dispatcher.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.IResultHandler;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.JobResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;

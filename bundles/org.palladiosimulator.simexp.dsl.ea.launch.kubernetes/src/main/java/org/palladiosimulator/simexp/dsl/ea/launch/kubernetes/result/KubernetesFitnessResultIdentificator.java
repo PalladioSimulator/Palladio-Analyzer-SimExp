@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.palladiosimulator.simexp.dsl.ea.api.IFitnessResultIdentificator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IFitnessResultIdentificator;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.IResultHandler;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.JobResult;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.JobResult.Status;

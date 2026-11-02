@@ -9,8 +9,8 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IndividualParetoResult;
-import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
 
 public class IndividualParetoResultTest {
     private final static double EPSILON = 0.00001;

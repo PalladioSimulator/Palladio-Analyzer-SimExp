@@ -3,7 +3,7 @@ package org.palladiosimulator.simexp.dsl.ea.launch;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
+import org.palladiosimulator.simexp.dsl.dispatcher.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.DefaultSmodelConfig;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.ConstantValueProvider;

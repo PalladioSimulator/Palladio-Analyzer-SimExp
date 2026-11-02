@@ -3,10 +3,10 @@ package org.palladiosimulator.simexp.dsl.ea.launch.log;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
+import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
-import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.IndividualParetoResult;
-import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.launch.io.JsonResultWriter;
 import org.palladiosimulator.simexp.dsl.ea.pareto.ParetoFrontBuilder;
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;

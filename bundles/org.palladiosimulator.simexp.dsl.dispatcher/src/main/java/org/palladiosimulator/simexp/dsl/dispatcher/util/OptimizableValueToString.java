@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.api.util;
+package org.palladiosimulator.simexp.dsl.dispatcher.util;
 
 import java.util.ArrayList;
 import java.util.Comparator;

@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.palladiosimulator.simexp.dsl.dispatcher.IFitnessResultIdentificator;
+import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
-import org.palladiosimulator.simexp.dsl.ea.api.IFitnessResultIdentificator;
-import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 import io.jenetics.Gene;

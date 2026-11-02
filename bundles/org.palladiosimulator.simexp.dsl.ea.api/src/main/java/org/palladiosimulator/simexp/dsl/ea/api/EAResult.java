@@ -3,6 +3,8 @@ package org.palladiosimulator.simexp.dsl.ea.api;
 import java.util.Collections;
 import java.util.List;
 
+import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
+
 public class EAResult {
     private final IndividualResult fittestIndividual;
     private final List<IndividualParetoResult> paretoFront;

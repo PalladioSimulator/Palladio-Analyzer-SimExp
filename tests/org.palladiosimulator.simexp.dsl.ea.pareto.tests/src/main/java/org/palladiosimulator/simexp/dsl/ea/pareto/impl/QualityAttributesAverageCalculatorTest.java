@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.Run;
-import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
+import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;

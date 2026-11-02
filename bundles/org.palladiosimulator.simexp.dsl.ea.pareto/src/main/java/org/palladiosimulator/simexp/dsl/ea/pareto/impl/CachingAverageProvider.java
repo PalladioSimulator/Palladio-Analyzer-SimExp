@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
+import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
 
 public class CachingAverageProvider implements IAverageProvider {
     private final IAverageProvider delegate;
