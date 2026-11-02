@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.api.util;
+package org.palladiosimulator.simexp.dsl.dispatcher.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.withPrecision;

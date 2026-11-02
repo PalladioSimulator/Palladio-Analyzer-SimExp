@@ -15,8 +15,8 @@ import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescripti
 import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.preferences.EAPreferenceConstants;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.IRewardFormater;
+import org.palladiosimulator.simexp.dsl.dispatcher.util.RewardFormater;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.DispatcherLookup;
-import org.palladiosimulator.simexp.dsl.ea.api.util.RewardFormater;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.CachingEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.smodel.api.ISmodelConstants;
 import org.palladiosimulator.simexp.dsl.smodel.api.PrecisionProvider;

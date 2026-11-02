@@ -1,9 +1,8 @@
-package org.palladiosimulator.simexp.dsl.ea.api.util;
+package org.palladiosimulator.simexp.dsl.dispatcher.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.palladiosimulator.simexp.dsl.dispatcher.util.IRewardFormater;
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 
 public class RewardFormater implements IRewardRounder, IRewardFormater {
