@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.palladiosimulator.simexp.dsl.bf.launch.tests
+Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.bf.launch.tests
+Bundle-Version: 0.1.0.qualifier
+Automatic-Module-Name: org.palladiosimulator.simexp.dsl.bf.launch.tests
+Bundle-RequiredExecutionEnvironment: JavaSE-21
+Fragment-Host: org.palladiosimulator.simexp.dsl.bf.launch;bundle-version="0.1.0"
+Require-Bundle: org.junit;bundle-version="4.13.0",
+ assertj-core;bundle-version="[3.27.6,4.0.0)",
+ org.palladiosimulator.simexp.dsl.smodel.test.util;bundle-version="0.1.0",
+ org.mockito.mockito-core;bundle-version="[5.20.0,6.0.0)"

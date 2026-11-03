@@ -55,14 +55,14 @@ public class BruteForceSimulationExecutor implements SimulationExecutor {
 
     @Override
     public String getPolicyId() {
-        return String.format("EA-%s", smodel.getModelName());
+        return String.format("BF-%s", smodel.getModelName());
     }
 
-    private static class EASimulationResult extends SimulationResult {
+    private static class BruteForceSimulationResult extends SimulationResult {
         private final List<String> detailDescription;
 
-        public EASimulationResult(double totalReward, RewardType rewardType, QualityMeasurements qualityMeasurements,
-                String rewardDescription, List<String> detailDescription) {
+        public BruteForceSimulationResult(double totalReward, RewardType rewardType,
+                QualityMeasurements qualityMeasurements, String rewardDescription, List<String> detailDescription) {
             super(totalReward, rewardType, qualityMeasurements, rewardDescription);
             this.detailDescription = detailDescription;
         }
@@ -89,9 +89,9 @@ public class BruteForceSimulationExecutor implements SimulationExecutor {
          * optimizationResult.getInitialPopulation(); finalPopulation =
          * optimizationResult.getFinalPopulation(); }
          */
-        String description = String.format("fittest individual of policy %s", getPolicyId());
+        String description = String.format("best individual of policy %s", getPolicyId());
         List<String> detailDescription = new ArrayList<>();
-        detailDescription.add("Optimal values of the fittest individual:");
+        detailDescription.add("Optimal values of the best individual:");
         detailDescription.addAll(formatOptimizables(bestOptimizableValues));
 
         /*
@@ -115,8 +115,8 @@ public class BruteForceSimulationExecutor implements SimulationExecutor {
             detailDescription.addAll(formatOptimizables(individual.getOptimizableValues()));
         }
 
-        return new EASimulationResult(totalReward, configuration.getRewardType(), qualityMeasurements, description,
-                detailDescription);
+        return new BruteForceSimulationResult(totalReward, configuration.getRewardType(), qualityMeasurements,
+                description, detailDescription);
     }
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
