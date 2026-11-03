@@ -49,7 +49,7 @@ public class EABruteForceLaunchFactory implements ILaunchFactory {
             return 0;
         }
         IModelledWorkflowConfiguration modelledWorkflowConfiguration = (IModelledWorkflowConfiguration) config;
-        if (modelledWorkflowConfiguration.getOptimizationType() != ModelledOptimizationType.BRUTE_FORCE) {
+        if (modelledWorkflowConfiguration.getOptimizationType() != ModelledOptimizationType.RANDOM) {
             return 0;
         }
 

@@ -3,7 +3,7 @@ package org.palladiosimulator.simexp.commons.constants.model;
 public enum ModelledOptimizationType {
     SIMPLE("Simple"), //
     EVOLUTIONARY_ALGORITHM("Evolutionary Algorithm"), //
-    BRUTE_FORCE("Brute Force");
+    RANDOM("Random");
 
     private final String name;
 

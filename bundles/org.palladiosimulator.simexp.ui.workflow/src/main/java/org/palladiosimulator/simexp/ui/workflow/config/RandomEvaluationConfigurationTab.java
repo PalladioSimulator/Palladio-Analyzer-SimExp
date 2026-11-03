@@ -70,7 +70,7 @@ public class RandomEvaluationConfigurationTab extends BaseLaunchConfigurationTab
                     return;
                 }
 
-                recursiveSetEnabled(container, selectedType == ModelledOptimizationType.BRUTE_FORCE);
+                recursiveSetEnabled(container, selectedType == ModelledOptimizationType.RANDOM);
                 modifyListener.modifyText(null);
             }
         });
