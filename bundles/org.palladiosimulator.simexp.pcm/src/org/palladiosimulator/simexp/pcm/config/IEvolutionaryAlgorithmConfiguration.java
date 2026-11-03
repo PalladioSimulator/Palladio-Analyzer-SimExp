@@ -2,10 +2,8 @@ package org.palladiosimulator.simexp.pcm.config;
 
 import java.util.Optional;
 
-public interface IEvolutionaryAlgorithmConfiguration {
+public interface IEvolutionaryAlgorithmConfiguration extends IKubernetesConfiguration {
     int getPopulationSize();
-
-    double getErrorReward();
 
     double getMutationRate();
 
@@ -14,6 +12,4 @@ public interface IEvolutionaryAlgorithmConfiguration {
     Optional<Integer> getMaxGenerations();
 
     Optional<Integer> getSteadyFitness();
-
-    int getMemoryUsage();
 }

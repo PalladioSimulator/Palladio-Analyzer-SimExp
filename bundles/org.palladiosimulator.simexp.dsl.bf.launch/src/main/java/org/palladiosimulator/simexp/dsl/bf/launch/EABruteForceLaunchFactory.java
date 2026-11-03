@@ -21,6 +21,7 @@ import org.palladiosimulator.simexp.dsl.smodel.api.ISmodelConstants;
 import org.palladiosimulator.simexp.dsl.smodel.api.PrecisionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
+import org.palladiosimulator.simexp.pcm.config.IRandomEvaluationWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.modelled.ModelledModelLoader;
@@ -71,7 +72,8 @@ public class EABruteForceLaunchFactory implements ILaunchFactory {
         RewardFormater rewardFormater = new RewardFormater(precisionProvider);
         IDisposeableRewardEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration,
                 launcherName, description, seedProvider, modelLoaderFactory, rewardFormater, resourcePath);
-        return new BruteForceSimulationExecutor(smodel, fitnessEvaluator, config, rewardFormater);
+        return new BruteForceSimulationExecutor(smodel, fitnessEvaluator,
+                (IRandomEvaluationWorkflowConfiguration) config, rewardFormater);
     }
 
     private IDisposeableRewardEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config,

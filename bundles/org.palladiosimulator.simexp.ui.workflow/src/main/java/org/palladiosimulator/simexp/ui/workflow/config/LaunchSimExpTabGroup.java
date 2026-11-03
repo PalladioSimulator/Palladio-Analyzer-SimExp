@@ -29,6 +29,7 @@ public class LaunchSimExpTabGroup extends AbstractLaunchConfigurationTabGroup {
                 modelsTab, //
                 simExpConfigurationTab, //
                 new EvolutionaryAlgorithmConfigurationTab(ctx, simExpConfigurationTab), //
+                new RandomEvaluationConfigurationTab(ctx, simExpConfigurationTab), //
                 new CommonTab() };
 
         setTabs(tabs);
