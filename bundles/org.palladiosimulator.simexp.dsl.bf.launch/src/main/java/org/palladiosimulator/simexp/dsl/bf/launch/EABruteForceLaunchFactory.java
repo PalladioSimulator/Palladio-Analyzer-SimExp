@@ -68,11 +68,10 @@ public class EABruteForceLaunchFactory implements ILaunchFactory {
         // TODO: get from SModel
         final int places = ISmodelConstants.PLACES;
         PrecisionProvider precisionProvider = new PrecisionProvider(places);
-
         RewardFormater rewardFormater = new RewardFormater(precisionProvider);
         IDisposeableRewardEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration,
                 launcherName, description, seedProvider, modelLoaderFactory, rewardFormater, resourcePath);
-        return new BruteForceSimulationExecutor(smodel, fitnessEvaluator, config);
+        return new BruteForceSimulationExecutor(smodel, fitnessEvaluator, config, rewardFormater);
     }
 
     private IDisposeableRewardEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config,

@@ -19,6 +19,7 @@ import org.palladiosimulator.simexp.dsl.dispatcher.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.OptimizableProvider;
+import org.palladiosimulator.simexp.dsl.dispatcher.util.RewardFormater;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
@@ -29,14 +30,16 @@ public class BruteForceSimulationExecutor implements SimulationExecutor {
     private final Smodel smodel;
     private final IDisposeableRewardEvaluator fitnessEvaluator;
     private final IWorkflowConfiguration configuration;
+    private final RewardFormater rewardFormater;
 
     private BruteForceResult bruteForceResult;
 
     public BruteForceSimulationExecutor(Smodel smodel, IDisposeableRewardEvaluator fitnessEvaluator,
-            IWorkflowConfiguration configuration) {
+            IWorkflowConfiguration configuration, RewardFormater rewardFormater) {
         this.smodel = smodel;
         this.fitnessEvaluator = fitnessEvaluator;
         this.configuration = configuration;
+        this.rewardFormater = rewardFormater;
     }
 
     @Override
@@ -123,8 +126,11 @@ public class BruteForceSimulationExecutor implements SimulationExecutor {
             public void process(IRewardEvaluator evaluator) {
                 try {
                     LOGGER.info("Brute force start");
-                    BruteForceEvaluator bruteForceEvaluator = new BruteForceEvaluator();
-                    bruteForceResult = bruteForceEvaluator.evaluate(optimizableProvider, evaluator);
+                    // ToDo:
+                    // final double penaltyForInvalids = configuration.penaltyForInvalids();
+                    final double penaltyForInvalids = 0.0;
+                    BruteForceEvaluator bruteForceEvaluator = new BruteForceEvaluator(penaltyForInvalids);
+                    bruteForceResult = bruteForceEvaluator.evaluate(optimizableProvider, evaluator, rewardFormater);
                     LOGGER.info("Brute force end");
                 } catch (Exception e) {
                     LOGGER.error(e.getMessage(), e);
