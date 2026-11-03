@@ -22,6 +22,7 @@ import org.palladiosimulator.simexp.dsl.dispatcher.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.IRewardFormater;
+import org.palladiosimulator.simexp.dsl.dispatcher.util.OptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;

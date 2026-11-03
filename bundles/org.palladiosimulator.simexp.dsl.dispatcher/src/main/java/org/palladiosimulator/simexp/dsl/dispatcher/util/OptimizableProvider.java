@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.launch;
+package org.palladiosimulator.simexp.dsl.dispatcher.util;
 
 import java.util.Collection;
 import java.util.Collections;
