@@ -48,12 +48,13 @@ public class OptimizableValuesIteratorTest {
         setOptimizable1 = smodelCreator.createOptimizable("oa", DataType.INT, setBounds1);
         setOptimizable2 = smodelCreator.createOptimizable("ob", DataType.INT, setBounds2);
 
-        Literal rangeLiteral1 = smodelCreator.createIntLiteral(1);
-        Literal rangeLiteral2 = smodelCreator.createIntLiteral(2);
+        Literal rangeLiteralStart = smodelCreator.createIntLiteral(1);
+        Literal rangeLiteralEnd = smodelCreator.createIntLiteral(2);
         Literal rangeLiteralStep = smodelCreator.createIntLiteral(1);
-        when(expressionCalculator.calculateInteger(rangeLiteral1)).thenReturn(1);
-        when(expressionCalculator.calculateInteger(rangeLiteral2)).thenReturn(2);
-        RangeBounds rangeBounds1 = smodelCreator.createRangeBoundsClosedClosed(rangeLiteral1, rangeLiteral2,
+        when(expressionCalculator.calculateInteger(rangeLiteralStart)).thenReturn(1);
+        when(expressionCalculator.calculateInteger(rangeLiteralEnd)).thenReturn(2);
+        when(expressionCalculator.calculateInteger(rangeLiteralStep)).thenReturn(1);
+        RangeBounds rangeBounds1 = smodelCreator.createRangeBoundsClosedOpen(rangeLiteralStart, rangeLiteralEnd,
                 rangeLiteralStep);
         rangeOptimizable1 = smodelCreator.createOptimizable("oc", DataType.INT, rangeBounds1);
     }
@@ -96,6 +97,18 @@ public class OptimizableValuesIteratorTest {
 
         List<OptimizableValue<?>> expectedValues = new ArrayList<>();
         expectedValues.add(new OptimizableValue<>(setOptimizable1, 1));
+        assertThat(actualValues).containsAll(expectedValues);
+    }
+
+    @Test
+    public void testNextSetSecond() {
+        iterator = new OptimizableValuesIterator(Collections.singletonList(setOptimizable2), expressionCalculator);
+        iterator.next();
+
+        List<OptimizableValue<?>> actualValues = iterator.next();
+
+        List<OptimizableValue<?>> expectedValues = new ArrayList<>();
+        expectedValues.add(new OptimizableValue<>(setOptimizable2, 3));
         assertThat(actualValues).containsAll(expectedValues);
     }
 
