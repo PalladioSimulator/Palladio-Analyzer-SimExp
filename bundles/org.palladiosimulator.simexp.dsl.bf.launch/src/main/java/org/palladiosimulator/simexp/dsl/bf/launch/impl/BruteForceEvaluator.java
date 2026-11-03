@@ -70,22 +70,7 @@ public class BruteForceEvaluator {
         ExecutorService executor = Executors.newFixedThreadPool(parallelism);
         CompletionService<Result> completed = new ExecutorCompletionService<>(executor);
         try {
-            OptimizableValuesIterator optimizableValuesIterator = new OptimizableValuesIterator(optimizables,
-                    expressionCalculator);
-            int submitted = 0;
-            while (optimizableValuesIterator.hasNext()) {
-                List<OptimizableValue<?>> optimizableValues = optimizableValuesIterator.next();
-                completed.submit(new Callable<BruteForceEvaluator.Result>() {
-
-                    @Override
-                    public Result call() throws Exception {
-                        Future<Optional<Double>> rewardFuture = evaluator.calcReward(optimizableValues);
-                        Optional<Double> optionalReward = rewardFuture.get();
-                        return new Result(optimizableValues, optionalReward);
-                    }
-                });
-                submitted++;
-            }
+            int submitted = submitTasks(optimizables, expressionCalculator, evaluator, completed);
             LOGGER.info(String.format("submitted tasks: %d", submitted));
 
             for (int i = 0; i < submitted; i++) {
@@ -114,6 +99,27 @@ public class BruteForceEvaluator {
 
         BruteForceResult bruteForceResult = new BruteForceResult(overallPower, bestIndividual, evaluatedIndividuals);
         return bruteForceResult;
+    }
+
+    private int submitTasks(Collection<Optimizable> optimizables, IExpressionCalculator expressionCalculator,
+            IRewardEvaluator evaluator, CompletionService<Result> completed) {
+        OptimizableValuesIterator optimizableValuesIterator = new OptimizableValuesIterator(optimizables,
+                expressionCalculator);
+        int submitted = 0;
+        while (optimizableValuesIterator.hasNext()) {
+            List<OptimizableValue<?>> optimizableValues = optimizableValuesIterator.next();
+            completed.submit(new Callable<BruteForceEvaluator.Result>() {
+
+                @Override
+                public Result call() throws Exception {
+                    Future<Optional<Double>> rewardFuture = evaluator.calcReward(optimizableValues);
+                    Optional<Double> optionalReward = rewardFuture.get();
+                    return new Result(optimizableValues, optionalReward);
+                }
+            });
+            submitted++;
+        }
+        return submitted;
     }
 
     private IndividualResult buildIndividualResult(double reward, List<OptimizableValue<?>> optimizableValues,
