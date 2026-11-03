@@ -39,7 +39,7 @@ public class BruteForceEvaluator {
         BigInteger overallPower = powerUtil.calculateComplexity(optimizables);
         DecimalFormat df = new DecimalFormat();
         df.setGroupingUsed(true);
-        LOGGER.info(String.format("problem space: %s", df.format(overallPower)));
+        LOGGER.info(String.format("problem space size: %s", df.format(overallPower)));
 
         OptimizableValuesIterator optimizableValuesIterator = new OptimizableValuesIterator(optimizables,
                 expressionCalculator);
@@ -57,7 +57,7 @@ public class BruteForceEvaluator {
 
         // TODO:
         IndividualResult bestIndividual = evaluatedIndividuals.get(0);
-        BruteForceResult bruteForceResult = new BruteForceResult(bestIndividual, evaluatedIndividuals);
+        BruteForceResult bruteForceResult = new BruteForceResult(overallPower, bestIndividual, evaluatedIndividuals);
         return bruteForceResult;
     }
 

@@ -72,8 +72,7 @@ public class EABruteForceLaunchFactory implements ILaunchFactory {
         RewardFormater rewardFormater = new RewardFormater(precisionProvider);
         IDisposeableRewardEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration,
                 launcherName, description, seedProvider, modelLoaderFactory, rewardFormater, resourcePath);
-        return new BruteForceSimulationExecutor(smodel, fitnessEvaluator, config, precisionProvider, rewardFormater,
-                resourcePath);
+        return new BruteForceSimulationExecutor(smodel, fitnessEvaluator, config);
     }
 
     private IDisposeableRewardEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config,

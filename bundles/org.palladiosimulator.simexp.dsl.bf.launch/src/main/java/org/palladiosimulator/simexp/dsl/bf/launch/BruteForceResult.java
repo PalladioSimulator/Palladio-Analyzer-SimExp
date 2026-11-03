@@ -1,17 +1,25 @@
 package org.palladiosimulator.simexp.dsl.bf.launch;
 
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 
 import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
 
 public class BruteForceResult {
+    private final BigInteger problemSpaceSize;
     private final IndividualResult bestIndividual;
     private final List<IndividualResult> evaluatedIndividuals;
 
-    public BruteForceResult(IndividualResult bestIndividual, List<IndividualResult> evaluatedIndividuals) {
+    public BruteForceResult(BigInteger problemSpaceSize, IndividualResult bestIndividual,
+            List<IndividualResult> evaluatedIndividuals) {
+        this.problemSpaceSize = problemSpaceSize;
         this.bestIndividual = bestIndividual;
         this.evaluatedIndividuals = Collections.unmodifiableList(evaluatedIndividuals);
+    }
+
+    public BigInteger getProblemSpaceSize() {
+        return problemSpaceSize;
     }
 
     public IndividualResult getBest() {
