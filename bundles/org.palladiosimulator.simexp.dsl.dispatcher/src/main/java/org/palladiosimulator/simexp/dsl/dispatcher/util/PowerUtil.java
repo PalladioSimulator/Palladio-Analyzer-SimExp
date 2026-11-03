@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.smodel;
+package org.palladiosimulator.simexp.dsl.dispatcher.util;
 
 import java.math.BigInteger;
 import java.util.Collection;

@@ -12,4 +12,5 @@ Require-Bundle: org.junit;bundle-version="4.13.0",
  net.bytebuddy.byte-buddy,
  net.bytebuddy.byte-buddy-agent,
  org.objenesis,
- org.palladiosimulator.simexp.dsl.smodel.test.util;bundle-version="0.1.0"
+ org.palladiosimulator.simexp.dsl.smodel.test.util;bundle-version="0.1.0",
+ org.palladiosimulator.simexp.dsl.smodel.api.test.util;bundle-version="0.1.0"

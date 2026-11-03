@@ -3,8 +3,8 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.palladiosimulator.simexp.dsl.dispatcher.util.PowerUtil;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.ITranscoder;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
