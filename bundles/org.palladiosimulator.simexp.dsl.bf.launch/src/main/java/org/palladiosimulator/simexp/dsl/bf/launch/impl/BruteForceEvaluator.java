@@ -96,7 +96,6 @@ public class BruteForceEvaluator {
                 double reward = optionalReward.isPresent() ? optionalReward.get() : penaltyForInvalids;
                 reward = rewardUtil.round(reward);
 
-                LOGGER.info(String.format("got task result: reward: %f", reward));
                 IndividualResult result = buildIndividualResult(reward, evaluationResult.optimizableValues,
                         resultIdentificator);
                 evaluatedIndividuals.add(result);
