@@ -9,6 +9,7 @@ import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.analyzer.workflow.core.configurations.AbstractPCMWorkflowRunConfiguration;
 import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
+import org.palladiosimulator.simexp.commons.constants.model.RandomSampleType;
 import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
@@ -220,6 +221,11 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     @Override
     public int getMemoryUsage() {
         return evolutionaryAlgorithmConfiguration.getMemoryUsage();
+    }
+
+    @Override
+    public RandomSampleType getRandomSampleType() {
+        return randomEvaluationConfiguration.getRandomSampleType();
     }
 
     @Override

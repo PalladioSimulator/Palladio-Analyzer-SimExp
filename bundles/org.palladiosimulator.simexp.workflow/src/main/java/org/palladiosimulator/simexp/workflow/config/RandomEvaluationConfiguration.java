@@ -1,15 +1,19 @@
 package org.palladiosimulator.simexp.workflow.config;
 
+import org.palladiosimulator.simexp.commons.constants.model.RandomSampleType;
 import org.palladiosimulator.simexp.pcm.config.IRandomEvaluationConfiguration;
 
 public class RandomEvaluationConfiguration implements IRandomEvaluationConfiguration {
     private final double errorDefault;
     private final int memoryUsage;
+    private final RandomSampleType randomSampleType;
     private final int randomSampleCount;
 
-    public RandomEvaluationConfiguration(double errorDefault, int memoryUsage, int randomSampleCount) {
+    public RandomEvaluationConfiguration(double errorDefault, int memoryUsage, RandomSampleType randomSampleType,
+            int randomSampleCount) {
         this.errorDefault = errorDefault;
         this.memoryUsage = memoryUsage;
+        this.randomSampleType = randomSampleType;
         this.randomSampleCount = randomSampleCount;
     }
 
@@ -24,8 +28,12 @@ public class RandomEvaluationConfiguration implements IRandomEvaluationConfigura
     }
 
     @Override
+    public RandomSampleType getRandomSampleType() {
+        return randomSampleType;
+    }
+
+    @Override
     public int getRandomSampleCount() {
         return randomSampleCount;
     }
-
 }

@@ -32,6 +32,7 @@ import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
+import org.palladiosimulator.simexp.commons.constants.model.RandomSampleType;
 import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
@@ -193,9 +194,11 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
             EvolutionaryAlgorithmConfiguration eaConfig = new EvolutionaryAlgorithmConfiguration(populationSize,
                     errorReward, maxGenerations, steadyFitness, mutationRate, crossoverRate, memoryUsage);
 
+            String randomSampleTypeStr = (String) launchConfigurationParams.get(SimulationConstants.RANDOM_SAMPLE_TYPE);
+            RandomSampleType randomSampleType = RandomSampleType.valueOf(randomSampleTypeStr);
             int randomSampleCount = (Integer) launchConfigurationParams.get(SimulationConstants.RANDOM_SAMPLE_COUNT);
             RandomEvaluationConfiguration reConfig = new RandomEvaluationConfiguration(errorReward, memoryUsage,
-                    randomSampleCount);
+                    randomSampleType, randomSampleCount);
 
             Map<String, Object> optimizedValues = getOptimizedValues(configuration);
 
