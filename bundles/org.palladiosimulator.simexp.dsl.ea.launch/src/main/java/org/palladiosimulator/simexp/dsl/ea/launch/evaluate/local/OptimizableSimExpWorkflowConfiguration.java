@@ -11,6 +11,7 @@ import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowC
 import org.palladiosimulator.simexp.workflow.config.EvolutionaryAlgorithmConfiguration;
 import org.palladiosimulator.simexp.workflow.config.MonitorConfiguration;
 import org.palladiosimulator.simexp.workflow.config.PrismConfiguration;
+import org.palladiosimulator.simexp.workflow.config.RandomEvaluationConfiguration;
 
 public class OptimizableSimExpWorkflowConfiguration extends SimExpWorkflowConfiguration
         implements IOptimizedConfiguration {
@@ -44,6 +45,8 @@ public class OptimizableSimExpWorkflowConfiguration extends SimExpWorkflowConfig
                         configuration.getErrorReward(), configuration.getMaxGenerations(),
                         configuration.getSteadyFitness(), configuration.getMutationRate(),
                         configuration.getCrossoverRate(), configuration.getMemoryUsage()),
+                new RandomEvaluationConfiguration(configuration.getErrorReward(), configuration.getMemoryUsage(),
+                        configuration.getRandomSampleCount()),
                 configuration.getOptimizedValues());
         this.optimizableValues = optimizableValues;
     }

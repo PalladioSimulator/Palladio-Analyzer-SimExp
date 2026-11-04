@@ -10,13 +10,17 @@ public interface SimulationConstants {
 
     static final String CUSTOM_SEED = "CustomSeed";
 
+    static final String ERROR_REWARD = "ErrorReward";
+    static final String MEMORY_USAGE = "MEMORY_USAGE";
+
     static final String POPULATION_SIZE = "PopulationSize";
     static final String MAX_GENERATIONS = "MaxGenerations";
     static final String STEADY_FITNESS = "SteadyFitness";
     static final String MUTATION_RATE = "MutationRate";
     static final String CROSSOVER_RATE = "CrossoverRate";
-    static final String ERROR_REWARD = "ErrorReward";
-    static final String MEMORY_USAGE = "MEMORY_USAGE";
+
+    static final String RANDOM_SAMPLE_TYPE = "Random Sample Type";
+    static final String RANDOM_SAMPLE_COUNT = "RandomSampleCount";
 
     static final int DEFAULT_POPULATION_SIZE = 100;
     static final double DEFAULT_MUTATION_RATE = 0.15;
@@ -39,6 +43,8 @@ public interface SimulationConstants {
     static final QualityObjective DEFAULT_QUALITY_OBJECTIVE = QualityObjective.PERFORMANCE;
 
     static final ModelledOptimizationType DEFAULT_MODELLED_OPTIMIZATION_TYPE = ModelledOptimizationType.SIMPLE;
+
+    static final RandomSampleType DEFAULT_RANDOM_SAMPLE_TYPE = RandomSampleType.COUNT;
 
     static final String OPTIMIZED_VALUES = "optimizedValues";
 }

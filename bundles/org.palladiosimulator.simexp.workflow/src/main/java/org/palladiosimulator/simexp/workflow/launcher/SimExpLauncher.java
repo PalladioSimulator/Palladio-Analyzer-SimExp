@@ -47,6 +47,7 @@ import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowC
 import org.palladiosimulator.simexp.workflow.config.EvolutionaryAlgorithmConfiguration;
 import org.palladiosimulator.simexp.workflow.config.MonitorConfiguration;
 import org.palladiosimulator.simexp.workflow.config.PrismConfiguration;
+import org.palladiosimulator.simexp.workflow.config.RandomEvaluationConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 
 import de.uka.ipd.sdq.workflow.jobs.IJob;
@@ -192,12 +193,17 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
             EvolutionaryAlgorithmConfiguration eaConfig = new EvolutionaryAlgorithmConfiguration(populationSize,
                     errorReward, maxGenerations, steadyFitness, mutationRate, crossoverRate, memoryUsage);
 
+            int randomSampleCount = (Integer) launchConfigurationParams.get(SimulationConstants.RANDOM_SAMPLE_COUNT);
+            RandomEvaluationConfiguration reConfig = new RandomEvaluationConfiguration(errorReward, memoryUsage,
+                    randomSampleCount);
+
             Map<String, Object> optimizedValues = getOptimizedValues(configuration);
 
             /** FIXME: split workflow configuraiton based on simulation type: PCM, PRISM */
             workflowConfiguration = new SimExpWorkflowConfiguration(simulatorType, simulationEngine, rewardType,
                     transformationNames, qualityObjective, architecturalModels, modelledOptimizationType, monitors,
-                    prismConfig, environmentalModels, simulationParameters, seedProvider, eaConfig, optimizedValues);
+                    prismConfig, environmentalModels, simulationParameters, seedProvider, eaConfig, reConfig,
+                    optimizedValues);
         } catch (CoreException e) {
             LOGGER.error(
                     "Failed to read workflow configuration from passed launch configuration. Please check the provided launch configuration",

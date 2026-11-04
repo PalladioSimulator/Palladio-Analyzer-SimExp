@@ -26,11 +26,12 @@ import org.palladiosimulator.simexp.dsl.re.launch.RandomEvaluationResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
+import org.palladiosimulator.simexp.pcm.config.IRandomEvaluationConfiguration;
 
 public class RandomEvaluationEvaluator {
     private final static Logger LOGGER = Logger.getLogger(RandomEvaluationEvaluator.class);
 
-    private final double penaltyForInvalids;
+    private final IRandomEvaluationConfiguration configuration;
 
     private static class Result {
         public final List<OptimizableValue<?>> optimizableValues;
@@ -42,8 +43,8 @@ public class RandomEvaluationEvaluator {
         }
     }
 
-    public RandomEvaluationEvaluator(double penaltyForInvalids) {
-        this.penaltyForInvalids = penaltyForInvalids;
+    public RandomEvaluationEvaluator(IRandomEvaluationConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     public RandomEvaluationResult evaluate(IOptimizableProvider optimizableProvider, IRewardEvaluator evaluator,
@@ -67,6 +68,7 @@ public class RandomEvaluationEvaluator {
         IndividualResult bestIndividual = null;
         List<IndividualResult> evaluatedIndividuals = new ArrayList<>();
 
+        double errorReward = configuration.getErrorReward();
         ExecutorService executor = Executors.newFixedThreadPool(parallelism);
         CompletionService<Result> completed = new ExecutorCompletionService<>(executor);
         try {
@@ -78,7 +80,7 @@ public class RandomEvaluationEvaluator {
                 Result evaluationResult = future.get();
 
                 Optional<Double> optionalReward = evaluationResult.optionalReward;
-                double reward = optionalReward.isPresent() ? optionalReward.get() : penaltyForInvalids;
+                double reward = optionalReward.isPresent() ? optionalReward.get() : errorReward;
                 reward = rewardUtil.round(reward);
 
                 IndividualResult result = buildIndividualResult(reward, evaluationResult.optimizableValues,
@@ -97,7 +99,8 @@ public class RandomEvaluationEvaluator {
             executor.shutdown();
         }
 
-        RandomEvaluationResult bruteForceResult = new RandomEvaluationResult(overallPower, bestIndividual, evaluatedIndividuals);
+        RandomEvaluationResult bruteForceResult = new RandomEvaluationResult(overallPower, bestIndividual,
+                evaluatedIndividuals);
         return bruteForceResult;
     }
 

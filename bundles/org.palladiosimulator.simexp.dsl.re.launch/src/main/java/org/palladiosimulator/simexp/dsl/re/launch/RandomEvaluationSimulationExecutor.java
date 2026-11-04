@@ -126,8 +126,7 @@ public class RandomEvaluationSimulationExecutor implements SimulationExecutor {
             public void process(IRewardEvaluator evaluator) {
                 try {
                     LOGGER.info("Random evaluation start");
-                    final double penaltyForInvalids = configuration.getErrorReward();
-                    RandomEvaluationEvaluator bruteForceEvaluator = new RandomEvaluationEvaluator(penaltyForInvalids);
+                    RandomEvaluationEvaluator bruteForceEvaluator = new RandomEvaluationEvaluator(configuration);
                     randomEvaluationResult = bruteForceEvaluator.evaluate(optimizableProvider, evaluator,
                             rewardFormater);
                     LOGGER.info("Random evaluation end");

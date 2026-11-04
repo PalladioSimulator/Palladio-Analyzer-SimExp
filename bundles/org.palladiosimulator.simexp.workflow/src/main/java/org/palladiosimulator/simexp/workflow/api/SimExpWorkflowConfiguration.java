@@ -13,6 +13,7 @@ import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmConfiguration;
+import org.palladiosimulator.simexp.pcm.config.IRandomEvaluationConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
@@ -46,6 +47,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final SimulationParameters simulationParameters;
     private final Optional<ISeedProvider> seedProvider;
     private final IEvolutionaryAlgorithmConfiguration evolutionaryAlgorithmConfiguration;
+    private final IRandomEvaluationConfiguration randomEvaluationConfiguration;
     private final Map<String, Object> optimizedValues;
 
     public SimExpWorkflowConfiguration(SimulatorType simulatorType, SimulationEngine simulationEngine,
@@ -55,8 +57,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
             PrismConfiguration prismConfiguration, EnvironmentalModelsWorkflowConfiguration environmentalModels,
             SimulationParameters simulationParameters, Optional<ISeedProvider> seedProvider,
             IEvolutionaryAlgorithmConfiguration evolutionaryAlgorithmConfiguration,
-            Map<String, Object> optimizedValues) {
-
+            IRandomEvaluationConfiguration randomEvaluationConfiguration, Map<String, Object> optimizedValues) {
         /**
          * workaround: allocation files are required by the parent class
          * AbstractPCMWorkflowRunConfiguration.validateAndFreeze when loading PCMModels; this
@@ -91,6 +92,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
         this.simulationParameters = simulationParameters;
         this.seedProvider = seedProvider;
         this.evolutionaryAlgorithmConfiguration = evolutionaryAlgorithmConfiguration;
+        this.randomEvaluationConfiguration = randomEvaluationConfiguration;
         this.optimizedValues = optimizedValues;
     }
 
@@ -218,6 +220,11 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     @Override
     public int getMemoryUsage() {
         return evolutionaryAlgorithmConfiguration.getMemoryUsage();
+    }
+
+    @Override
+    public int getRandomSampleCount() {
+        return randomEvaluationConfiguration.getRandomSampleCount();
     }
 
     @Override
