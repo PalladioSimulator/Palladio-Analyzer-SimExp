@@ -17,6 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.apache.log4j.Logger;
+import org.palladiosimulator.simexp.commons.constants.model.RandomSampleType;
 import org.palladiosimulator.simexp.dsl.dispatcher.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IResultIdentificator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluator;
@@ -132,12 +133,25 @@ public class RandomEvaluationEvaluator {
                 expressionCalculator);
         int sequenceSize = problemSpaceSize.intValue();
 
-        int randomSampleCount = configuration.getRandomSampleCount()
-            .get();
-        DecimalFormat df = new DecimalFormat();
-        df.setGroupingUsed(true);
-        LOGGER.info(String.format("random sample count: %s", df.format(randomSampleCount)));
-        return new SampleCountIterator<>(optimizableValuesIterator, sequenceSize, randomSampleCount);
+        RandomSampleType randomSampleType = configuration.getRandomSampleType();
+        if (randomSampleType == RandomSampleType.COUNT) {
+            int randomSampleCount = configuration.getRandomSampleCount()
+                .get();
+            DecimalFormat df = new DecimalFormat();
+            df.setGroupingUsed(true);
+            LOGGER.info(String.format("random sample count: %s", df.format(randomSampleCount)));
+            return new SampleCountIterator<>(optimizableValuesIterator, sequenceSize, randomSampleCount);
+        }
+        if (randomSampleType == RandomSampleType.RATIO) {
+            double randomSampleRatio = configuration.getRandomSampleRatio()
+                .get();
+            double randomSamplePercent = randomSampleRatio * 100;
+            DecimalFormat df = new DecimalFormat();
+            df.setGroupingUsed(true);
+            LOGGER.info(String.format("random sample ratio: %s%%", df.format(randomSamplePercent)));
+            return new SampleRatioIterator<>(optimizableValuesIterator, sequenceSize, randomSamplePercent);
+        }
+        throw new RuntimeException("invalid random sample type: " + randomSampleType);
     }
 
     private IndividualResult buildIndividualResult(double reward, List<OptimizableValue<?>> optimizableValues,
