@@ -30,7 +30,9 @@ import org.eclipse.swt.widgets.Text;
 import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.RandomSampleType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUpdateValueStrategy;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.UpdateStrategyController;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ControllableValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ControllableValidator.Enabled;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.EnumEnabler;
@@ -129,12 +131,9 @@ public class RandomEvaluationConfigurationTab extends BaseLaunchConfigurationTab
             public void accept(RandomSampleType selectedrandomSampleType) {
                 for (Map.Entry<RandomSampleType, Composite> entry : randomSampleDetailsMap.entrySet()) {
                     Composite detailsComposite = entry.getValue();
-                    GridData layoutData = (GridData) detailsComposite.getLayoutData();
                     if (selectedrandomSampleType == entry.getKey()) {
-                        layoutData.exclude = false;
                         detailsComposite.setEnabled(true);
                     } else {
-                        layoutData.exclude = true;
                         detailsComposite.setEnabled(false);
                     }
                 }
@@ -212,18 +211,25 @@ public class RandomEvaluationConfigurationTab extends BaseLaunchConfigurationTab
                 UpdateValueStrategy.POLICY_CONVERT);
         ctx.bindValue(randomSampleTypeTarget, randomSampleTypeModel, randomSampleTypeStrategy, null);
 
+        UpdateStrategyController sampleCountUpdateController = new UpdateStrategyController() {
+
+            @Override
+            public boolean isEnabled() {
+                return randomSampleTypeTarget.getValue() == RandomSampleType.COUNT;
+            }
+        };
         IObservableValue<String> sampleCountTarget = WidgetProperties.text(SWT.Modify)
             .observe(textSampleCount);
         IObservableValue<Integer> sampleCountModel = ConfigurationProperties
             .integer(SimulationConstants.RANDOM_SAMPLE_COUNT)
             .observe(configuration);
-        UpdateValueStrategy<String, Integer> sampleCountUpdateStrategy = new UpdateValueStrategy<>(
-                UpdateValueStrategy.POLICY_CONVERT);
+        UpdateValueStrategy<String, Integer> sampleCountUpdateStrategy = new ConditionalUpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT, sampleCountUpdateController);
         IValidator<Integer> popSizeValidator = new ControllableValidator<>(
                 new MinNumberValidator<>("Random sample count", 1), isREEnabled);
         sampleCountUpdateStrategy.setBeforeSetValidator(popSizeValidator);
         Binding sampleCountBindValue = ctx.bindValue(sampleCountTarget, sampleCountModel, sampleCountUpdateStrategy,
-                null);
+                new ConditionalUpdateValueStrategy<>(sampleCountUpdateController));
         ControlDecorationSupport.create(sampleCountBindValue, SWT.TOP | SWT.RIGHT);
     }
 

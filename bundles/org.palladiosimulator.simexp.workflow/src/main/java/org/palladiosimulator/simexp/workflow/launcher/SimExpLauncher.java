@@ -196,7 +196,8 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
 
             String randomSampleTypeStr = (String) launchConfigurationParams.get(SimulationConstants.RANDOM_SAMPLE_TYPE);
             RandomSampleType randomSampleType = RandomSampleType.valueOf(randomSampleTypeStr);
-            int randomSampleCount = (Integer) launchConfigurationParams.get(SimulationConstants.RANDOM_SAMPLE_COUNT);
+            Optional<Integer> randomSampleCount = Optional
+                .ofNullable((Integer) launchConfigurationParams.get(SimulationConstants.RANDOM_SAMPLE_COUNT));
             RandomEvaluationConfiguration reConfig = new RandomEvaluationConfiguration(errorReward, memoryUsage,
                     randomSampleType, randomSampleCount);
 

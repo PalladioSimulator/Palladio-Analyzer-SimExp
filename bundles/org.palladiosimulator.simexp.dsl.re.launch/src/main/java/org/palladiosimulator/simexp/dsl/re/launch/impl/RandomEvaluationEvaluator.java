@@ -131,7 +131,9 @@ public class RandomEvaluationEvaluator {
         OptimizableValuesIterator optimizableValuesIterator = new OptimizableValuesIterator(optimizables,
                 expressionCalculator);
         int sequenceSize = problemSpaceSize.intValue();
-        int randomSampleCount = configuration.getRandomSampleCount();
+
+        int randomSampleCount = configuration.getRandomSampleCount()
+            .get();
         DecimalFormat df = new DecimalFormat();
         df.setGroupingUsed(true);
         LOGGER.info(String.format("random sample count: %s", df.format(randomSampleCount)));

@@ -1,5 +1,7 @@
 package org.palladiosimulator.simexp.workflow.config;
 
+import java.util.Optional;
+
 import org.palladiosimulator.simexp.commons.constants.model.RandomSampleType;
 import org.palladiosimulator.simexp.pcm.config.IRandomEvaluationConfiguration;
 
@@ -7,10 +9,10 @@ public class RandomEvaluationConfiguration implements IRandomEvaluationConfigura
     private final double errorDefault;
     private final int memoryUsage;
     private final RandomSampleType randomSampleType;
-    private final int randomSampleCount;
+    private final Optional<Integer> randomSampleCount;
 
     public RandomEvaluationConfiguration(double errorDefault, int memoryUsage, RandomSampleType randomSampleType,
-            int randomSampleCount) {
+            Optional<Integer> randomSampleCount) {
         this.errorDefault = errorDefault;
         this.memoryUsage = memoryUsage;
         this.randomSampleType = randomSampleType;
@@ -33,7 +35,7 @@ public class RandomEvaluationConfiguration implements IRandomEvaluationConfigura
     }
 
     @Override
-    public int getRandomSampleCount() {
+    public Optional<Integer> getRandomSampleCount() {
         return randomSampleCount;
     }
 }

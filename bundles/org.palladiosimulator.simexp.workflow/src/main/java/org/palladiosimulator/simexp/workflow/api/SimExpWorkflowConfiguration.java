@@ -229,7 +229,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     }
 
     @Override
-    public int getRandomSampleCount() {
+    public Optional<Integer> getRandomSampleCount() {
         return randomEvaluationConfiguration.getRandomSampleCount();
     }
 
