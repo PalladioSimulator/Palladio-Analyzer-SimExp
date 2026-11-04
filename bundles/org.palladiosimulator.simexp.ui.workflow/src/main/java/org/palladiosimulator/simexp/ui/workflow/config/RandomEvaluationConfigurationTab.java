@@ -42,6 +42,7 @@ import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.Co
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.EnumEnabler;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.MinNumberValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.NotNullValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.RangeNumberValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.debug.BaseLaunchConfigurationTab;
 
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
@@ -263,7 +264,7 @@ public class RandomEvaluationConfigurationTab extends BaseLaunchConfigurationTab
         UpdateValueStrategy<String, Double> t2mSampleRatioUpdateStrategy = new ConditionalUpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT, sampleRatioUpdateController);
         IValidator<Double> sampleRatioValidator = new ControllableValidator<>(
-                new MinNumberValidator<>("Random ratio", 0.0), isREEnabled);
+                new RangeNumberValidator<>("Random ratio", 0.0, 1.0), isREEnabled);
         t2mSampleRatioUpdateStrategy.setBeforeSetValidator(sampleRatioValidator);
         t2mSampleRatioUpdateStrategy
             .setConverter(StringToNumberConverter.toDouble(new DecimalFormat(PATTERN_DOUBLE), false));
