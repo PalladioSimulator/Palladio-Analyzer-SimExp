@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Automatic-Module-Name: org.palladiosimulator.simexp.dsl.bf.launch
+Automatic-Module-Name: org.palladiosimulator.simexp.dsl.re.launch
 Bundle-ManifestVersion: 2
-Bundle-Name: org.palladiosimulator.simexp.dsl.bf.launch
+Bundle-Name: org.palladiosimulator.simexp.dsl.re.launch
 Bundle-Vendor: My Company
 Bundle-Version: 0.1.0.qualifier
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.26.100",
@@ -17,6 +17,6 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.26.100",
  org.eclipse.emf.common;bundle-version="2.44.0",
  org.palladiosimulator.simexp.dsl.smodel.api;bundle-version="0.1.0",
  org.palladiosimulator.simexp.dsl.dispatcher;bundle-version="0.1.0"
-Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.bf.launch;singleton:=true
+Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.re.launch;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-21
