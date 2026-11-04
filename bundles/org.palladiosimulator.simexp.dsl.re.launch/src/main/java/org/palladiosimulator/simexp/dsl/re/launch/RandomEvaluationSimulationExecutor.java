@@ -19,22 +19,22 @@ import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.OptimizableProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.RewardFormater;
-import org.palladiosimulator.simexp.dsl.re.launch.impl.BruteForceEvaluator;
+import org.palladiosimulator.simexp.dsl.re.launch.impl.RandomEvaluationEvaluator;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.pcm.config.IRandomEvaluationWorkflowConfiguration;
 
-public class BruteForceSimulationExecutor implements SimulationExecutor {
-    private static final Logger LOGGER = Logger.getLogger(BruteForceSimulationExecutor.class);
+public class RandomEvaluationSimulationExecutor implements SimulationExecutor {
+    private static final Logger LOGGER = Logger.getLogger(RandomEvaluationSimulationExecutor.class);
 
     private final Smodel smodel;
     private final IDisposeableRewardEvaluator fitnessEvaluator;
     private final IRandomEvaluationWorkflowConfiguration configuration;
     private final RewardFormater rewardFormater;
 
-    private BruteForceResult bruteForceResult;
+    private RandomEvaluationResult randomEvaluationResult;
 
-    public BruteForceSimulationExecutor(Smodel smodel, IDisposeableRewardEvaluator fitnessEvaluator,
+    public RandomEvaluationSimulationExecutor(Smodel smodel, IDisposeableRewardEvaluator fitnessEvaluator,
             IRandomEvaluationWorkflowConfiguration configuration, RewardFormater rewardFormater) {
         this.smodel = smodel;
         this.fitnessEvaluator = fitnessEvaluator;
@@ -48,7 +48,7 @@ public class BruteForceSimulationExecutor implements SimulationExecutor {
 
     @Override
     public String getPolicyId() {
-        return String.format("BF-%s", smodel.getModelName());
+        return String.format("RE-%s", smodel.getModelName());
     }
 
     private static class BruteForceSimulationResult extends SimulationResult {
@@ -73,12 +73,12 @@ public class BruteForceSimulationExecutor implements SimulationExecutor {
         QualityMeasurements qualityMeasurements = null;
         List<OptimizableValue<?>> bestOptimizableValues = Collections.emptyList();
         List<IndividualResult> evaluatedIndividuals = Collections.emptyList();
-        if (bruteForceResult != null) {
-            IndividualResult best = bruteForceResult.getBest();
+        if (randomEvaluationResult != null) {
+            IndividualResult best = randomEvaluationResult.getBest();
             totalReward = best.getFitness();
             bestOptimizableValues = best.getOptimizableValues();
-            problemSpaceSize = bruteForceResult.getProblemSpaceSize();
-            evaluatedIndividuals = bruteForceResult.getEvaluatedIndividuals();
+            problemSpaceSize = randomEvaluationResult.getProblemSpaceSize();
+            evaluatedIndividuals = randomEvaluationResult.getEvaluatedIndividuals();
         }
 
         String description = String.format("best individual of policy %s", getPolicyId());
@@ -119,17 +119,18 @@ public class BruteForceSimulationExecutor implements SimulationExecutor {
     @Override
     public void execute() {
         final IOptimizableProvider optimizableProvider = new OptimizableProvider(smodel);
-        LOGGER.info("Brute force initialization");
+        LOGGER.info("Random evaluation initialization");
         fitnessEvaluator.evaluate(new IDisposeableRewardEvaluator.EvaluatorClient() {
 
             @Override
             public void process(IRewardEvaluator evaluator) {
                 try {
-                    LOGGER.info("Brute force start");
+                    LOGGER.info("Random evaluation start");
                     final double penaltyForInvalids = configuration.getErrorReward();
-                    BruteForceEvaluator bruteForceEvaluator = new BruteForceEvaluator(penaltyForInvalids);
-                    bruteForceResult = bruteForceEvaluator.evaluate(optimizableProvider, evaluator, rewardFormater);
-                    LOGGER.info("Brute force end");
+                    RandomEvaluationEvaluator bruteForceEvaluator = new RandomEvaluationEvaluator(penaltyForInvalids);
+                    randomEvaluationResult = bruteForceEvaluator.evaluate(optimizableProvider, evaluator,
+                            rewardFormater);
+                    LOGGER.info("Random evaluation end");
                 } catch (Exception e) {
                     LOGGER.error(e.getMessage(), e);
                 }

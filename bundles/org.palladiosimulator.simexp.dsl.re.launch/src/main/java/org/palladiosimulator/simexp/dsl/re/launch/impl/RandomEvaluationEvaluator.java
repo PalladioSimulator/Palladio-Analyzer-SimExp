@@ -22,13 +22,13 @@ import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.PowerUtil;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.RewardFormater;
-import org.palladiosimulator.simexp.dsl.re.launch.BruteForceResult;
+import org.palladiosimulator.simexp.dsl.re.launch.RandomEvaluationResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
-public class BruteForceEvaluator {
-    private final static Logger LOGGER = Logger.getLogger(BruteForceEvaluator.class);
+public class RandomEvaluationEvaluator {
+    private final static Logger LOGGER = Logger.getLogger(RandomEvaluationEvaluator.class);
 
     private final double penaltyForInvalids;
 
@@ -42,11 +42,11 @@ public class BruteForceEvaluator {
         }
     }
 
-    public BruteForceEvaluator(double penaltyForInvalids) {
+    public RandomEvaluationEvaluator(double penaltyForInvalids) {
         this.penaltyForInvalids = penaltyForInvalids;
     }
 
-    public BruteForceResult evaluate(IOptimizableProvider optimizableProvider, IRewardEvaluator evaluator,
+    public RandomEvaluationResult evaluate(IOptimizableProvider optimizableProvider, IRewardEvaluator evaluator,
             RewardFormater rewardUtil) throws IOException, InterruptedException, ExecutionException {
         int availableProcessors = Runtime.getRuntime()
             .availableProcessors();
@@ -97,7 +97,7 @@ public class BruteForceEvaluator {
             executor.shutdown();
         }
 
-        BruteForceResult bruteForceResult = new BruteForceResult(overallPower, bestIndividual, evaluatedIndividuals);
+        RandomEvaluationResult bruteForceResult = new RandomEvaluationResult(overallPower, bestIndividual, evaluatedIndividuals);
         return bruteForceResult;
     }
 
@@ -108,7 +108,7 @@ public class BruteForceEvaluator {
         int submitted = 0;
         while (optimizableValuesIterator.hasNext()) {
             List<OptimizableValue<?>> optimizableValues = optimizableValuesIterator.next();
-            completed.submit(new Callable<BruteForceEvaluator.Result>() {
+            completed.submit(new Callable<RandomEvaluationEvaluator.Result>() {
 
                 @Override
                 public Result call() throws Exception {

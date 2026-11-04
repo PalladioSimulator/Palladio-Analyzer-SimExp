@@ -29,16 +29,16 @@ import org.palladiosimulator.simexp.workflow.api.ILaunchFactory;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
-public class EABruteForceLaunchFactory implements ILaunchFactory {
+public class RandomEvaluationLaunchFactory implements ILaunchFactory {
     public static final int HANDLE_VALUE = 10;
 
     private final IPreferencesService preferencesService;
 
-    public EABruteForceLaunchFactory() {
+    public RandomEvaluationLaunchFactory() {
         this(Platform.getPreferencesService());
     }
 
-    EABruteForceLaunchFactory(IPreferencesService preferencesService) {
+    RandomEvaluationLaunchFactory(IPreferencesService preferencesService) {
         this.preferencesService = preferencesService;
     }
 
@@ -72,7 +72,7 @@ public class EABruteForceLaunchFactory implements ILaunchFactory {
         RewardFormater rewardFormater = new RewardFormater(precisionProvider);
         IDisposeableRewardEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration,
                 launcherName, description, seedProvider, modelLoaderFactory, rewardFormater, resourcePath);
-        return new BruteForceSimulationExecutor(smodel, fitnessEvaluator,
+        return new RandomEvaluationSimulationExecutor(smodel, fitnessEvaluator,
                 (IRandomEvaluationWorkflowConfiguration) config, rewardFormater);
     }
 

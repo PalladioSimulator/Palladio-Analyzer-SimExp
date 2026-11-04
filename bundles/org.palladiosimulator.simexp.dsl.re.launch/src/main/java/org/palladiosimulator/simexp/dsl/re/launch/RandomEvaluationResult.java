@@ -6,12 +6,12 @@ import java.util.List;
 
 import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
 
-public class BruteForceResult {
+public class RandomEvaluationResult {
     private final BigInteger problemSpaceSize;
     private final IndividualResult bestIndividual;
     private final List<IndividualResult> evaluatedIndividuals;
 
-    public BruteForceResult(BigInteger problemSpaceSize, IndividualResult bestIndividual,
+    public RandomEvaluationResult(BigInteger problemSpaceSize, IndividualResult bestIndividual,
             List<IndividualResult> evaluatedIndividuals) {
         this.problemSpaceSize = problemSpaceSize;
         this.bestIndividual = bestIndividual;
