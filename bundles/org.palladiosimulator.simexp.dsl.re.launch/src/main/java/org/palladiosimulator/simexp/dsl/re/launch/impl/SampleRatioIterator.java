@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.re.launch.impl;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -11,13 +12,13 @@ public class SampleRatioIterator<T> implements Iterator<T> {
     private final Iterator<? extends T> source;
     private final Random random;
 
-    private long elementsLeft;
-    private long samplesLeft;
+    private BigInteger elementsLeft;
+    private BigInteger samplesLeft;
     private T nextValue;
     private boolean ready;
 
-    public SampleRatioIterator(Iterator<? extends T> source, long sourceSize, double percent) {
-        if (sourceSize < 0) {
+    public SampleRatioIterator(Iterator<? extends T> source, BigInteger sourceSize, double percent) {
+        if (sourceSize.signum() < 0) {
             throw new IllegalArgumentException("sourceSize must be nonnegative");
         }
         if (!(percent >= 0 && percent <= 100)) {
@@ -27,10 +28,9 @@ public class SampleRatioIterator<T> implements Iterator<T> {
         this.random = new Random();
         this.source = Objects.requireNonNull(source);
         this.elementsLeft = sourceSize;
-        this.samplesLeft = BigDecimal.valueOf(sourceSize)
-            .multiply(BigDecimal.valueOf(percent))
+        this.samplesLeft = new BigDecimal(sourceSize).multiply(BigDecimal.valueOf(percent))
             .divide(BigDecimal.valueOf(100), 0, RoundingMode.HALF_UP)
-            .longValueExact();
+            .toBigIntegerExact();
     }
 
     @Override
@@ -39,15 +39,15 @@ public class SampleRatioIterator<T> implements Iterator<T> {
             return true;
         }
 
-        while (samplesLeft > 0 && elementsLeft > 0) {
+        while (samplesLeft.signum() > 0 && elementsLeft.signum() > 0) {
             if (!source.hasNext()) {
                 throw new IllegalStateException("Source is shorter than the declared size");
             }
 
             T candidate = source.next();
-            boolean selected = random.nextLong(elementsLeft) < samplesLeft;
+            boolean selected = randomBelow(elementsLeft, random).compareTo(samplesLeft) < 0;
 
-            elementsLeft--;
+            elementsLeft = elementsLeft.subtract(BigInteger.ONE);
 
             if (selected) {
                 nextValue = candidate;
@@ -59,6 +59,19 @@ public class SampleRatioIterator<T> implements Iterator<T> {
         return false;
     }
 
+    private BigInteger randomBelow(BigInteger bound, Random random) {
+        if (bound.signum() <= 0) {
+            throw new IllegalArgumentException("bound must be positive");
+        }
+
+        BigInteger value;
+        do {
+            value = new BigInteger(bound.bitLength(), random);
+        } while (value.compareTo(bound) >= 0);
+
+        return value;
+    }
+
     @Override
     public T next() {
         if (!hasNext()) {
@@ -68,7 +81,7 @@ public class SampleRatioIterator<T> implements Iterator<T> {
         T result = nextValue;
         nextValue = null;
         ready = false;
-        samplesLeft--;
+        samplesLeft = samplesLeft.subtract(BigInteger.ONE);
         return result;
     }
 }

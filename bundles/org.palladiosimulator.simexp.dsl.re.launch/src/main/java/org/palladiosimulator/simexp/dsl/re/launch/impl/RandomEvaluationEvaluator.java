@@ -131,25 +131,23 @@ public class RandomEvaluationEvaluator {
             IExpressionCalculator expressionCalculator, BigInteger problemSpaceSize) {
         OptimizableValuesIterator optimizableValuesIterator = new OptimizableValuesIterator(optimizables,
                 expressionCalculator);
-        int sequenceSize = problemSpaceSize.intValue();
+        DecimalFormat df = new DecimalFormat();
+        df.setGroupingUsed(true);
 
         RandomSampleType randomSampleType = configuration.getRandomSampleType();
         if (randomSampleType == RandomSampleType.COUNT) {
             int randomSampleCount = configuration.getRandomSampleCount()
                 .get();
-            DecimalFormat df = new DecimalFormat();
-            df.setGroupingUsed(true);
             LOGGER.info(String.format("random sample count: %s", df.format(randomSampleCount)));
-            return new SampleCountIterator<>(optimizableValuesIterator, sequenceSize, randomSampleCount);
+            return new SampleCountIterator<>(optimizableValuesIterator, problemSpaceSize,
+                    BigInteger.valueOf(randomSampleCount));
         }
         if (randomSampleType == RandomSampleType.RATIO) {
             double randomSampleRatio = configuration.getRandomSampleRatio()
                 .get();
             double randomSamplePercent = randomSampleRatio * 100;
-            DecimalFormat df = new DecimalFormat();
-            df.setGroupingUsed(true);
             LOGGER.info(String.format("random sample ratio: %s%%", df.format(randomSamplePercent)));
-            return new SampleRatioIterator<>(optimizableValuesIterator, sequenceSize, randomSamplePercent);
+            return new SampleRatioIterator<>(optimizableValuesIterator, problemSpaceSize, randomSamplePercent);
         }
         throw new RuntimeException("invalid random sample type: " + randomSampleType);
     }
