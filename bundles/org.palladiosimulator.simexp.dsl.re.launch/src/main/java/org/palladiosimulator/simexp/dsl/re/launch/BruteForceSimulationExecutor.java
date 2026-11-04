@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.bf.launch;
+package org.palladiosimulator.simexp.dsl.re.launch;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -13,13 +13,13 @@ import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
 import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
-import org.palladiosimulator.simexp.dsl.bf.launch.impl.BruteForceEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.OptimizableProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.RewardFormater;
+import org.palladiosimulator.simexp.dsl.re.launch.impl.BruteForceEvaluator;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.pcm.config.IRandomEvaluationWorkflowConfiguration;

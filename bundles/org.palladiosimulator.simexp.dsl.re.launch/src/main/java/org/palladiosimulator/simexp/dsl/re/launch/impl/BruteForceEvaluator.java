@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.bf.launch.impl;
+package org.palladiosimulator.simexp.dsl.re.launch.impl;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -16,13 +16,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.apache.log4j.Logger;
-import org.palladiosimulator.simexp.dsl.bf.launch.BruteForceResult;
 import org.palladiosimulator.simexp.dsl.dispatcher.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IResultIdentificator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.PowerUtil;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.RewardFormater;
+import org.palladiosimulator.simexp.dsl.re.launch.BruteForceResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
