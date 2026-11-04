@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -59,10 +60,10 @@ public class RandomEvaluationEvaluator {
         IExpressionCalculator expressionCalculator = optimizableProvider.getExpressionCalculator();
         Collection<Optimizable> optimizables = optimizableProvider.getOptimizables();
         PowerUtil powerUtil = new PowerUtil(expressionCalculator);
-        BigInteger overallPower = powerUtil.calculateComplexity(optimizables);
+        BigInteger problemSpaceSize = powerUtil.calculateComplexity(optimizables);
         DecimalFormat df = new DecimalFormat();
         df.setGroupingUsed(true);
-        LOGGER.info(String.format("problem space size: %s", df.format(overallPower)));
+        LOGGER.info(String.format("problem space size: %s", df.format(problemSpaceSize)));
 
         IResultIdentificator resultIdentificator = evaluator.getFitnessResultIdentificator();
         IndividualResult bestIndividual = null;
@@ -72,7 +73,7 @@ public class RandomEvaluationEvaluator {
         ExecutorService executor = Executors.newFixedThreadPool(parallelism);
         CompletionService<Result> completed = new ExecutorCompletionService<>(executor);
         try {
-            int submitted = submitTasks(optimizables, expressionCalculator, evaluator, completed);
+            int submitted = submitTasks(optimizables, expressionCalculator, evaluator, completed, problemSpaceSize);
             LOGGER.info(String.format("submitted tasks: %d", submitted));
 
             for (int i = 0; i < submitted; i++) {
@@ -99,15 +100,15 @@ public class RandomEvaluationEvaluator {
             executor.shutdown();
         }
 
-        RandomEvaluationResult bruteForceResult = new RandomEvaluationResult(overallPower, bestIndividual,
+        RandomEvaluationResult bruteForceResult = new RandomEvaluationResult(problemSpaceSize, bestIndividual,
                 evaluatedIndividuals);
         return bruteForceResult;
     }
 
     private int submitTasks(Collection<Optimizable> optimizables, IExpressionCalculator expressionCalculator,
-            IRewardEvaluator evaluator, CompletionService<Result> completed) {
-        OptimizableValuesIterator optimizableValuesIterator = new OptimizableValuesIterator(optimizables,
-                expressionCalculator);
+            IRewardEvaluator evaluator, CompletionService<Result> completed, BigInteger problemSpaceSize) {
+        Iterator<List<OptimizableValue<?>>> optimizableValuesIterator = createIterator(optimizables,
+                expressionCalculator, problemSpaceSize);
         int submitted = 0;
         while (optimizableValuesIterator.hasNext()) {
             List<OptimizableValue<?>> optimizableValues = optimizableValuesIterator.next();
@@ -123,6 +124,18 @@ public class RandomEvaluationEvaluator {
             submitted++;
         }
         return submitted;
+    }
+
+    private Iterator<List<OptimizableValue<?>>> createIterator(Collection<Optimizable> optimizables,
+            IExpressionCalculator expressionCalculator, BigInteger problemSpaceSize) {
+        OptimizableValuesIterator optimizableValuesIterator = new OptimizableValuesIterator(optimizables,
+                expressionCalculator);
+        int sequenceSize = problemSpaceSize.intValue();
+        int randomSampleCount = configuration.getRandomSampleCount();
+        DecimalFormat df = new DecimalFormat();
+        df.setGroupingUsed(true);
+        LOGGER.info(String.format("random sample count: %s", df.format(randomSampleCount)));
+        return new SampleCountIterator<>(optimizableValuesIterator, sequenceSize, randomSampleCount);
     }
 
     private IndividualResult buildIndividualResult(double reward, List<OptimizableValue<?>> optimizableValues,
