@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.ui.workflow.config;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -7,6 +8,9 @@ import java.util.function.Consumer;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
+import org.eclipse.core.databinding.conversion.IConverter;
+import org.eclipse.core.databinding.conversion.text.NumberToStringConverter;
+import org.eclipse.core.databinding.conversion.text.StringToNumberConverter;
 import org.eclipse.core.databinding.observable.sideeffect.ISideEffect;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.SelectObservableValue;
@@ -43,6 +47,7 @@ import org.palladiosimulator.simexp.ui.workflow.config.debug.BaseLaunchConfigura
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
 
 public class RandomEvaluationConfigurationTab extends BaseLaunchConfigurationTab {
+    private static final String PATTERN_DOUBLE = "#.#####";
     private static final String PLUGIN_ID = "org.palladiosimulator.analyzer.workflow";
     private static final String CONFIGURATION_TAB_IMAGE_PATH = "icons/configuration_tab.gif";
 
@@ -50,6 +55,7 @@ public class RandomEvaluationConfigurationTab extends BaseLaunchConfigurationTab
     private SelectObservableValue<RandomSampleType> randomSampleTypeTarget;
 
     private Text textSampleCount;
+    private Text textSampleRatio;
     private Text textErrorReward;
     private Text textMemoryUsage;
 
@@ -107,7 +113,6 @@ public class RandomEvaluationConfigurationTab extends BaseLaunchConfigurationTab
         Composite randomSampleTypeContainer = new Composite(simulationParent, SWT.NONE);
         randomSampleTypeContainer.setLayoutData(new GridData(SWT.None, SWT.TOP, false, true));
         randomSampleTypeContainer.setLayout(new GridLayout());
-        // randomSampleTypeContainer.setBackground(new Color(0, 127, 0));
 
         Group randomSampleTypeGroup = new Group(randomSampleTypeContainer, SWT.NONE);
         randomSampleTypeGroup.setText(SimulationConstants.RANDOM_SAMPLE_TYPE);
@@ -137,24 +142,35 @@ public class RandomEvaluationConfigurationTab extends BaseLaunchConfigurationTab
                         detailsComposite.setEnabled(false);
                     }
                 }
-                randomSampleDetails.layout();
+                // randomSampleDetails.layout();
                 modifyListener.modifyText(null);
             }
         });
 
         randomSampleDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        randomSampleDetails.setLayout(new GridLayout());
+        randomSampleDetails.setLayout(new GridLayout(1, true));
 
-        Group container = new Group(randomSampleDetails, SWT.NONE);
-        container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-        container.setLayout(new GridLayout(2, false));
-        randomSampleDetailsMap.put(RandomSampleType.COUNT, container);
+        Group sampleCountContainer = new Group(randomSampleDetails, SWT.NONE);
+        sampleCountContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        sampleCountContainer.setLayout(new GridLayout(2, false));
+        randomSampleDetailsMap.put(RandomSampleType.COUNT, sampleCountContainer);
 
-        Label errorDefaultLabel = new Label(container, SWT.NONE);
-        errorDefaultLabel.setText("Sample count:");
-        textSampleCount = new Text(container, SWT.BORDER);
+        Label sampleCountLabel = new Label(sampleCountContainer, SWT.NONE);
+        sampleCountLabel.setText("Sample count:");
+        textSampleCount = new Text(sampleCountContainer, SWT.BORDER);
         textSampleCount.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textSampleCount.addModifyListener(modifyListener);
+
+        Group sampleRatioContainer = new Group(randomSampleDetails, SWT.NONE);
+        sampleRatioContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        sampleRatioContainer.setLayout(new GridLayout(2, false));
+        randomSampleDetailsMap.put(RandomSampleType.RATIO, sampleRatioContainer);
+
+        Label sampleRatioLabel = new Label(sampleRatioContainer, SWT.NONE);
+        sampleRatioLabel.setText("Sample ratio:");
+        textSampleRatio = new Text(sampleRatioContainer, SWT.BORDER);
+        textSampleRatio.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        textSampleRatio.addModifyListener(modifyListener);
     }
 
     private void createConfig(Composite parent, ModifyListener modifyListener) {
@@ -225,12 +241,42 @@ public class RandomEvaluationConfigurationTab extends BaseLaunchConfigurationTab
             .observe(configuration);
         UpdateValueStrategy<String, Integer> sampleCountUpdateStrategy = new ConditionalUpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT, sampleCountUpdateController);
-        IValidator<Integer> popSizeValidator = new ControllableValidator<>(
+        IValidator<Integer> sampleCountValidator = new ControllableValidator<>(
                 new MinNumberValidator<>("Random sample count", 1), isREEnabled);
-        sampleCountUpdateStrategy.setBeforeSetValidator(popSizeValidator);
+        sampleCountUpdateStrategy.setBeforeSetValidator(sampleCountValidator);
         Binding sampleCountBindValue = ctx.bindValue(sampleCountTarget, sampleCountModel, sampleCountUpdateStrategy,
                 new ConditionalUpdateValueStrategy<>(sampleCountUpdateController));
         ControlDecorationSupport.create(sampleCountBindValue, SWT.TOP | SWT.RIGHT);
+
+        UpdateStrategyController sampleRatioUpdateController = new UpdateStrategyController() {
+
+            @Override
+            public boolean isEnabled() {
+                return randomSampleTypeTarget.getValue() == RandomSampleType.RATIO;
+            }
+        };
+        IObservableValue<String> sampleRatioTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textSampleRatio);
+        IObservableValue<Double> sampleRatioModel = ConfigurationProperties
+            .value(SimulationConstants.RANDOM_SAMPLE_RATIO)
+            .observe(configuration);
+        UpdateValueStrategy<String, Double> t2mSampleRatioUpdateStrategy = new ConditionalUpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT, sampleRatioUpdateController);
+        IValidator<Double> sampleRatioValidator = new ControllableValidator<>(
+                new MinNumberValidator<>("Random ratio", 0.0), isREEnabled);
+        t2mSampleRatioUpdateStrategy.setBeforeSetValidator(sampleRatioValidator);
+        t2mSampleRatioUpdateStrategy
+            .setConverter(StringToNumberConverter.toDouble(new DecimalFormat(PATTERN_DOUBLE), false));
+        UpdateValueStrategy<Double, String> m2tsampleRatioUpdateStrategy = new ConditionalUpdateValueStrategy<>(
+                sampleRatioUpdateController);
+        IConverter<?, ?> fromDoubleMutationRate = NumberToStringConverter.fromDouble(new DecimalFormat(PATTERN_DOUBLE),
+                false);
+        @SuppressWarnings("unchecked")
+        IConverter<Double, String> mutationRateToStringConverter = (IConverter<Double, String>) fromDoubleMutationRate;
+        m2tsampleRatioUpdateStrategy.setConverter(mutationRateToStringConverter);
+        Binding sampleRatioBindValue = ctx.bindValue(sampleRatioTarget, sampleRatioModel, t2mSampleRatioUpdateStrategy,
+                m2tsampleRatioUpdateStrategy);
+        ControlDecorationSupport.create(sampleRatioBindValue, SWT.TOP | SWT.RIGHT);
     }
 
     private void initializeConfigFrom(ILaunchConfiguration configuration, DataBindingContext ctx, Enabled isREEnabled) {

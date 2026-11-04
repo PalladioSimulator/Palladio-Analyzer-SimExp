@@ -21,6 +21,7 @@ public interface SimulationConstants {
 
     static final String RANDOM_SAMPLE_TYPE = "Random Sample Type";
     static final String RANDOM_SAMPLE_COUNT = "RandomSampleCount";
+    static final String RANDOM_SAMPLE_RATIO = "RandomSampleRatio";
 
     static final int DEFAULT_POPULATION_SIZE = 100;
     static final double DEFAULT_MUTATION_RATE = 0.15;

@@ -234,6 +234,11 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     }
 
     @Override
+    public Optional<Double> getRandomSampleRatio() {
+        return randomEvaluationConfiguration.getRandomSampleRatio();
+    }
+
+    @Override
     public Map<String, Object> getOptimizedValues() {
         return optimizedValues;
     }

@@ -46,7 +46,8 @@ public class OptimizableSimExpWorkflowConfiguration extends SimExpWorkflowConfig
                         configuration.getSteadyFitness(), configuration.getMutationRate(),
                         configuration.getCrossoverRate(), configuration.getMemoryUsage()),
                 new RandomEvaluationConfiguration(configuration.getErrorReward(), configuration.getMemoryUsage(),
-                        configuration.getRandomSampleType(), configuration.getRandomSampleCount()),
+                        configuration.getRandomSampleType(), configuration.getRandomSampleCount(),
+                        configuration.getRandomSampleRatio()),
                 configuration.getOptimizedValues());
         this.optimizableValues = optimizableValues;
     }

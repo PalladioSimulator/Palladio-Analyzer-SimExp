@@ -10,13 +10,15 @@ public class RandomEvaluationConfiguration implements IRandomEvaluationConfigura
     private final int memoryUsage;
     private final RandomSampleType randomSampleType;
     private final Optional<Integer> randomSampleCount;
+    private final Optional<Double> randomSampleRatio;
 
     public RandomEvaluationConfiguration(double errorDefault, int memoryUsage, RandomSampleType randomSampleType,
-            Optional<Integer> randomSampleCount) {
+            Optional<Integer> randomSampleCount, Optional<Double> randomSampleRatio) {
         this.errorDefault = errorDefault;
         this.memoryUsage = memoryUsage;
         this.randomSampleType = randomSampleType;
         this.randomSampleCount = randomSampleCount;
+        this.randomSampleRatio = randomSampleRatio;
     }
 
     @Override
@@ -37,5 +39,10 @@ public class RandomEvaluationConfiguration implements IRandomEvaluationConfigura
     @Override
     public Optional<Integer> getRandomSampleCount() {
         return randomSampleCount;
+    }
+
+    @Override
+    public Optional<Double> getRandomSampleRatio() {
+        return randomSampleRatio;
     }
 }

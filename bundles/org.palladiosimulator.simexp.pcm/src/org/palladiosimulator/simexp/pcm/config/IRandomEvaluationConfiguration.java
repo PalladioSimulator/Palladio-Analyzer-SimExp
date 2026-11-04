@@ -8,4 +8,6 @@ public interface IRandomEvaluationConfiguration extends IKubernetesConfiguration
     RandomSampleType getRandomSampleType();
 
     Optional<Integer> getRandomSampleCount();
+
+    Optional<Double> getRandomSampleRatio();
 }
