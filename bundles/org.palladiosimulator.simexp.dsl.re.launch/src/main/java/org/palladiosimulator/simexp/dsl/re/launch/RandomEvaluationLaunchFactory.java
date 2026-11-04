@@ -73,7 +73,7 @@ public class RandomEvaluationLaunchFactory implements ILaunchFactory {
         IDisposeableRewardEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration,
                 launcherName, description, seedProvider, modelLoaderFactory, rewardFormater, resourcePath);
         return new RandomEvaluationSimulationExecutor(smodel, fitnessEvaluator,
-                (IRandomEvaluationWorkflowConfiguration) config, rewardFormater);
+                (IRandomEvaluationWorkflowConfiguration) config, rewardFormater, seedProvider);
     }
 
     private IDisposeableRewardEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config,

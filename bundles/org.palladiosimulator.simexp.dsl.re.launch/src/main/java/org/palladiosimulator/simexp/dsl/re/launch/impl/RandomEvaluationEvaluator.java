@@ -30,10 +30,13 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.pcm.config.IRandomEvaluationConfiguration;
 
+import tools.mdsd.probdist.api.random.ISeedProvider;
+
 public class RandomEvaluationEvaluator {
     private final static Logger LOGGER = Logger.getLogger(RandomEvaluationEvaluator.class);
 
     private final IRandomEvaluationConfiguration configuration;
+    private final Optional<ISeedProvider> seedProvider;
 
     private static class Result {
         public final List<OptimizableValue<?>> optimizableValues;
@@ -45,8 +48,10 @@ public class RandomEvaluationEvaluator {
         }
     }
 
-    public RandomEvaluationEvaluator(IRandomEvaluationConfiguration configuration) {
+    public RandomEvaluationEvaluator(IRandomEvaluationConfiguration configuration,
+            Optional<ISeedProvider> seedProvider) {
         this.configuration = configuration;
+        this.seedProvider = seedProvider;
     }
 
     public RandomEvaluationResult evaluate(IOptimizableProvider optimizableProvider, IRewardEvaluator evaluator,
@@ -139,7 +144,7 @@ public class RandomEvaluationEvaluator {
             int randomSampleCount = configuration.getRandomSampleCount()
                 .get();
             LOGGER.info(String.format("random sample count: %s", df.format(randomSampleCount)));
-            return new SampleCountIterator<>(optimizableValuesIterator, problemSpaceSize,
+            return new SampleCountIterator<>(seedProvider, optimizableValuesIterator, problemSpaceSize,
                     BigInteger.valueOf(randomSampleCount));
         }
         if (randomSampleType == RandomSampleType.RATIO) {
@@ -147,7 +152,8 @@ public class RandomEvaluationEvaluator {
                 .get();
             double randomSamplePercent = randomSampleRatio * 100;
             LOGGER.info(String.format("random sample ratio: %s%%", df.format(randomSamplePercent)));
-            return new SampleRatioIterator<>(optimizableValuesIterator, problemSpaceSize, randomSamplePercent);
+            return new SampleRatioIterator<>(seedProvider, optimizableValuesIterator, problemSpaceSize,
+                    randomSamplePercent);
         }
         throw new RuntimeException("invalid random sample type: " + randomSampleType);
     }

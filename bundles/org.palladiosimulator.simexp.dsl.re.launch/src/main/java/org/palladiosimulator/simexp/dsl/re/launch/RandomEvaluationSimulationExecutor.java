@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
@@ -24,6 +25,8 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.pcm.config.IRandomEvaluationWorkflowConfiguration;
 
+import tools.mdsd.probdist.api.random.ISeedProvider;
+
 public class RandomEvaluationSimulationExecutor implements SimulationExecutor {
     private static final Logger LOGGER = Logger.getLogger(RandomEvaluationSimulationExecutor.class);
 
@@ -31,15 +34,18 @@ public class RandomEvaluationSimulationExecutor implements SimulationExecutor {
     private final IDisposeableRewardEvaluator fitnessEvaluator;
     private final IRandomEvaluationWorkflowConfiguration configuration;
     private final RewardFormater rewardFormater;
+    private final Optional<ISeedProvider> seedProvider;
 
     private RandomEvaluationResult randomEvaluationResult;
 
     public RandomEvaluationSimulationExecutor(Smodel smodel, IDisposeableRewardEvaluator fitnessEvaluator,
-            IRandomEvaluationWorkflowConfiguration configuration, RewardFormater rewardFormater) {
+            IRandomEvaluationWorkflowConfiguration configuration, RewardFormater rewardFormater,
+            Optional<ISeedProvider> seedProvider) {
         this.smodel = smodel;
         this.fitnessEvaluator = fitnessEvaluator;
         this.configuration = configuration;
         this.rewardFormater = rewardFormater;
+        this.seedProvider = seedProvider;
     }
 
     @Override
@@ -126,7 +132,8 @@ public class RandomEvaluationSimulationExecutor implements SimulationExecutor {
             public void process(IRewardEvaluator evaluator) {
                 try {
                     LOGGER.info("Random evaluation start");
-                    RandomEvaluationEvaluator bruteForceEvaluator = new RandomEvaluationEvaluator(configuration);
+                    RandomEvaluationEvaluator bruteForceEvaluator = new RandomEvaluationEvaluator(configuration,
+                            seedProvider);
                     randomEvaluationResult = bruteForceEvaluator.evaluate(optimizableProvider, evaluator,
                             rewardFormater);
                     LOGGER.info("Random evaluation end");

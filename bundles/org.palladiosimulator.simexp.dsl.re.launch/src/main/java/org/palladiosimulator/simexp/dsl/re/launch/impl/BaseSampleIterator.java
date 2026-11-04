@@ -3,7 +3,10 @@ package org.palladiosimulator.simexp.dsl.re.launch.impl;
 import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Random;
+
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class BaseSampleIterator<T> implements Iterator<T> {
     private final Iterator<? extends T> source;
@@ -14,9 +17,15 @@ public class BaseSampleIterator<T> implements Iterator<T> {
     private T nextValue;
     private boolean ready;
 
-    public BaseSampleIterator(Iterator<? extends T> source) {
+    public BaseSampleIterator(Optional<ISeedProvider> seedProvider, Iterator<? extends T> source) {
         this.source = source;
-        this.random = new Random();
+        if (seedProvider.isEmpty()) {
+            this.random = new Random();
+        } else {
+            long seed = seedProvider.get()
+                .getLong();
+            this.random = new Random(seed);
+        }
     }
 
     protected void setStartValues(BigInteger elementsLeft, BigInteger samplesLeft) {
