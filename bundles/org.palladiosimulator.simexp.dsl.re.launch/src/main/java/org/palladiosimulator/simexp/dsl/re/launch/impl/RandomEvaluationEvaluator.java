@@ -72,8 +72,8 @@ public class RandomEvaluationEvaluator {
         LOGGER.info(String.format("problem space size: %s", df.format(problemSpaceSize)));
 
         IResultIdentificator resultIdentificator = evaluator.getFitnessResultIdentificator();
-        IndividualResult bestIndividual = null;
-        List<IndividualResult> evaluatedIndividuals = new ArrayList<>();
+        IndividualResult bestConfiguration = null;
+        List<IndividualResult> evaluatedConfigurations = new ArrayList<>();
 
         double errorReward = configuration.getErrorReward();
         ExecutorService executor = Executors.newFixedThreadPool(parallelism);
@@ -92,12 +92,12 @@ public class RandomEvaluationEvaluator {
 
                 IndividualResult result = buildIndividualResult(reward, evaluationResult.optimizableValues,
                         resultIdentificator);
-                evaluatedIndividuals.add(result);
-                if (bestIndividual == null) {
-                    bestIndividual = result;
+                evaluatedConfigurations.add(result);
+                if (bestConfiguration == null) {
+                    bestConfiguration = result;
                 } else {
-                    if (reward < bestIndividual.getFitness()) {
-                        bestIndividual = result;
+                    if (reward < bestConfiguration.getFitness()) {
+                        bestConfiguration = result;
                     }
                 }
             }
@@ -106,9 +106,9 @@ public class RandomEvaluationEvaluator {
             executor.shutdown();
         }
 
-        RandomEvaluationResult bruteForceResult = new RandomEvaluationResult(problemSpaceSize, bestIndividual,
-                evaluatedIndividuals);
-        return bruteForceResult;
+        RandomEvaluationResult randomEvaluationResult = new RandomEvaluationResult(problemSpaceSize, bestConfiguration,
+                evaluatedConfigurations);
+        return randomEvaluationResult;
     }
 
     private int submitTasks(Collection<Optimizable> optimizables, IExpressionCalculator expressionCalculator,

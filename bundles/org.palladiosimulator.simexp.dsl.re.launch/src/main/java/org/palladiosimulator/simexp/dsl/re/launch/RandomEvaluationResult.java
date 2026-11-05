@@ -8,25 +8,25 @@ import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
 
 public class RandomEvaluationResult {
     private final BigInteger problemSpaceSize;
-    private final IndividualResult bestIndividual;
-    private final List<IndividualResult> evaluatedIndividuals;
+    private final IndividualResult bestConfiguration;
+    private final List<IndividualResult> evaluatedConfigurations;
 
-    public RandomEvaluationResult(BigInteger problemSpaceSize, IndividualResult bestIndividual,
-            List<IndividualResult> evaluatedIndividuals) {
+    public RandomEvaluationResult(BigInteger problemSpaceSize, IndividualResult bestConfiguration,
+            List<IndividualResult> evaluatedConfigurations) {
         this.problemSpaceSize = problemSpaceSize;
-        this.bestIndividual = bestIndividual;
-        this.evaluatedIndividuals = Collections.unmodifiableList(evaluatedIndividuals);
+        this.bestConfiguration = bestConfiguration;
+        this.evaluatedConfigurations = Collections.unmodifiableList(evaluatedConfigurations);
     }
 
     public BigInteger getProblemSpaceSize() {
         return problemSpaceSize;
     }
 
-    public IndividualResult getBest() {
-        return bestIndividual;
+    public IndividualResult getBestConfiguration() {
+        return bestConfiguration;
     }
 
-    public List<IndividualResult> getEvaluatedIndividuals() {
-        return evaluatedIndividuals;
+    public List<IndividualResult> getEvaluatedConfigurations() {
+        return evaluatedConfigurations;
     }
 }

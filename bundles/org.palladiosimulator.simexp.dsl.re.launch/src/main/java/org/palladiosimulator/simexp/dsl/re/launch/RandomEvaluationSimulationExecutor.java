@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.dsl.re.launch;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +19,7 @@ import org.palladiosimulator.simexp.dsl.dispatcher.IDisposeableRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IRewardEvaluator;
 import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
+import org.palladiosimulator.simexp.dsl.dispatcher.io.JsonResultWriter;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.OptimizableProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.util.RewardFormater;
 import org.palladiosimulator.simexp.dsl.re.launch.impl.RandomEvaluationEvaluator;
@@ -35,17 +37,19 @@ public class RandomEvaluationSimulationExecutor implements SimulationExecutor {
     private final IRandomEvaluationWorkflowConfiguration configuration;
     private final RewardFormater rewardFormater;
     private final Optional<ISeedProvider> seedProvider;
+    private final Path resourcePath;
 
     private RandomEvaluationResult randomEvaluationResult;
 
     public RandomEvaluationSimulationExecutor(Smodel smodel, IDisposeableRewardEvaluator fitnessEvaluator,
             IRandomEvaluationWorkflowConfiguration configuration, RewardFormater rewardFormater,
-            Optional<ISeedProvider> seedProvider) {
+            Optional<ISeedProvider> seedProvider, Path resourcePath) {
         this.smodel = smodel;
         this.fitnessEvaluator = fitnessEvaluator;
         this.configuration = configuration;
         this.rewardFormater = rewardFormater;
         this.seedProvider = seedProvider;
+        this.resourcePath = resourcePath;
     }
 
     @Override
@@ -78,18 +82,18 @@ public class RandomEvaluationSimulationExecutor implements SimulationExecutor {
         BigInteger problemSpaceSize = BigInteger.ZERO;
         QualityMeasurements qualityMeasurements = null;
         List<OptimizableValue<?>> bestOptimizableValues = Collections.emptyList();
-        List<IndividualResult> evaluatedIndividuals = Collections.emptyList();
+        List<IndividualResult> evaluatedConfigurations = Collections.emptyList();
         if (randomEvaluationResult != null) {
-            IndividualResult best = randomEvaluationResult.getBest();
+            IndividualResult best = randomEvaluationResult.getBestConfiguration();
             totalReward = best.getFitness();
             bestOptimizableValues = best.getOptimizableValues();
             problemSpaceSize = randomEvaluationResult.getProblemSpaceSize();
-            evaluatedIndividuals = randomEvaluationResult.getEvaluatedIndividuals();
+            evaluatedConfigurations = randomEvaluationResult.getEvaluatedConfigurations();
         }
 
-        String description = String.format("best individual of policy %s", getPolicyId());
+        String description = String.format("best configuration of policy %s", getPolicyId());
         List<String> detailDescription = new ArrayList<>();
-        detailDescription.add("Values of the best individual:");
+        detailDescription.add("Values of the best configuration:");
         detailDescription.addAll(formatOptimizables(bestOptimizableValues));
 
         DecimalFormat df = new DecimalFormat();
@@ -98,7 +102,7 @@ public class RandomEvaluationSimulationExecutor implements SimulationExecutor {
         if (BigInteger.ZERO.equals(problemSpaceSize)) {
             fraction = 0;
         } else {
-            BigDecimal dividend = BigDecimal.valueOf(evaluatedIndividuals.size())
+            BigDecimal dividend = BigDecimal.valueOf(evaluatedConfigurations.size())
                 .multiply(BigDecimal.valueOf(100));
 
             BigDecimal divisor = new BigDecimal(problemSpaceSize);
@@ -106,8 +110,12 @@ public class RandomEvaluationSimulationExecutor implements SimulationExecutor {
                 .floatValue();
         }
         detailDescription.add("-".repeat(71));
-        detailDescription.add(String.format("Evaluated %d of %s (%.2f%%)", evaluatedIndividuals.size(),
+        detailDescription.add(String.format("Evaluated %d of %s (%.2f%%)", evaluatedConfigurations.size(),
                 df.format(problemSpaceSize), fraction));
+
+        JsonResultWriter jsonParetoWriter = new JsonResultWriter();
+        Path evaluatedConfigurationsFile = resourcePath.resolve("evaluated_configurations.json");
+        jsonParetoWriter.storeIndividualResults(evaluatedConfigurationsFile, evaluatedConfigurations);
 
         return new BruteForceSimulationResult(totalReward, configuration.getRewardType(), qualityMeasurements,
                 description, detailDescription);
