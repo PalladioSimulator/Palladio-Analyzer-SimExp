@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.launch.io;
+package org.palladiosimulator.simexp.dsl.dispatcher.io;
 
 import java.util.Map;
 

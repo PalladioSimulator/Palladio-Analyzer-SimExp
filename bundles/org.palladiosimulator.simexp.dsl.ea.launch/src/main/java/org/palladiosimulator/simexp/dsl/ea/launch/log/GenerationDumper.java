@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
-import org.palladiosimulator.simexp.dsl.ea.launch.io.JsonResultWriter;
+import org.palladiosimulator.simexp.dsl.ea.launch.io.JsonParetoResultWriter;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 public class GenerationDumper implements IEAEvolutionStatusReceiver {
@@ -20,7 +20,7 @@ public class GenerationDumper implements IEAEvolutionStatusReceiver {
             List<IndividualResult> population) {
         Path generationFile = generationsPath.resolve(String.format("generation_%03d.json", generation));
 
-        JsonResultWriter jsonParetoWriter = new JsonResultWriter();
+        JsonParetoResultWriter jsonParetoWriter = new JsonParetoResultWriter();
         jsonParetoWriter.storeIndividualResults(generationFile, population);
     }
 

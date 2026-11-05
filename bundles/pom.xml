@@ -60,6 +60,7 @@
 		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm</module>
 		<module>org.palladiosimulator.simexp.dsl.dispatcher</module>
 		<module>org.palladiosimulator.simexp.dsl.dispatcher.ui</module>
+		<module>org.palladiosimulator.simexp.dsl.dispatcher.io</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.api</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.pareto</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.launch</module>

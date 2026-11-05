@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.launch.io;
+package org.palladiosimulator.simexp.dsl.dispatcher.io;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -11,7 +11,6 @@ import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
-import org.palladiosimulator.simexp.dsl.ea.api.IndividualParetoResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 import com.google.gson.FieldNamingPolicy;
@@ -36,11 +35,6 @@ public class JsonResultWriter {
         writeEntries(resultFile, entries);
     }
 
-    public void storeIndividualParetoResults(Path resultFile, List<IndividualParetoResult> individualParetoResults) {
-        List<ResultEntry> entries = extractParetoEntries(individualParetoResults);
-        writeEntries(resultFile, entries);
-    }
-
     public List<ResultEntry> extractResultEntries(List<IndividualResult> individualResults) {
         List<ResultEntry> entries = new ArrayList<>();
         for (IndividualResult result : individualResults) {
@@ -51,20 +45,7 @@ public class JsonResultWriter {
         return entries;
     }
 
-    public List<ResultEntry> extractParetoEntries(List<IndividualParetoResult> individualParetoResults) {
-        List<ResultEntry> entries = new ArrayList<>();
-        for (IndividualParetoResult paretoResult : individualParetoResults) {
-            IndividualResult result = paretoResult.getIndividualResult();
-            Map<String, Object> optimizables = extractOptimizables(result);
-            Map<String, Double> averages = new TreeMap<>(paretoResult.getAverages());
-            ParetoEntry entry = new ParetoEntry(result.getFitness(), optimizables, result.getId(),
-                    paretoResult.buildScore(), averages);
-            entries.add(entry);
-        }
-        return entries;
-    }
-
-    private Map<String, Object> extractOptimizables(IndividualResult result) {
+    protected Map<String, Object> extractOptimizables(IndividualResult result) {
         Map<String, Object> optimizables = new TreeMap<>();
         for (OptimizableValue<?> ov : result.getOptimizableValues()) {
             optimizables.put(ov.getOptimizable()
@@ -73,7 +54,7 @@ public class JsonResultWriter {
         return optimizables;
     }
 
-    private void writeEntries(Path resultFile, List<ResultEntry> entries) {
+    protected void writeEntries(Path resultFile, List<ResultEntry> entries) {
         try (Writer writer = Files.newBufferedWriter(resultFile)) {
             gson.toJson(entries, writer);
         } catch (IOException e) {

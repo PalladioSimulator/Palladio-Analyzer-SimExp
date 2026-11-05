@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: org.palladiosimulator.simexp.dsl.dispatcher.io
+Bundle-ManifestVersion: 2
+Bundle-Name: org.palladiosimulator.simexp.dsl.dispatcher.io
+Bundle-Vendor: My Company
+Bundle-Version: 0.1.0.qualifier
+Export-Package: org.palladiosimulator.simexp.dsl.dispatcher.io
+Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.dispatcher.io
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-21
+Require-Bundle: org.apache.log4j;bundle-version="1.2.19",
+ com.google.gson;bundle-version="2.8.2",
+ org.palladiosimulator.simexp.dsl.dispatcher;bundle-version="0.1.0",
+ org.palladiosimulator.simexp.dsl.smodel;bundle-version="0.1.0",
+ org.palladiosimulator.simexp.dsl.smodel.api;bundle-version="0.1.0"

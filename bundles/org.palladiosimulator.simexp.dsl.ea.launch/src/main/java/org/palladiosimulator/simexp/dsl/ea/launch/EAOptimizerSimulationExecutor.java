@@ -28,7 +28,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IndividualParetoResult;
 import org.palladiosimulator.simexp.dsl.ea.launch.dispatcher.EAEvolutionStatusReceiverDispatcher;
-import org.palladiosimulator.simexp.dsl.ea.launch.io.JsonResultWriter;
+import org.palladiosimulator.simexp.dsl.ea.launch.io.JsonParetoResultWriter;
 import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationCSVWriter;
 import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationDumper;
 import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationJsonWriter;
@@ -128,7 +128,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
             detailDescription.addAll(formatOptimizables(individual.getOptimizableValues()));
         }
 
-        JsonResultWriter jsonParetoWriter = new JsonResultWriter();
+        JsonParetoResultWriter jsonParetoWriter = new JsonParetoResultWriter();
         Path paretoFrontFile = resourcePath.resolve("pareto_front.json");
         jsonParetoWriter.storeIndividualParetoResults(paretoFrontFile, paretoFront);
         Path initialPopulationFile = resourcePath.resolve("initial_population.json");

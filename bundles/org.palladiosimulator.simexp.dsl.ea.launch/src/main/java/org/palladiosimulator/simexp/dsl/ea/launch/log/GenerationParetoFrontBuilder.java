@@ -7,7 +7,7 @@ import org.palladiosimulator.simexp.dsl.dispatcher.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.dispatcher.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IndividualParetoResult;
-import org.palladiosimulator.simexp.dsl.ea.launch.io.JsonResultWriter;
+import org.palladiosimulator.simexp.dsl.ea.launch.io.JsonParetoResultWriter;
 import org.palladiosimulator.simexp.dsl.ea.pareto.ParetoFrontBuilder;
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
@@ -30,7 +30,7 @@ public class GenerationParetoFrontBuilder implements IEAEvolutionStatusReceiver 
         Path generationFile = generationsPath.resolve(String.format("pareto_front_%03d.json", generation));
         ParetoFrontBuilder paretoFrontBuilder = new ParetoFrontBuilder(qualityAttributeProvider, precisionProvider);
         List<IndividualParetoResult> paretoFront = paretoFrontBuilder.buildParetoFront(population);
-        JsonResultWriter jsonParetoWriter = new JsonResultWriter();
+        JsonParetoResultWriter jsonParetoWriter = new JsonParetoResultWriter();
         jsonParetoWriter.storeIndividualParetoResults(generationFile, paretoFront);
     }
 
