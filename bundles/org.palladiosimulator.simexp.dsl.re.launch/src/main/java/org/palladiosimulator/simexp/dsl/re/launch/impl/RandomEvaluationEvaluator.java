@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -72,7 +73,6 @@ public class RandomEvaluationEvaluator {
         LOGGER.info(String.format("problem space size: %s", df.format(problemSpaceSize)));
 
         IResultIdentificator resultIdentificator = evaluator.getFitnessResultIdentificator();
-        IndividualResult bestConfiguration = null;
         List<IndividualResult> evaluatedConfigurations = new ArrayList<>();
 
         double errorReward = configuration.getErrorReward();
@@ -93,19 +93,15 @@ public class RandomEvaluationEvaluator {
                 IndividualResult result = buildIndividualResult(reward, evaluationResult.optimizableValues,
                         resultIdentificator);
                 evaluatedConfigurations.add(result);
-                if (bestConfiguration == null) {
-                    bestConfiguration = result;
-                } else {
-                    if (reward < bestConfiguration.getFitness()) {
-                        bestConfiguration = result;
-                    }
-                }
             }
             LOGGER.info("all submitted tasks recived");
         } finally {
             executor.shutdown();
         }
 
+        IndividualResult bestConfiguration = evaluatedConfigurations.stream()
+            .max(Comparator.comparingDouble(IndividualResult::getFitness))
+            .orElse(null);
         RandomEvaluationResult randomEvaluationResult = new RandomEvaluationResult(problemSpaceSize, bestConfiguration,
                 evaluatedConfigurations);
         return randomEvaluationResult;
