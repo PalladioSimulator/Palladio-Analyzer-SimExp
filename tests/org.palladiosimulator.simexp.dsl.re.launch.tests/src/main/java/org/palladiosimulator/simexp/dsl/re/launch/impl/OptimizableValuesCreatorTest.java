@@ -20,8 +20,8 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
-public class OptimizableValuesIteratorTest {
-    private OptimizableValuesIterator iterator;
+public class OptimizableValuesCreatorTest {
+    private OptimizableValuesCreator creator;
 
     private SmodelCreator smodelCreator;
 
@@ -57,69 +57,26 @@ public class OptimizableValuesIteratorTest {
         RangeBounds rangeBounds1 = smodelCreator.createRangeBoundsClosedOpen(rangeLiteralStart, rangeLiteralEnd,
                 rangeLiteralStep);
         rangeOptimizable1 = smodelCreator.createOptimizable("oc", DataType.INT, rangeBounds1);
+
+        creator = new OptimizableValuesCreator(expressionCalculator);
     }
 
     @Test
-    public void testHasNextSetFirst() {
-        iterator = new OptimizableValuesIterator(Collections.singletonList(setOptimizable1), expressionCalculator);
+    public void testCombinationsSingleSet() {
+        List<List<OptimizableValue<?>>> actualValues = creator.combinations(Collections.singletonList(setOptimizable1));
 
-        assertThat(iterator.hasNext()).isTrue();
-    }
-
-    @Test
-    public void testHasNextSetSecond() {
-        iterator = new OptimizableValuesIterator(Collections.singletonList(setOptimizable1), expressionCalculator);
-        iterator.next();
-
-        assertThat(iterator.hasNext()).isFalse();
-    }
-
-    @Test
-    public void testHasNextRangeFirst() {
-        iterator = new OptimizableValuesIterator(Collections.singletonList(rangeOptimizable1), expressionCalculator);
-
-        assertThat(iterator.hasNext()).isTrue();
-    }
-
-    @Test
-    public void testHasNextRangeSecond() {
-        iterator = new OptimizableValuesIterator(Collections.singletonList(rangeOptimizable1), expressionCalculator);
-        iterator.next();
-
-        assertThat(iterator.hasNext()).isFalse();
-    }
-
-    @Test
-    public void testNextSetFirst() {
-        iterator = new OptimizableValuesIterator(Collections.singletonList(setOptimizable1), expressionCalculator);
-
-        List<OptimizableValue<?>> actualValues = iterator.next();
-
-        List<OptimizableValue<?>> expectedValues = new ArrayList<>();
-        expectedValues.add(new OptimizableValue<>(setOptimizable1, 1));
+        List<List<OptimizableValue<?>>> expectedValues = new ArrayList<>();
+        expectedValues.add(Collections.singletonList(new OptimizableValue<>(setOptimizable1, 1)));
         assertThat(actualValues).containsAll(expectedValues);
     }
 
     @Test
-    public void testNextSetSecond() {
-        iterator = new OptimizableValuesIterator(Collections.singletonList(setOptimizable2), expressionCalculator);
-        iterator.next();
+    public void testCombinationsSingleRange() {
+        List<List<OptimizableValue<?>>> actualValues = creator
+            .combinations(Collections.singletonList(rangeOptimizable1));
 
-        List<OptimizableValue<?>> actualValues = iterator.next();
-
-        List<OptimizableValue<?>> expectedValues = new ArrayList<>();
-        expectedValues.add(new OptimizableValue<>(setOptimizable2, 3));
-        assertThat(actualValues).containsAll(expectedValues);
-    }
-
-    @Test
-    public void testNextRangeFirst() {
-        iterator = new OptimizableValuesIterator(Collections.singletonList(rangeOptimizable1), expressionCalculator);
-
-        List<OptimizableValue<?>> actualValues = iterator.next();
-
-        List<OptimizableValue<?>> expectedValues = new ArrayList<>();
-        expectedValues.add(new OptimizableValue<>(rangeOptimizable1, 1));
+        List<List<OptimizableValue<?>>> expectedValues = new ArrayList<>();
+        expectedValues.add(Collections.singletonList(new OptimizableValue<>(rangeOptimizable1, 1)));
         assertThat(actualValues).containsAll(expectedValues);
     }
 }
