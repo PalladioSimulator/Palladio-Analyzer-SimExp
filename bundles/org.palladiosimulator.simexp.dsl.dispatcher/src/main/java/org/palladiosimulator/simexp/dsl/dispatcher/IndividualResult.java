@@ -9,18 +9,18 @@ import org.palladiosimulator.simexp.dsl.dispatcher.util.OptimizableValueToString
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 public class IndividualResult {
-    private final double fitness;
+    private final double reward;
     private final List<OptimizableValue<?>> optimizableValues;
     private final String id;
 
-    public IndividualResult(double fitness, List<OptimizableValue<?>> optimizableValues, String id) {
-        this.fitness = fitness;
+    public IndividualResult(double reward, List<OptimizableValue<?>> optimizableValues, String id) {
+        this.reward = reward;
         this.optimizableValues = Collections.unmodifiableList(optimizableValues);
         this.id = id;
     }
 
-    public double getFitness() {
-        return fitness;
+    public double getReward() {
+        return reward;
     }
 
     public List<OptimizableValue<?>> getOptimizableValues() {
@@ -31,12 +31,12 @@ public class IndividualResult {
     public String toString() {
         OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
         String values = optimizableValueToString.asString(optimizableValues);
-        return String.format("IR %.3f: %s", fitness, values);
+        return String.format("IR %.3f: %s", reward, values);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(19, 37).append(fitness)
+        return new HashCodeBuilder(19, 37).append(reward)
             .append(optimizableValues)
             .toHashCode();
     }
@@ -53,7 +53,7 @@ public class IndividualResult {
             return false;
         }
         IndividualResult rhs = (IndividualResult) obj;
-        return new EqualsBuilder().append(fitness, rhs.fitness)
+        return new EqualsBuilder().append(reward, rhs.reward)
             .append(optimizableValues, rhs.optimizableValues)
             .isEquals();
     }

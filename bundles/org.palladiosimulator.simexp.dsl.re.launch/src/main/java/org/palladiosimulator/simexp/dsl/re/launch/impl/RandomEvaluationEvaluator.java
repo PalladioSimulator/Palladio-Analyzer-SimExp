@@ -100,7 +100,7 @@ public class RandomEvaluationEvaluator {
         }
 
         IndividualResult bestConfiguration = evaluatedConfigurations.stream()
-            .max(Comparator.comparingDouble(IndividualResult::getFitness))
+            .max(Comparator.comparingDouble(IndividualResult::getReward))
             .orElse(null);
         RandomEvaluationResult randomEvaluationResult = new RandomEvaluationResult(problemSpaceSize, bestConfiguration,
                 evaluatedConfigurations);

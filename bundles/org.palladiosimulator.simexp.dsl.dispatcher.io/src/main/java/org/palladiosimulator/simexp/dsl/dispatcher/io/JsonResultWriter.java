@@ -39,7 +39,7 @@ public class JsonResultWriter {
         List<ResultEntry> entries = new ArrayList<>();
         for (IndividualResult result : individualResults) {
             Map<String, Object> optimizables = extractOptimizables(result);
-            ResultEntry entry = new ResultEntry(result.getFitness(), optimizables, result.getId());
+            ResultEntry entry = new ResultEntry(result.getReward(), optimizables, result.getId());
             entries.add(entry);
         }
         return entries;

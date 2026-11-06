@@ -97,7 +97,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         List<IndividualResult> initialPopulation = Collections.emptyList();
         if (optimizationResult != null) {
             IndividualResult fittest = optimizationResult.getFittest();
-            totalReward = fittest.getFitness();
+            totalReward = fittest.getReward();
             bestOptimizableValues = fittest.getOptimizableValues();
             paretoFront = optimizationResult.getParetoFront();
             initialPopulation = optimizationResult.getInitialPopulation();
@@ -124,7 +124,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         detailDescription.add(String.format("The final population has %d (%d unique) individuals:",
                 finalPopulation.size(), uniqueFinalPopulation.size()));
         for (IndividualResult individual : uniqueFinalPopulation) {
-            detailDescription.add(String.format("- fitness %s", rewardFormater.asString(individual.getFitness())));
+            detailDescription.add(String.format("- fitness %s", rewardFormater.asString(individual.getReward())));
             detailDescription.addAll(formatOptimizables(individual.getOptimizableValues()));
         }
 

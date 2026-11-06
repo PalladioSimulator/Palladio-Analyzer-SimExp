@@ -133,7 +133,7 @@ public class EAOptimizerTest {
 
         double expectedFitness = 50.0;
         assertEquals(expectedFitness, result.getFittest()
-            .getFitness(), DELTA);
+            .getReward(), DELTA);
     }
 
     @Test
@@ -146,7 +146,7 @@ public class EAOptimizerTest {
 
         double expectedFitness = 9.0;
         assertEquals(expectedFitness, result.getFittest()
-            .getFitness(), DELTA);
+            .getReward(), DELTA);
     }
 
     @Test
@@ -160,7 +160,7 @@ public class EAOptimizerTest {
 
         double expectedFitness = 6.0;
         assertEquals(expectedFitness, result.getFittest()
-            .getFitness(), DELTA);
+            .getReward(), DELTA);
     }
 
     @Test
@@ -173,7 +173,7 @@ public class EAOptimizerTest {
 
         double expectedFitness = 19.0;
         assertEquals(expectedFitness, result.getFittest()
-            .getFitness(), DELTA);
+            .getReward(), DELTA);
     }
 
     @Test
@@ -186,7 +186,7 @@ public class EAOptimizerTest {
 
         double expectedFitness = 9.0;
         assertEquals(expectedFitness, result.getFittest()
-            .getFitness(), DELTA);
+            .getReward(), DELTA);
     }
 
     @Test
@@ -199,7 +199,7 @@ public class EAOptimizerTest {
 
         double expectedFitness = 85.0;
         assertEquals(expectedFitness, result.getFittest()
-            .getFitness(), DELTA);
+            .getReward(), DELTA);
     }
 
     @Test
@@ -220,7 +220,7 @@ public class EAOptimizerTest {
 
         double expectedFitness = 68.0;
         assertEquals(expectedFitness, result.getFittest()
-            .getFitness(), DELTA);
+            .getReward(), DELTA);
     }
 
     @Test
@@ -241,6 +241,6 @@ public class EAOptimizerTest {
 
         double expectedFitness = 16.0;
         assertEquals(expectedFitness, result.getFittest()
-            .getFitness(), DELTA);
+            .getReward(), DELTA);
     }
 }

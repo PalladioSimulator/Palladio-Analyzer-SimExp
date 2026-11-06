@@ -23,7 +23,7 @@ public class JsonParetoResultWriter extends JsonResultWriter {
             IndividualResult result = paretoResult.getIndividualResult();
             Map<String, Object> optimizables = extractOptimizables(result);
             Map<String, Double> averages = new TreeMap<>(paretoResult.getAverages());
-            ParetoEntry entry = new ParetoEntry(result.getFitness(), optimizables, result.getId(),
+            ParetoEntry entry = new ParetoEntry(result.getReward(), optimizables, result.getId(),
                     paretoResult.buildScore(), averages);
             entries.add(entry);
         }

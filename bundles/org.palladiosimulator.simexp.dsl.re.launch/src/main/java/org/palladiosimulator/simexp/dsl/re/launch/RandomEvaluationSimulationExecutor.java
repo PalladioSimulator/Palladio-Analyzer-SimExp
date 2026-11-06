@@ -85,7 +85,7 @@ public class RandomEvaluationSimulationExecutor implements SimulationExecutor {
         List<IndividualResult> evaluatedConfigurations = Collections.emptyList();
         if (randomEvaluationResult != null) {
             IndividualResult best = randomEvaluationResult.getBestConfiguration();
-            totalReward = best.getFitness();
+            totalReward = best.getReward();
             bestOptimizableValues = best.getOptimizableValues();
             problemSpaceSize = randomEvaluationResult.getProblemSpaceSize();
             evaluatedConfigurations = randomEvaluationResult.getEvaluatedConfigurations();
