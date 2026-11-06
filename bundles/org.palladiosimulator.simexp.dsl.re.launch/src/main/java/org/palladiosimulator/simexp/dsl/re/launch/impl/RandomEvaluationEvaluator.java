@@ -130,26 +130,36 @@ public class RandomEvaluationEvaluator {
 
     private Iterator<List<OptimizableValue<?>>> createIterator(Collection<Optimizable> optimizables,
             IExpressionCalculator expressionCalculator, BigInteger problemSpaceSize) {
-        OptimizableValuesIterator optimizableValuesIterator = new OptimizableValuesIterator(optimizables,
-                expressionCalculator);
+        // OptimizableValuesIterator optimizableValuesIterator = new
+        // OptimizableValuesIterator(optimizables,
+        // expressionCalculator);
         DecimalFormat df = new DecimalFormat();
         df.setGroupingUsed(true);
+
+        OptimizableValuesCreator optimizableValuesCreator = new OptimizableValuesCreator(expressionCalculator);
+        List<List<OptimizableValue<?>>> dimensions = optimizableValuesCreator.combinations(optimizables);
 
         RandomSampleType randomSampleType = configuration.getRandomSampleType();
         if (randomSampleType == RandomSampleType.COUNT) {
             int randomSampleCount = configuration.getRandomSampleCount()
                 .get();
             LOGGER.info(String.format("random sample count: %s", df.format(randomSampleCount)));
-            return new SampleCountIterator<>(seedProvider, optimizableValuesIterator, problemSpaceSize,
-                    BigInteger.valueOf(randomSampleCount));
+            /*
+             * return new SampleCountIterator<>(seedProvider, optimizableValuesIterator,
+             * problemSpaceSize, BigInteger.valueOf(randomSampleCount));
+             */
+            return CartesianSampleIterator.ofCount(seedProvider, dimensions, BigInteger.valueOf(randomSampleCount));
         }
         if (randomSampleType == RandomSampleType.RATIO) {
             double randomSampleRatio = configuration.getRandomSampleRatio()
                 .get();
             double randomSamplePercent = randomSampleRatio * 100;
             LOGGER.info(String.format("random sample ratio: %s%%", df.format(randomSamplePercent)));
-            return new SampleRatioIterator<>(seedProvider, optimizableValuesIterator, problemSpaceSize,
-                    randomSamplePercent);
+            /*
+             * return new SampleRatioIterator<>(seedProvider, optimizableValuesIterator,
+             * problemSpaceSize, randomSamplePercent);
+             */
+            return CartesianSampleIterator.ofRatio(seedProvider, dimensions, randomSamplePercent);
         }
         throw new RuntimeException("invalid random sample type: " + randomSampleType);
     }
