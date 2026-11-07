@@ -61,16 +61,20 @@ public class PodRestartObserver implements Watcher<Pod>, AutoCloseable {
     private void checkRestart(String nodeName, String podName, int index, ContainerStatus status) {
         int restartCount = status.getRestartCount();
         if (restartCount > 0) {
-            ContainerState lastState = status.getLastState();
-            final String reason;
-            if (lastState != null) {
-                ContainerStateTerminated terminated = lastState.getTerminated();
-                reason = terminated.getReason();
-            } else {
-                reason = "unknown";
-            }
+            String reason = getReason(status);
             notifyListeners(nodeName, podName, reason, restartCount);
         }
+    }
+
+    private String getReason(ContainerStatus status) {
+        ContainerState lastState = status.getLastState();
+        if (lastState != null) {
+            ContainerStateTerminated terminated = lastState.getTerminated();
+            if (terminated != null) {
+                return terminated.getReason();
+            }
+        }
+        return "unknown";
     }
 
     @Override
